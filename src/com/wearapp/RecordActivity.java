@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 public class RecordActivity extends Activity implements OnClickListener{
 
@@ -41,8 +42,9 @@ public class RecordActivity extends Activity implements OnClickListener{
 
 	ImageButton imagebutton_record;
 	ImageButton imagebutton_stop;
-	Button button_record_again;
+	Button button_play;
 	Button button_confirm;
+	TextView textview_status;
 
 	///////////////////////////////////////////
 	// handler
@@ -87,7 +89,7 @@ public class RecordActivity extends Activity implements OnClickListener{
 
 		initView();
 		button_confirm.setOnClickListener(this);
-		button_record_again.setOnClickListener(this);
+		button_play.setOnClickListener(this);
 		imagebutton_record.setOnClickListener(this);
 		imagebutton_stop.setOnClickListener(this);
 	}
@@ -104,16 +106,20 @@ public class RecordActivity extends Activity implements OnClickListener{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			textview_status.setText(R.string.status_recording);
+			imagebutton_record.setVisibility(View.INVISIBLE);
+			imagebutton_record.setClickable(false);
+			
 			imagebutton_stop.bringToFront();
 			imagebutton_stop.setVisibility(View.VISIBLE);
 			imagebutton_stop.setClickable(true);;
 			
-			imagebutton_record.setVisibility(View.INVISIBLE);
-			imagebutton_record.setClickable(false);
+
 			return;
 			
 		case R.id.imagebutton_stop:
 			stopRecord();
+			
 			imagebutton_stop.setVisibility(View.INVISIBLE);
 			imagebutton_stop.setClickable(false);
 			
@@ -122,8 +128,8 @@ public class RecordActivity extends Activity implements OnClickListener{
 			imagebutton_record.setClickable(true);
 			
 			return;
-		case R.id.button_record_again:
-			
+		case R.id.button_play:
+			playVoice();
 			return;
 		
 		case R.id.button_confirm:
@@ -195,9 +201,9 @@ public class RecordActivity extends Activity implements OnClickListener{
 	public void initView(){
 		imagebutton_record = (ImageButton) findViewById(R.id.imagebutton_record);
 		imagebutton_stop = (ImageButton) findViewById(R.id.imagebutton_stop);
-		button_record_again = (Button) findViewById(R.id.button_record_again);
+		button_play = (Button) findViewById(R.id.button_play);
 		button_confirm = (Button) findViewById(R.id.button_confirm);
-		
+		textview_status = (TextView) findViewById(R.id.recordtext);
 		imagebutton_record.bringToFront();
 		
 		return;

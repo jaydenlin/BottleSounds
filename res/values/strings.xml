@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+status_recordingstatus_recording<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">ShareVoice</string>
@@ -7,7 +7,8 @@
     <string name="string_listen">收聽</string>
     <string name="string_record">錄音</string>
     <string name="string_recordtext">開始錄音</string>
-    <string name="string_record_agin">重錄</string>
+    <string name="string_play">播放</string>
     <string name="string_confirm">確認</string>
+    <string name="string_recording">錄音中...</string>
 
 </resources>

@@ -22,13 +22,13 @@
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Button
-        android:id="@+id/button_record_again"
+        android:id="@+id/button_play"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/button_confirm"
         android:layout_alignBottom="@+id/button_confirm"
         android:layout_toLeftOf="@+id/imagebutton_record"
-        android:text="@string/string_record_agin" />
+        android:text="@string/string_play" />
 
     <Button
         android:id="@+id/button_confirm"
