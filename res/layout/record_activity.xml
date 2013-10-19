@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageButton
+        android:id="@+id/imagebutton_record"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="186dp"
+        android:src="@android:drawable/ic_btn_speak_now" />
+
+    <TextView
+        android:id="@+id/recordtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imagebutton_record"
+        android:layout_centerHorizontal="true"
+        android:text="@string/string_recordtext"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Button
+        android:id="@+id/button_record_again"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/button_confirm"
+        android:layout_alignBottom="@+id/button_confirm"
+        android:layout_toLeftOf="@+id/imagebutton_record"
+        android:text="@string/string_record_agin" />
+
+    <Button
+        android:id="@+id/button_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/recordtext"
+        android:layout_marginTop="28dp"
+        android:layout_toRightOf="@+id/imagebutton_record"
+        android:text="@string/string_confirm" />
+
+    <ImageButton
+        android:id="@+id/imagebutton_stop"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignBottom="@+id/imagebutton_record"
+        android:layout_alignLeft="@+id/imagebutton_record"
+        android:layout_alignTop="@+id/imagebutton_record"
+        android:layout_toLeftOf="@+id/button_confirm"
+        android:src="@android:drawable/presence_audio_busy" />
+
+</RelativeLayout>
