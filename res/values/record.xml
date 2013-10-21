@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="record_title">錄音畫面</string>
+    <string name="status_recording">錄音中 …</string>
     
 </resources>
