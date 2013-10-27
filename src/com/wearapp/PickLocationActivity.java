@@ -69,19 +69,19 @@ public class PickLocationActivity extends FragmentActivity{
         });
 	}
 	
-//	 private boolean ensureFBOpenSession() {
-//	        if (Session.getActiveSession() == null ||
-//	                !Session.getActiveSession().isOpened()) {
-//	            Session.openActiveSession(this, true, new Session.StatusCallback() {
-//	                @Override
-//	                public void call(Session session, SessionState state, Exception exception) {
-//	                    onFBSessionStateChanged(session, state, exception);
-//	                }
-//	            });
-//	            return false;
-//	        }
-//	        return true;
-//	    }
+	 private boolean ensureFBOpenSession() {
+	        if (Session.getActiveSession() == null ||
+	                !Session.getActiveSession().isOpened()) {
+	            Session.openActiveSession(this, true, new Session.StatusCallback() {
+	                @Override
+	                public void call(Session session, SessionState state, Exception exception) {
+	                    onFBSessionStateChanged(session, state, exception);
+	                }
+	            });
+	            return false;
+	        }
+	        return true;
+	    }
 	
 	 private void onFBSessionStateChanged(Session session, SessionState state, Exception exception) {
 		 
@@ -94,6 +94,11 @@ public class PickLocationActivity extends FragmentActivity{
 	@Override
 	protected void onStart() {
 		super.onStart();
+		if(ensureFBOpenSession()&&placePickerFragment==null){
+			setPlacePickerFragment();
+			Log.w(TAG,"onStart loaddata");
+		}
+		Log.w(TAG,"onStart");
        
 	}
 
@@ -113,6 +118,7 @@ public class PickLocationActivity extends FragmentActivity{
 	protected void onResume() {
 		super.onResume();
 		FBLifecycleHelper.onResume();
+		Log.w(TAG, "onResume");
 	}
 
 

@@ -25,6 +25,7 @@ public class ListenLocationActivity extends Activity{
 	private Location lastKnownLocation;
 	private LocationManager locationManager;
 	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -60,6 +61,12 @@ public class ListenLocationActivity extends Activity{
 		intent.putExtra(PlacePickerFragment.LOCATION_BUNDLE_KEY, lastKnownLocation);
 		//intent.putExtra(PlacePickerFragment.SEARCH_TEXT_BUNDLE_KEY, "芝山");
 		startActivity(intent);
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		finish();
 	}
 
 }
