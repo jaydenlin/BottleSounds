@@ -7,12 +7,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.wearapp.R;
-import com.wearapp.R.id;
-import com.wearapp.R.layout;
-import com.wearapp.R.string;
-
 import android.app.Activity;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -138,7 +134,8 @@ public class RecordActivity extends Activity implements OnClickListener{
 			return;
 		
 		case R.id.button_confirm:
-			
+			Intent intent = new Intent(this,ListenLocationActivity.class);
+			startActivity(intent);
 			return;
 		}
 		

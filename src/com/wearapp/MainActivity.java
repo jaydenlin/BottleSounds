@@ -1,11 +1,8 @@
 package com.wearapp;
 
 
-import com.wearapp.R;
+import com.wearapp.RecordActivity;
 import com.wearapp.ListenActivity;
-import com.wearapp.R.id;
-import com.wearapp.R.layout;
-import com.wearapp.R.menu;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -64,9 +61,6 @@ public class MainActivity extends Activity  {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		
-
 		
 		setContentView(R.layout.activity_main);
 		initButton();
