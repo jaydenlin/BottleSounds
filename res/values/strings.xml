@@ -9,5 +9,7 @@
     <string name="string_recordtext">開始錄音</string>
     <string name="string_play">播放</string>
     <string name="string_confirm">確認</string>
-
+	<string name="longitude_label">經度：</string>
+    <string name="latitude_label">緯度：</string>
+    
 </resources>

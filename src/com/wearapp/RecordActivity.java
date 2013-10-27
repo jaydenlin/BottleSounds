@@ -7,6 +7,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.wearapp.R;
+import com.wearapp.R.id;
+import com.wearapp.R.layout;
+import com.wearapp.R.string;
+
 import android.app.Activity;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
