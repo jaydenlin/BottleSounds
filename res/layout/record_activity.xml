@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@drawable/background" >
 
     <ImageButton
         android:id="@+id/imagebutton_record"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        style="?android:borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="186dp"
-        android:src="@android:drawable/ic_btn_speak_now" />
+        android:layout_marginTop="250dp"
+        android:src="@drawable/icon_record" />
 
     <TextView
         android:id="@+id/recordtext"
@@ -21,32 +23,43 @@
         android:text="@string/string_recordtext"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <Button
-        android:id="@+id/button_play"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/button_confirm"
-        android:layout_alignBottom="@+id/button_confirm"
-        android:layout_toLeftOf="@+id/imagebutton_record"
-        android:text="@string/string_play" />
-
-    <Button
-        android:id="@+id/button_confirm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/recordtext"
-        android:layout_marginTop="28dp"
-        android:layout_toRightOf="@+id/imagebutton_record"
-        android:text="@string/string_confirm" />
-
     <ImageButton
         android:id="@+id/imagebutton_stop"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        style="?android:borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/imagebutton_record"
         android:layout_alignLeft="@+id/imagebutton_record"
         android:layout_alignTop="@+id/imagebutton_record"
-        android:layout_toLeftOf="@+id/button_confirm"
-        android:src="@android:drawable/presence_audio_busy" />
+        android:src="@drawable/icon_pause" />
+
+    <ImageButton
+        android:id="@+id/imagebutton_play"
+        style="?android:borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imagebutton_record"
+        android:layout_alignLeft="@+id/imagebutton_record"
+        android:layout_alignTop="@+id/imagebutton_record"
+        android:src="@drawable/icon_play" />
+    
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/voice_view" />
+
+    <Button
+        android:id="@+id/button_confirm"
+        style="?android:borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imagebutton_record"
+        android:layout_toRightOf="@+id/imagebutton_record"
+        android:text="@string/string_start"
+        android:textColor="@color/white" />
 
 </RelativeLayout>

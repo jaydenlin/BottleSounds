@@ -47,7 +47,8 @@ public class RecordActivity extends Activity implements OnClickListener{
 
 	ImageButton imagebutton_record;
 	ImageButton imagebutton_stop;
-	Button button_play;
+	ImageButton imagebutton_play;
+	//Button button_play;
 	Button button_confirm;
 	TextView textview_status;
 
@@ -69,6 +70,8 @@ public class RecordActivity extends Activity implements OnClickListener{
 	private  MediaRecorder mRecorder;
 	private  MediaPlayer   mPlayer ;
 	private  String VOICE_FILE_PATH;
+	private boolean isRecorded = false;
+	private boolean isPlayState = false;
 	
 	public void setVoiceFilePath(String filepath){
         if(D_METHOD){
@@ -94,9 +97,11 @@ public class RecordActivity extends Activity implements OnClickListener{
 
 		initView();
 		button_confirm.setOnClickListener(this);
-		button_play.setOnClickListener(this);
+		//button_play.setOnClickListener(this);
 		imagebutton_record.setOnClickListener(this);
 		imagebutton_stop.setOnClickListener(this);
+		imagebutton_play.setOnClickListener(this);
+		
 	}
 	
 	
@@ -112,6 +117,7 @@ public class RecordActivity extends Activity implements OnClickListener{
 				e.printStackTrace();
 			}
 			textview_status.setText(R.string.status_recording);
+			button_confirm.setText(R.string.string_complete);
 			imagebutton_record.setVisibility(View.INVISIBLE);
 			imagebutton_record.setClickable(false);
 			
@@ -119,33 +125,65 @@ public class RecordActivity extends Activity implements OnClickListener{
 			imagebutton_stop.setVisibility(View.VISIBLE);
 			imagebutton_stop.setClickable(true);;
 			
-
 			return;
 			
 		case R.id.imagebutton_stop:
 			stopRecord();
-			
+			textview_status.setText(R.string.string_recordtext);
 			imagebutton_stop.setVisibility(View.INVISIBLE);
 			imagebutton_stop.setClickable(false);
 			
 			imagebutton_record.bringToFront();
 			imagebutton_record.setVisibility(View.VISIBLE);
 			imagebutton_record.setClickable(true);
+			setIsRecorded();
 			
 			return;
-		case R.id.button_play:
-			playVoice();
-			return;
-		
 		case R.id.button_confirm:
+			if(isRecorded){
+				button_confirm.setText(R.string.string_play);
+				setIsPlayState();	
+				return;
+			}
+			
 			
 			return;
+			
+		case R.id.imagebutton_play:
+			if(isPlayState){
+				playVoice();
+				button_confirm.setText(R.string.string_confirm);
+			}
+			return;
+
 		}
 		
 		
 		return;
 	}
 	
+	private void setIsRecorded() {
+		isRecorded = true;
+	}
+	
+	private void setIsPlayState(){
+		
+		isPlayState = true;
+		
+		imagebutton_play.bringToFront();
+		imagebutton_play.setVisibility(View.VISIBLE);
+		imagebutton_play.setClickable(true);
+		
+		imagebutton_record.setVisibility(View.INVISIBLE);
+		imagebutton_stop.setVisibility(View.INVISIBLE);
+		
+		imagebutton_record.setClickable(false);
+		imagebutton_stop.setClickable(false);
+		
+		button_confirm.setClickable(false);
+		
+	}
+
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -206,10 +244,14 @@ public class RecordActivity extends Activity implements OnClickListener{
 	public void initView(){
 		imagebutton_record = (ImageButton) findViewById(R.id.imagebutton_record);
 		imagebutton_stop = (ImageButton) findViewById(R.id.imagebutton_stop);
-		button_play = (Button) findViewById(R.id.button_play);
+		imagebutton_stop.setVisibility(View.INVISIBLE);
+		imagebutton_play=  (ImageButton) findViewById(R.id.imagebutton_play);
+		imagebutton_play.setVisibility(View.INVISIBLE);
 		button_confirm = (Button) findViewById(R.id.button_confirm);
+		//button_confirm = (Button) findViewById(R.id.button_confirm);
 		textview_status = (TextView) findViewById(R.id.recordtext);
 		imagebutton_record.bringToFront();
+		
 		
 		return;
 	}

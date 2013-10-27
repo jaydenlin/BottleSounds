@@ -2,5 +2,12 @@
 <resources>
     <string name="record_title">錄音畫面</string>
     <string name="status_recording">錄音中 …</string>
+    <string name="string_recordtext">開始錄音</string>
+    <string name="string_start">開始</string>
+    <string name="string_complete">完成</string>
+    <string name="string_play">試聽</string>
+    <string name="string_confirm">確認</string>
+    
+
     
 </resources>

@@ -6,10 +6,9 @@
     <string name="hello_world">Hello world!</string>
     <string name="string_listen">收聽</string>
     <string name="string_record">錄音</string>
-    <string name="string_recordtext">開始錄音</string>
-    <string name="string_play">播放</string>
-    <string name="string_confirm">確認</string>
 	<string name="longitude_label">經度：</string>
     <string name="latitude_label">緯度：</string>
+    <color name="pink">#f29c9f</color>
+    <color name="white">#ffffff</color>
     
 </resources>
