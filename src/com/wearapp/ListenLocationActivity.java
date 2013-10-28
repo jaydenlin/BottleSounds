@@ -59,7 +59,6 @@ public class ListenLocationActivity extends Activity{
 	private void startPickLocationActivity(Location lastKnownLocation) {
 		Intent intent = new Intent(this,PickLocationActivity.class);
 		intent.putExtra(PlacePickerFragment.LOCATION_BUNDLE_KEY, lastKnownLocation);
-		//intent.putExtra(PlacePickerFragment.SEARCH_TEXT_BUNDLE_KEY, "芝山");
 		startActivity(intent);
 	}
 	
