@@ -145,8 +145,6 @@ public class RecordActivity extends Activity implements OnClickListener{
 				setIsPlayState();	
 				return;
 			}
-			
-			
 			return;
 			
 		case R.id.imagebutton_play:
