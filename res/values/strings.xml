@@ -10,5 +10,6 @@
     <string name="latitude_label">緯度：</string>
     <color name="pink">#f29c9f</color>
     <color name="white">#ffffff</color>
-    
+    <string name="google_app_id">AIzaSyCYICRjhx4KN3DV8AM_XEPu5wwLnptLhtk</string>
+    <string name="fb_app_id">611899052182749</string>
 </resources>

@@ -139,7 +139,7 @@ public class MainActivity extends Activity  {
 	}
 	
 	public void startListen(){
-		Intent intent = new Intent(this,ListenActivity.class);
+		Intent intent = new Intent(this,CheckPlaceActivity.class);
 		startActivity(intent);
 		return;
 	}
