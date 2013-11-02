@@ -1,10 +1,23 @@
 package com.wearapp;
 
+import java.util.List;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.facebook.AppEventsLogger;
+import com.facebook.FacebookException;
+import com.facebook.FacebookOperationCanceledException;
+import com.facebook.FacebookRequestError;
+import com.facebook.HttpMethod;
+import com.facebook.Request;
+import com.facebook.RequestAsyncTask;
+import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.widget.FacebookDialog;
+import com.facebook.widget.WebDialog;
 import com.wearapp.util.LocationUtil;
 import android.content.Context;
 import android.content.Intent;
@@ -104,7 +117,7 @@ public class CheckPlaceActivity extends FragmentActivity{
         Log.w(TAG,"onActivityResult");
         switch (requestCode) {
             case PLACE_ACTIVITY:
-                displaySelectedPlace(resultCode);
+            	sendToFriend();
                 break;
             default:
                 break;
@@ -154,11 +167,12 @@ public class CheckPlaceActivity extends FragmentActivity{
     }
     
     private void displaySelectedPlace(int resultCode) {
-    	if(FacebookDialog.canPresentShareDialog(this,
-                FacebookDialog.ShareDialogFeature.SHARE_DIALOG)){
-    			FacebookDialog shareDialog = createShareDialogBuilder().build();
-    			FBlifecycleHelper.trackPendingDialogCall(shareDialog.present());
-    	}
+//    	if(FacebookDialog.canPresentShareDialog(this,
+//                FacebookDialog.ShareDialogFeature.SHARE_DIALOG)){
+//    			FacebookDialog shareDialog = createShareDialogBuilder().build();
+//    			FBlifecycleHelper.trackPendingDialogCall(shareDialog.present());
+//    	}
+    	
         
 //      String results = "";
 //      PlacePickerApplication application = (PlacePickerApplication) getApplication();
@@ -179,16 +193,51 @@ public class CheckPlaceActivity extends FragmentActivity{
 //      resultsTextView.setText(results);
   }
     
-    private FacebookDialog.ShareDialogBuilder createShareDialogBuilder() {
-    	
-    	String selectedPlaceID = LocationUtil.selectedlocation.getId();  
-    	Log.w(TAG,selectedPlaceID);
-        return new FacebookDialog.ShareDialogBuilder(this)
-                .setName("Just a test")
-                .setDescription("test")
-                .setLink("http://developers.facebook.com/android")
-                .setPlace(selectedPlaceID);
-    }  
+//    private FacebookDialog.ShareDialogBuilder createShareDialogBuilder() {
+//    	
+//    	String selectedPlaceID = LocationUtil.selectedlocation.getId();  
+//    	Log.w(TAG,selectedPlaceID);
+//        return new FacebookDialog.ShareDialogBuilder(this)
+//                .setName("Just a test")
+//                .setDescription("test")
+//                .setLink("http://developers.facebook.com/android")
+//                .setPlace(selectedPlaceID);
+//    }  
+    
+    private void sendToFriend() {
+    	Bundle params = new Bundle();
+        params.putString("message", "發給你們做測試");
+        params.putString("place", LocationUtil.selectedlocation.getId());
+        
+        WebDialog requestsDialog = (
+            new WebDialog.RequestsDialogBuilder(this,
+                Session.getActiveSession(),
+                params))
+                .setOnCompleteListener(new WebDialog.OnCompleteListener() {
+					
+					@Override
+					public void onComplete(Bundle values, FacebookException error) {
+						// TODO Auto-generated method stub
+						if (error != null) {
+	                        if (error instanceof FacebookOperationCanceledException) {
+	                               Log.w(TAG, "Request cancelled"); 
+	                        } else {
+	                        	   Log.w(TAG,"Network Error");
+	                        }
+	                    } else {
+	                        final String requestId = values.getString("request");
+	                        if (requestId != null) {
+	                        	Log.w(TAG, "Request sent");
+	                        } else {
+	                        	Log.w(TAG, "Request cancel");
+	                        }
+	                    }   
+					}
+				})
+                .build();
+        requestsDialog.show();
+
+    }
 
 
 }
