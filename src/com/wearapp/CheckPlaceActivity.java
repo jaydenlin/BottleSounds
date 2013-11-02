@@ -19,6 +19,7 @@ import android.speech.RecognizerIntent;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -33,8 +34,7 @@ public class CheckPlaceActivity extends FragmentActivity{
     ///////////////////////////////////////////
     // UI
     ///////////////////////////////////////////	
-    private ImageButton btnButton;
-    
+    private Button checkButton;
     
     ///////////////////////////////////////////
     // Initialize
@@ -45,12 +45,12 @@ public class CheckPlaceActivity extends FragmentActivity{
     private Location pickPlaceForLocationWhenSessionOpened = null;
     
     private void initView(){
-    	btnButton = (ImageButton) findViewById(R.id.btnSpeak);
+    	checkButton = (Button) findViewById(R.id.check_place);
     }
     
     private void setListener(){
     	locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-    	btnButton.setOnClickListener(new View.OnClickListener() {
+    	checkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
             	startPickPlaceActivity(LocationUtil.getLocation(locationManager));
@@ -123,47 +123,28 @@ public class CheckPlaceActivity extends FragmentActivity{
     ///////////////////////////////////////////	
     
     private void onSessionStateChanged(Session session, SessionState state, Exception exception) {
+    	
+    	Log.w(TAG,"onSessionStateChanged");
+    	//每次FB Session變動時，都確認[Location抓到值]且[FBSession開啟]都完成,然後重新初始化FB選地點的Fragment(開啟PickPlaceActivity)
         if (pickPlaceForLocationWhenSessionOpened != null && state.isOpened()) {
             Location location = pickPlaceForLocationWhenSessionOpened;
             pickPlaceForLocationWhenSessionOpened = null;
             startPickPlaceActivity(location);
-        }else{
-        	Log.w(TAG,"Session not open");
         }
     }
-
-    private void displaySelectedPlace(int resultCode) {
-//        String results = "";
-//        PlacePickerApplication application = (PlacePickerApplication) getApplication();
-//
-//        GraphPlace selection = application.getSelectedPlace();
-//        if (selection != null) {
-//            GraphLocation location = selection.getLocation();
-//
-//            results = String.format("Name: %s\nCategory: %s\nLocation: (%f,%f)\nStreet: %s, %s, %s, %s, %s",
-//                    selection.getName(), selection.getCategory(),
-//                    location.getLatitude(), location.getLongitude(),
-//                    location.getStreet(), location.getCity(), location.getState(), location.getZip(),
-//                    location.getCountry());
-//        } else {
-//            results = "<No place selected>";
-//        }
-//
-//        resultsTextView.setText(results);
-    }
-
 
     private void startPickPlaceActivity(Location location) {
     	
     	Log.w(TAG,"OnstartPickPlaceActivity");
-    	if (ensureOpenFBSession()) {
+    	if (ensureOpenFBSession()) {//確認FBsession也完成
             Intent intent = new Intent(this, PickPlaceActivity.class);
             PickPlaceActivity.populateParameters(intent, location, null);
             startActivityForResult(intent, PLACE_ACTIVITY);
-        } else {
+        } else {//僅有Locattion完成
             pickPlaceForLocationWhenSessionOpened = location;//location done
         }
     }
+    
     
     private boolean ensureOpenFBSession() {
         if (Session.getActiveSession() == null ||
@@ -178,6 +159,26 @@ public class CheckPlaceActivity extends FragmentActivity{
         }
         return true;
     }
+    
+    private void displaySelectedPlace(int resultCode) {
+//      String results = "";
+//      PlacePickerApplication application = (PlacePickerApplication) getApplication();
+//
+//      GraphPlace selection = application.getSelectedPlace();
+//      if (selection != null) {
+//          GraphLocation location = selection.getLocation();
+//
+//          results = String.format("Name: %s\nCategory: %s\nLocation: (%f,%f)\nStreet: %s, %s, %s, %s, %s",
+//                  selection.getName(), selection.getCategory(),
+//                  location.getLatitude(), location.getLongitude(),
+//                  location.getStreet(), location.getCity(), location.getState(), location.getZip(),
+//                  location.getCountry());
+//      } else {
+//          results = "<No place selected>";
+//      }
+//
+//      resultsTextView.setText(results);
+  }
 
 
 }
