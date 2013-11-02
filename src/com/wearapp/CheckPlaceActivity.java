@@ -4,6 +4,9 @@ import com.facebook.AppEventsLogger;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.facebook.model.GraphPlace;
+import com.facebook.widget.FacebookDialog;
+import com.facebook.widget.PlacePickerFragment;
 import com.wearapp.util.LocationUtil;
 
 import android.app.AlertDialog;
@@ -17,6 +20,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -109,13 +113,13 @@ public class CheckPlaceActivity extends FragmentActivity{
         super.onActivityResult(requestCode, resultCode, data);
         FBlifecycleHelper.onActivityResult(requestCode, resultCode, data);
         Log.w(TAG,"onActivityResult");
-//        switch (requestCode) {
-//            case PLACE_ACTIVITY:
-//                displaySelectedPlace(resultCode);
-//                break;
-//            default:
-//                break;
-//        }
+        switch (requestCode) {
+            case PLACE_ACTIVITY:
+                displaySelectedPlace(resultCode);
+                break;
+            default:
+                break;
+        }
     }
     
     ///////////////////////////////////////////
@@ -161,6 +165,10 @@ public class CheckPlaceActivity extends FragmentActivity{
     }
     
     private void displaySelectedPlace(int resultCode) {
+    	
+    	FacebookDialog shareDialog = createShareDialogBuilder().build();
+        FBlifecycleHelper.trackPendingDialogCall(shareDialog.present());
+        
 //      String results = "";
 //      PlacePickerApplication application = (PlacePickerApplication) getApplication();
 //
@@ -179,6 +187,14 @@ public class CheckPlaceActivity extends FragmentActivity{
 //
 //      resultsTextView.setText(results);
   }
+    
+    private FacebookDialog.ShareDialogBuilder createShareDialogBuilder() {
+        return new FacebookDialog.ShareDialogBuilder(this)
+                .setName("Hello Facebook")
+                .setDescription("The 'Hello Facebook' sample application showcases simple Facebook integration")
+                .setLink("http://developers.facebook.com/android");
+        		
+    }  
 
 
 }

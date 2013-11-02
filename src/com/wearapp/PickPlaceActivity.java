@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.widget.Toast;
 import com.facebook.FacebookException;
+import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.PickerFragment;
 import com.facebook.widget.PlacePickerFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -16,6 +17,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.wearapp.util.LocationUtil;
 
 // This class provides an example of an Activity that uses PlacePickerFragment to display a list of
 // the places. It takes a layout-based approach to creating the PlacePickerFragment with the
@@ -65,7 +67,9 @@ public class PickPlaceActivity extends FragmentActivity {
             @Override
             public void onSelectionChanged(PickerFragment<?> fragment) {
                 if (placePickerFragment.getSelection() != null) {
-                    finishActivity();
+                	LocationUtil.selectedlocation = placePickerFragment.getSelection().getLocation();
+                	finishActivity();
+
                 }
             }
         });
@@ -110,4 +114,5 @@ public class PickPlaceActivity extends FragmentActivity {
             onError(ex);
         }
     }
+	
 }

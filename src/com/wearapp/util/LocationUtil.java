@@ -1,5 +1,7 @@
 package com.wearapp.util;
 
+import com.facebook.model.GraphLocation;
+
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -20,6 +22,8 @@ public class LocationUtil {
 	// Member
 	// /////////////////////////////////////////
 	private static Location lastKnownLocation;
+	public static GraphLocation selectedlocation;
+	
 	private static final Location DEFULT_LOCATION = new Location("") {
         {
             setLatitude(25.033611);
