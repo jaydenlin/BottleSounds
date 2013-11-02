@@ -25,16 +25,18 @@
     <fragment
         android:id="@+id/map"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
         android:name="com.google.android.gms.maps.SupportMapFragment" />
 
     <fragment
             android:id="@+id/place_picker_fragment"
             android:name="com.facebook.widget.PlacePickerFragment"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+             android:layout_height="wrap_content"
+        	android:layout_weight="1"
             app:show_pictures="true"
-            app:show_title_bar="true"
+            app:show_title_bar="false"
             app:show_search_box="true"
             />
 </LinearLayout>

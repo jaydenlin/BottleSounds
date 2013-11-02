@@ -26,6 +26,7 @@ public class PickPlaceActivity extends FragmentActivity {
 	
 	public static final String TAG = PickPlaceActivity.class.getSimpleName();
 	private GoogleMap map;
+	private static Location userLocation;
     PlacePickerFragment placePickerFragment;
 
     // A helper to simplify life for callers who want to populate a Bundle with the necessary
@@ -34,6 +35,7 @@ public class PickPlaceActivity extends FragmentActivity {
     public static void populateParameters(Intent intent, Location location, String searchText) {
         intent.putExtra(PlacePickerFragment.LOCATION_BUNDLE_KEY, location);
         intent.putExtra(PlacePickerFragment.SEARCH_TEXT_BUNDLE_KEY, searchText);
+        userLocation = location;
     }
 
     @SuppressLint("NewApi")
@@ -74,13 +76,11 @@ public class PickPlaceActivity extends FragmentActivity {
             }
         });
         
-        
-        //map = ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
         map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
         map.setMyLocationEnabled(true);
             
         // Move the camera instantly to POS with a zoom of 16.
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(25.033611, 121.565000), 16));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 16));
         
     }
 
