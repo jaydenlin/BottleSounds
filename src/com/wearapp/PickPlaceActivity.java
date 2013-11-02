@@ -1,5 +1,6 @@
 package com.wearapp;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -10,6 +11,11 @@ import android.widget.Toast;
 import com.facebook.FacebookException;
 import com.facebook.widget.PickerFragment;
 import com.facebook.widget.PlacePickerFragment;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 
 // This class provides an example of an Activity that uses PlacePickerFragment to display a list of
 // the places. It takes a layout-based approach to creating the PlacePickerFragment with the
@@ -19,7 +25,7 @@ import com.facebook.widget.PlacePickerFragment;
 public class PickPlaceActivity extends FragmentActivity {
 	
 	public static final String TAG = PickPlaceActivity.class.getSimpleName();
-	
+	private GoogleMap map;
     PlacePickerFragment placePickerFragment;
 
     // A helper to simplify life for callers who want to populate a Bundle with the necessary
@@ -30,7 +36,8 @@ public class PickPlaceActivity extends FragmentActivity {
         intent.putExtra(PlacePickerFragment.SEARCH_TEXT_BUNDLE_KEY, searchText);
     }
 
-    @Override
+    @SuppressLint("NewApi")
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pick_place_activity);
@@ -66,6 +73,15 @@ public class PickPlaceActivity extends FragmentActivity {
                 finishActivity();
             }
         });
+        
+        
+        //map = ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
+        map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
+        map.setMyLocationEnabled(true);
+            
+        // Move the camera instantly to POS with a zoom of 16.
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(25.033611, 121.565000), 16));
+        
     }
 
     private void finishActivity() {
