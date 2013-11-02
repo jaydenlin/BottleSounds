@@ -1,6 +1,5 @@
 package com.wearapp;
 
-
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
@@ -70,7 +69,7 @@ public class ListenActivity extends Activity implements OnClickListener,Location
 	}
 	
 	
-	 @SuppressLint("NewApi")
+	@SuppressLint("NewApi")
 	@Override
 	    protected void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);

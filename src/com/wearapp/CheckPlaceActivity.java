@@ -4,6 +4,7 @@ import com.facebook.AppEventsLogger;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.wearapp.util.LocationUtil;
 
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -21,43 +22,38 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-public class CheckPlaceActivity extends FragmentActivity implements LocationListener{
-	
+public class CheckPlaceActivity extends FragmentActivity{
 	
 	public static final String TAG = CheckPlaceActivity.class.getSimpleName();
 	
 	private static final int PLACE_ACTIVITY = 1;
-
     private LocationManager locationManager;
-    private Location lastKnownLocation;
-    private UiLifecycleHelper lifecycleHelper;
+    private UiLifecycleHelper FBlifecycleHelper;
     private Location pickPlaceForLocationWhenSessionOpened = null;
     private ImageButton btnButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.hello);
+        setContentView(R.layout.check_place_activity);
 
-        lifecycleHelper = new UiLifecycleHelper(this, new Session.StatusCallback() {
+        FBlifecycleHelper = new UiLifecycleHelper(this, new Session.StatusCallback() {
             @Override
             public void call(Session session, SessionState state, Exception exception) {
                 onSessionStateChanged(session, state, exception);
             }
         });
-        lifecycleHelper.onCreate(savedInstanceState);
+        FBlifecycleHelper.onCreate(savedInstanceState);
 
         ensureOpenSession();
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         btnButton = (ImageButton) findViewById(R.id.btnSpeak);
-        
         btnButton.setOnClickListener(new View.OnClickListener() {
  
             @Override
             public void onClick(View v) {
-            	
-            	onClickGPS();
+            	startPickPlaceActivity(LocationUtil.getLocation(locationManager));
             }
         });
     }
@@ -79,30 +75,25 @@ public class CheckPlaceActivity extends FragmentActivity implements LocationList
     @Override
     protected void onStart() {
         super.onStart();
-        // Update the display every time we are started (this will be "no place selected" on first
-        // run, or possibly details of a place if the activity is being re-created).
         //displaySelectedPlace(RESULT_OK);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        lifecycleHelper.onDestroy();
+        FBlifecycleHelper.onDestroy();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        lifecycleHelper.onPause();
+        FBlifecycleHelper.onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        lifecycleHelper.onResume();
-        Log.w(TAG,"onResume");
-        // Call the 'activateApp' method to log an app event for use in analytics and advertising reporting.  Do so in
-        // the onResume methods of the primary Activities that an app may be launched into.
+        FBlifecycleHelper.onResume();
         AppEventsLogger.activateApp(this);
     }
 
@@ -114,9 +105,8 @@ public class CheckPlaceActivity extends FragmentActivity implements LocationList
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        lifecycleHelper.onActivityResult(requestCode, resultCode, data);
+        FBlifecycleHelper.onActivityResult(requestCode, resultCode, data);
         Log.w(TAG,"onActivityResult");
-        finish();
 //        switch (requestCode) {
 //            case PLACE_ACTIVITY:
 //                displaySelectedPlace(resultCode);
@@ -156,52 +146,18 @@ public class CheckPlaceActivity extends FragmentActivity implements LocationList
 //        resultsTextView.setText(results);
     }
 
-    public void onLocationChanged(Location location) {
-        lastKnownLocation = location;
-        Log.w(TAG,"on location changed");
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-    }
 
     private void startPickPlaceActivity(Location location) {
+    	
     	Log.w(TAG,"OnstartPickPlaceActivity");
-        if (ensureOpenSession()) {
-            //PlacePickerApplication application = (PlacePickerApplication) getApplication();
-            //application.setSelectedPlace(null);
-
+    	if (ensureOpenSession()) {
             Intent intent = new Intent(this, PickPlaceActivity.class);
             PickPlaceActivity.populateParameters(intent, location, null);
-
             startActivityForResult(intent, PLACE_ACTIVITY);
-            //startActivity(intent);
         } else {
             pickPlaceForLocationWhenSessionOpened = location;//location done
         }
     }
 
-    private void onClickGPS() {
-        try {
-            if (lastKnownLocation == null) {
-                Criteria criteria = new Criteria();
-                String bestProvider = locationManager.getBestProvider(criteria, false);
-                if (bestProvider != null) {
-                    lastKnownLocation = locationManager.getLastKnownLocation(bestProvider);
-                }
-            }
-            startPickPlaceActivity(lastKnownLocation);
-        } catch (Exception ex) {
-            onError(ex);
-        }
-    }
 
 }
