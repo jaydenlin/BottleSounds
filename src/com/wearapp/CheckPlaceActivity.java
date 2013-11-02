@@ -24,14 +24,44 @@ import android.widget.Toast;
 
 public class CheckPlaceActivity extends FragmentActivity{
 	
+	///////////////////////////////////////////
+	// debug
+	///////////////////////////////////////////	
 	public static final String TAG = CheckPlaceActivity.class.getSimpleName();
 	
-	private static final int PLACE_ACTIVITY = 1;
+    
+    ///////////////////////////////////////////
+    // UI
+    ///////////////////////////////////////////	
+    private ImageButton btnButton;
+    
+    
+    ///////////////////////////////////////////
+    // Initialize
+    ///////////////////////////////////////////	
+    private static final int PLACE_ACTIVITY = 1;
     private LocationManager locationManager;
     private UiLifecycleHelper FBlifecycleHelper;
     private Location pickPlaceForLocationWhenSessionOpened = null;
-    private ImageButton btnButton;
-
+    
+    private void initView(){
+    	btnButton = (ImageButton) findViewById(R.id.btnSpeak);
+    }
+    
+    private void setListener(){
+    	locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    	btnButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            	startPickPlaceActivity(LocationUtil.getLocation(locationManager));
+            }
+        });
+    }
+    
+    ///////////////////////////////////////////
+    // LifeCycle
+    ///////////////////////////////////////////	
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,33 +74,11 @@ public class CheckPlaceActivity extends FragmentActivity{
             }
         });
         FBlifecycleHelper.onCreate(savedInstanceState);
-
-        ensureOpenSession();
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        btnButton = (ImageButton) findViewById(R.id.btnSpeak);
-        btnButton.setOnClickListener(new View.OnClickListener() {
- 
-            @Override
-            public void onClick(View v) {
-            	startPickPlaceActivity(LocationUtil.getLocation(locationManager));
-            }
-        });
+        ensureOpenFBSession();
+        initView();
+        setListener();
     }
 
-    private boolean ensureOpenSession() {
-        if (Session.getActiveSession() == null ||
-                !Session.getActiveSession().isOpened()) {
-            Session.openActiveSession(this, true, new Session.StatusCallback() {
-                @Override
-                public void call(Session session, SessionState state, Exception exception) {
-                    onSessionStateChanged(session, state, exception);
-                }
-            });
-            return false;
-        }
-        return true;
-    }
 
     @Override
     protected void onStart() {
@@ -97,12 +105,6 @@ public class CheckPlaceActivity extends FragmentActivity{
         AppEventsLogger.activateApp(this);
     }
 
-    private void onError(Exception exception) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Error").setMessage(exception.getMessage()).setPositiveButton("OK", null);
-        builder.show();
-    }
-
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         FBlifecycleHelper.onActivityResult(requestCode, resultCode, data);
@@ -115,7 +117,11 @@ public class CheckPlaceActivity extends FragmentActivity{
 //                break;
 //        }
     }
-
+    
+    ///////////////////////////////////////////
+    // Method
+    ///////////////////////////////////////////	
+    
     private void onSessionStateChanged(Session session, SessionState state, Exception exception) {
         if (pickPlaceForLocationWhenSessionOpened != null && state.isOpened()) {
             Location location = pickPlaceForLocationWhenSessionOpened;
@@ -150,13 +156,27 @@ public class CheckPlaceActivity extends FragmentActivity{
     private void startPickPlaceActivity(Location location) {
     	
     	Log.w(TAG,"OnstartPickPlaceActivity");
-    	if (ensureOpenSession()) {
+    	if (ensureOpenFBSession()) {
             Intent intent = new Intent(this, PickPlaceActivity.class);
             PickPlaceActivity.populateParameters(intent, location, null);
             startActivityForResult(intent, PLACE_ACTIVITY);
         } else {
             pickPlaceForLocationWhenSessionOpened = location;//location done
         }
+    }
+    
+    private boolean ensureOpenFBSession() {
+        if (Session.getActiveSession() == null ||
+                !Session.getActiveSession().isOpened()) {
+            Session.openActiveSession(this, true, new Session.StatusCallback() {
+                @Override
+                public void call(Session session, SessionState state, Exception exception) {
+                    onSessionStateChanged(session, state, exception);
+                }
+            });
+            return false;
+        }
+        return true;
     }
 
 
