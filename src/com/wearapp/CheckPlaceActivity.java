@@ -4,28 +4,17 @@ import com.facebook.AppEventsLogger;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
-import com.facebook.model.GraphPlace;
 import com.facebook.widget.FacebookDialog;
-import com.facebook.widget.PlacePickerFragment;
 import com.wearapp.util.LocationUtil;
-
-import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.speech.RecognizerIntent;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.Toast;
 
 public class CheckPlaceActivity extends FragmentActivity{
 	
@@ -165,9 +154,11 @@ public class CheckPlaceActivity extends FragmentActivity{
     }
     
     private void displaySelectedPlace(int resultCode) {
-    	
-    	FacebookDialog shareDialog = createShareDialogBuilder().build();
-        FBlifecycleHelper.trackPendingDialogCall(shareDialog.present());
+    	if(FacebookDialog.canPresentShareDialog(this,
+                FacebookDialog.ShareDialogFeature.SHARE_DIALOG)){
+    			FacebookDialog shareDialog = createShareDialogBuilder().build();
+    			FBlifecycleHelper.trackPendingDialogCall(shareDialog.present());
+    	}
         
 //      String results = "";
 //      PlacePickerApplication application = (PlacePickerApplication) getApplication();
@@ -189,11 +180,14 @@ public class CheckPlaceActivity extends FragmentActivity{
   }
     
     private FacebookDialog.ShareDialogBuilder createShareDialogBuilder() {
+    	
+    	String selectedPlaceID = LocationUtil.selectedlocation.getId();  
+    	Log.w(TAG,selectedPlaceID);
         return new FacebookDialog.ShareDialogBuilder(this)
-                .setName("Hello Facebook")
-                .setDescription("The 'Hello Facebook' sample application showcases simple Facebook integration")
-                .setLink("http://developers.facebook.com/android");
-        		
+                .setName("Just a test")
+                .setDescription("test")
+                .setLink("http://developers.facebook.com/android")
+                .setPlace(selectedPlaceID);
     }  
 
 
