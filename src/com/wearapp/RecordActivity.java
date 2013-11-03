@@ -15,6 +15,7 @@ import com.wearapp.asyncTask.UploadAsyncTask;
 import com.wearapp.util.UploadUtil;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -146,6 +147,7 @@ public class RecordActivity extends Activity implements OnClickListener{
 			if(isRecorded){
 				button_confirm.setText(R.string.string_play);
 				setIsPlayState();	
+				startCheckPlaceActivity();
 				uploadFile();
 				return;
 			}
@@ -334,6 +336,11 @@ public class RecordActivity extends Activity implements OnClickListener{
 	
     private void uploadFile(){
     	new UploadAsyncTask().execute(recordFile);
+    }
+    
+    private void startCheckPlaceActivity(){
+    	Intent intent = new Intent(this,CheckPlaceActivity.class);
+		startActivity(intent);
     }
 	
 }
