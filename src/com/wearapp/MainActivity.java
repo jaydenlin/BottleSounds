@@ -1,7 +1,6 @@
 package com.wearapp;
 
 
-import com.wearapp.R;
 import com.wearapp.ListenActivity;
 import com.wearapp.R.id;
 import com.wearapp.R.layout;
@@ -64,7 +63,6 @@ public class MainActivity extends Activity  {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 		
 
 		

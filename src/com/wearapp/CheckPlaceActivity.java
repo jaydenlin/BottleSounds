@@ -1,68 +1,147 @@
 package com.wearapp;
 
 import com.facebook.AppEventsLogger;
+import com.facebook.FacebookException;
+import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
-
-import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
+import com.facebook.widget.WebDialog;
+import com.facebook.widget.WebDialog.OnCompleteListener;
+import com.wearapp.util.LocationUtil;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.speech.RecognizerIntent;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.Toast;
+import android.widget.Button;
 
-public class CheckPlaceActivity extends FragmentActivity implements LocationListener{
+public class CheckPlaceActivity extends FragmentActivity{
 	
-	
+	///////////////////////////////////////////
+	// debug
+	///////////////////////////////////////////	
 	public static final String TAG = CheckPlaceActivity.class.getSimpleName();
 	
-	private static final int PLACE_ACTIVITY = 1;
-
+    ///////////////////////////////////////////
+    // UI
+    ///////////////////////////////////////////	
+    private Button checkButton;
+    
+    ///////////////////////////////////////////
+    // Initialize
+    ///////////////////////////////////////////	
+    private static final int PLACE_ACTIVITY = 1;
     private LocationManager locationManager;
-    private Location lastKnownLocation;
-    private UiLifecycleHelper lifecycleHelper;
+    private UiLifecycleHelper FBlifecycleHelper;
     private Location pickPlaceForLocationWhenSessionOpened = null;
-    private ImageButton btnButton;
-
+    
+    private void initView(){
+    	checkButton = (Button) findViewById(R.id.check_place);
+    }
+    
+    private void setListener(){
+    	locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    	checkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            	startPickPlaceActivity(LocationUtil.getLocation(locationManager));
+            }
+        });
+    }
+    
+    ///////////////////////////////////////////
+    // LifeCycle
+    ///////////////////////////////////////////	
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.hello);
+        setContentView(R.layout.check_place_activity);
 
-        lifecycleHelper = new UiLifecycleHelper(this, new Session.StatusCallback() {
+        FBlifecycleHelper = new UiLifecycleHelper(this, new Session.StatusCallback() {
             @Override
             public void call(Session session, SessionState state, Exception exception) {
                 onSessionStateChanged(session, state, exception);
             }
         });
-        lifecycleHelper.onCreate(savedInstanceState);
-
-        ensureOpenSession();
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        btnButton = (ImageButton) findViewById(R.id.btnSpeak);
-        
-        btnButton.setOnClickListener(new View.OnClickListener() {
- 
-            @Override
-            public void onClick(View v) {
-            	
-            	onClickGPS();
-            }
-        });
+        FBlifecycleHelper.onCreate(savedInstanceState);
+        ensureOpenFBSession();
+        initView();
+        setListener();
     }
 
-    private boolean ensureOpenSession() {
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //displaySelectedPlace(RESULT_OK);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FBlifecycleHelper.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        FBlifecycleHelper.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FBlifecycleHelper.onResume();
+        AppEventsLogger.activateApp(this);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        FBlifecycleHelper.onActivityResult(requestCode, resultCode, data);
+        Log.w(TAG,"onActivityResult");
+        switch (requestCode) {
+            case PLACE_ACTIVITY:
+            	sendToFriend();
+                break;
+            default:
+                break;
+        }
+    }
+    
+    ///////////////////////////////////////////
+    // Method
+    ///////////////////////////////////////////	
+    
+    private void onSessionStateChanged(Session session, SessionState state, Exception exception) {
+    	
+    	Log.w(TAG,"onSessionStateChanged");
+    	//每次FB Session變動時，都確認[Location抓到值]且[FBSession開啟]都完成,然後重新初始化FB選地點的Fragment(開啟PickPlaceActivity)
+        if (pickPlaceForLocationWhenSessionOpened != null && state.isOpened()) {
+            Location location = pickPlaceForLocationWhenSessionOpened;
+            pickPlaceForLocationWhenSessionOpened = null;
+            startPickPlaceActivity(location);
+        }
+    }
+
+    private void startPickPlaceActivity(Location location) {
+    	
+    	Log.w(TAG,"OnstartPickPlaceActivity");
+    	if (ensureOpenFBSession()) {//確認FBsession也完成
+            Intent intent = new Intent(this, PickPlaceActivity.class);
+            PickPlaceActivity.populateParameters(intent, location, null);
+            startActivityForResult(intent, PLACE_ACTIVITY);
+        } else {//僅有Locattion完成
+            pickPlaceForLocationWhenSessionOpened = location;//location done
+        }
+    }
+    
+    
+    private boolean ensureOpenFBSession() {
         if (Session.getActiveSession() == null ||
                 !Session.getActiveSession().isOpened()) {
             Session.openActiveSession(this, true, new Session.StatusCallback() {
@@ -75,133 +154,70 @@ public class CheckPlaceActivity extends FragmentActivity implements LocationList
         }
         return true;
     }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // Update the display every time we are started (this will be "no place selected" on first
-        // run, or possibly details of a place if the activity is being re-created).
-        //displaySelectedPlace(RESULT_OK);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        lifecycleHelper.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        lifecycleHelper.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        lifecycleHelper.onResume();
-        Log.w(TAG,"onResume");
-        // Call the 'activateApp' method to log an app event for use in analytics and advertising reporting.  Do so in
-        // the onResume methods of the primary Activities that an app may be launched into.
-        AppEventsLogger.activateApp(this);
-    }
-
-    private void onError(Exception exception) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Error").setMessage(exception.getMessage()).setPositiveButton("OK", null);
-        builder.show();
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        lifecycleHelper.onActivityResult(requestCode, resultCode, data);
-        Log.w(TAG,"onActivityResult");
-        finish();
-//        switch (requestCode) {
-//            case PLACE_ACTIVITY:
-//                displaySelectedPlace(resultCode);
-//                break;
-//            default:
-//                break;
-//        }
-    }
-
-    private void onSessionStateChanged(Session session, SessionState state, Exception exception) {
-        if (pickPlaceForLocationWhenSessionOpened != null && state.isOpened()) {
-            Location location = pickPlaceForLocationWhenSessionOpened;
-            pickPlaceForLocationWhenSessionOpened = null;
-            startPickPlaceActivity(location);
-        }else{
-        	Log.w(TAG,"Session not open");
-        }
-    }
-
+    
     private void displaySelectedPlace(int resultCode) {
-//        String results = "";
-//        PlacePickerApplication application = (PlacePickerApplication) getApplication();
-//
-//        GraphPlace selection = application.getSelectedPlace();
-//        if (selection != null) {
-//            GraphLocation location = selection.getLocation();
-//
-//            results = String.format("Name: %s\nCategory: %s\nLocation: (%f,%f)\nStreet: %s, %s, %s, %s, %s",
-//                    selection.getName(), selection.getCategory(),
-//                    location.getLatitude(), location.getLongitude(),
-//                    location.getStreet(), location.getCity(), location.getState(), location.getZip(),
-//                    location.getCountry());
-//        } else {
-//            results = "<No place selected>";
-//        }
-//
-//        resultsTextView.setText(results);
+
+  }
+    
+//    private FacebookDialog.ShareDialogBuilder createShareDialogBuilder() {
+//    	
+//    	String selectedPlaceID = LocationUtil.selectedlocation.getId();  
+//    	Log.w(TAG,selectedPlaceID);
+//        return new FacebookDialog.ShareDialogBuilder(this)
+//                .setName("Just a test")
+//                .setDescription("test")
+//                .setLink("http://developers.facebook.com/android")
+//                .setPlace(selectedPlaceID);
+//    }  
+    
+    private void sendToFriend() {
+
+/*Using FacebookDialog*/    	
+//    	if(FacebookDialog.canPresentShareDialog(this,
+//      FacebookDialog.ShareDialogFeature.SHARE_DIALOG)){
+//		FacebookDialog shareDialog = createShareDialogBuilder().build();
+//		FBlifecycleHelper.trackPendingDialogCall(shareDialog.present());
+//		}
+
+/*Using WebDialog*/     	
+//    	Bundle params = new Bundle();
+//    	  params.putString("app_id", Integer.toString(R.string.fb_app_id));
+//    	  params.putString("title", "發給你們做測試");
+//        params.putString("message", "發給你們做測試");
+//        params.putString("place", LocationUtil.selectedlocation.getId());
+//        params.putString("name", "An example parameter");
+//        params.putString("link", "https://www.example.com/");
+        
+        WebDialog requestsDialog = (
+            new WebDialog.RequestsDialogBuilder(CheckPlaceActivity.this,
+                Session.getActiveSession()))
+                .setOnCompleteListener(new WebDialog.OnCompleteListener() {
+					
+					@Override
+					public void onComplete(Bundle values, FacebookException error) {
+						// TODO Auto-generated method stub
+						if (error != null) {
+	                        if (error instanceof FacebookOperationCanceledException) {
+	                               Log.w(TAG, "Request cancelled"); 
+	                        } else {
+	                        	   Log.w(TAG,"Network Error");
+	                        }
+	                    } else {
+	                        final String requestId = values.getString("request");
+	                        if (requestId != null) {
+	                        	Log.w(TAG, "Request sent");
+	                        } else {
+	                        	Log.w(TAG, "Request cancel");
+	                        }
+	                    }   
+					}
+				})
+                .setMessage("hello world啦 送出去啦拜託")
+                .setTitle("發給你們做測試")
+                .build();
+        requestsDialog.show();
+
     }
 
-    public void onLocationChanged(Location location) {
-        lastKnownLocation = location;
-        Log.w(TAG,"on location changed");
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-    }
-
-    private void startPickPlaceActivity(Location location) {
-    	Log.w(TAG,"OnstartPickPlaceActivity");
-        if (ensureOpenSession()) {
-            //PlacePickerApplication application = (PlacePickerApplication) getApplication();
-            //application.setSelectedPlace(null);
-
-            Intent intent = new Intent(this, PickPlaceActivity.class);
-            PickPlaceActivity.populateParameters(intent, location, null);
-
-            startActivityForResult(intent, PLACE_ACTIVITY);
-            //startActivity(intent);
-        } else {
-            pickPlaceForLocationWhenSessionOpened = location;//location done
-        }
-    }
-
-    private void onClickGPS() {
-        try {
-            if (lastKnownLocation == null) {
-                Criteria criteria = new Criteria();
-                String bestProvider = locationManager.getBestProvider(criteria, false);
-                if (bestProvider != null) {
-                    lastKnownLocation = locationManager.getLastKnownLocation(bestProvider);
-                }
-            }
-            startPickPlaceActivity(lastKnownLocation);
-        } catch (Exception ex) {
-            onError(ex);
-        }
-    }
 
 }

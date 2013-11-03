@@ -11,8 +11,11 @@ import com.wearapp.R;
 import com.wearapp.R.id;
 import com.wearapp.R.layout;
 import com.wearapp.R.string;
+import com.wearapp.asyncTask.UploadAsyncTask;
+import com.wearapp.util.UploadUtil;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -40,7 +43,8 @@ public class RecordActivity extends Activity implements OnClickListener{
 	public static final boolean D_SHOW_TAG = D && true;
 	
 	public float startTime;
-	
+	private String uploadURL="http://jadyenlin.tw/savevoice.php";
+	private File recordFile;
 	///////////////////////////////////////////
 	// UI
 	///////////////////////////////////////////		
@@ -143,6 +147,8 @@ public class RecordActivity extends Activity implements OnClickListener{
 			if(isRecorded){
 				button_confirm.setText(R.string.string_play);
 				setIsPlayState();	
+				startCheckPlaceActivity();
+				uploadFile();
 				return;
 			}
 			return;
@@ -263,7 +269,7 @@ public class RecordActivity extends Activity implements OnClickListener{
         File fExternalDataPath = Environment.getExternalStorageDirectory();
         File myDataPath = new File( fExternalDataPath.getAbsolutePath() + "/record" );
         if( !myDataPath.exists() ) myDataPath.mkdirs();
-        File recordFile = new File(fExternalDataPath.getAbsolutePath() + "/record/"+filename);
+        recordFile = new File(fExternalDataPath.getAbsolutePath() + "/record/"+filename);
         setVoiceFilePath(recordFile.getAbsolutePath());
 
          mRecorder = new MediaRecorder();
@@ -328,5 +334,13 @@ public class RecordActivity extends Activity implements OnClickListener{
         return strDate;
     }/*getDate*/
 	
+    private void uploadFile(){
+    	new UploadAsyncTask().execute(recordFile);
+    }
+    
+    private void startCheckPlaceActivity(){
+    	Intent intent = new Intent(this,CheckPlaceActivity.class);
+		startActivity(intent);
+    }
 	
 }
