@@ -1,17 +1,21 @@
 package com.wearapp;
 
 
-import com.wearapp.R;
 import com.wearapp.ListenActivity;
-import com.wearapp.R.id;
-import com.wearapp.R.layout;
-import com.wearapp.R.menu;
+
+
+
+
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Picture;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.PictureDrawable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -42,6 +46,7 @@ public class MainActivity extends Activity  {
 
 	Button button_listen;
 	Button button_record;
+	ActionBar actBar;
 
 	///////////////////////////////////////////
 	// handler
@@ -65,9 +70,8 @@ public class MainActivity extends Activity  {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		
-
-		
+		actBar = getActionBar();
+		//actBar.setBackgroundDrawable(new ColorDrawable(R.color.pink));
 		setContentView(R.layout.activity_main);
 		initButton();
 		setListener();
