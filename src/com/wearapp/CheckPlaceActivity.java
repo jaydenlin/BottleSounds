@@ -1,23 +1,13 @@
 package com.wearapp;
 
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.facebook.AppEventsLogger;
 import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
-import com.facebook.FacebookRequestError;
-import com.facebook.HttpMethod;
-import com.facebook.Request;
-import com.facebook.RequestAsyncTask;
-import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
-import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.WebDialog;
+import com.facebook.widget.WebDialog.OnCompleteListener;
 import com.wearapp.util.LocationUtil;
 import android.content.Context;
 import android.content.Intent;
@@ -205,37 +195,59 @@ public class CheckPlaceActivity extends FragmentActivity{
 //    }  
     
     private void sendToFriend() {
-    	Bundle params = new Bundle();
-        params.putString("message", "發給你們做測試");
-        params.putString("place", LocationUtil.selectedlocation.getId());
+//    	Bundle params = new Bundle();
+//    	  params.putString("app_id", Integer.toString(R.string.fb_app_id));
+//    	  params.putString("title", "發給你們做測試");
+//          params.putString("message", "發給你們做測試");
+//        params.putString("place", LocationUtil.selectedlocation.getId());
+//        params.putString("name", "An example parameter");
+//        params.putString("link", "https://www.example.com/");
         
-        WebDialog requestsDialog = (
-            new WebDialog.RequestsDialogBuilder(this,
-                Session.getActiveSession(),
-                params))
-                .setOnCompleteListener(new WebDialog.OnCompleteListener() {
-					
-					@Override
-					public void onComplete(Bundle values, FacebookException error) {
-						// TODO Auto-generated method stub
-						if (error != null) {
-	                        if (error instanceof FacebookOperationCanceledException) {
-	                               Log.w(TAG, "Request cancelled"); 
-	                        } else {
-	                        	   Log.w(TAG,"Network Error");
-	                        }
-	                    } else {
-	                        final String requestId = values.getString("request");
-	                        if (requestId != null) {
-	                        	Log.w(TAG, "Request sent");
-	                        } else {
-	                        	Log.w(TAG, "Request cancel");
-	                        }
-	                    }   
-					}
-				})
-                .build();
-        requestsDialog.show();
+          Bundle params = new Bundle();   
+          params.putString("message",
+                  "hello world啦");
+          WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
+                  this, Session.getActiveSession(), params))
+                  .setOnCompleteListener(new OnCompleteListener() {
+
+                      @Override
+                      public void onComplete(Bundle values,
+                              FacebookException error) {
+                          // your code here 
+                      }
+
+                  }).build();
+          requestsDialog.show();
+        
+        
+//        WebDialog requestsDialog = (
+//            new WebDialog.RequestsDialogBuilder(CheckPlaceActivity.this,
+//                Session.getActiveSession()))
+//                .setOnCompleteListener(new WebDialog.OnCompleteListener() {
+//					
+//					@Override
+//					public void onComplete(Bundle values, FacebookException error) {
+//						// TODO Auto-generated method stub
+//						if (error != null) {
+//	                        if (error instanceof FacebookOperationCanceledException) {
+//	                               Log.w(TAG, "Request cancelled"); 
+//	                        } else {
+//	                        	   Log.w(TAG,"Network Error");
+//	                        }
+//	                    } else {
+//	                        final String requestId = values.getString("request");
+//	                        if (requestId != null) {
+//	                        	Log.w(TAG, "Request sent");
+//	                        } else {
+//	                        	Log.w(TAG, "Request cancel");
+//	                        }
+//	                    }   
+//					}
+//				})
+//                .setMessage("hello world啦 送出去啦拜託")
+//                .setTitle("發給你們做測試")
+//                .build();
+//        requestsDialog.show();
 
     }
 
