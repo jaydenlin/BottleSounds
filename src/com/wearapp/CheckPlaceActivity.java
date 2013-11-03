@@ -26,7 +26,6 @@ public class CheckPlaceActivity extends FragmentActivity{
 	///////////////////////////////////////////	
 	public static final String TAG = CheckPlaceActivity.class.getSimpleName();
 	
-    
     ///////////////////////////////////////////
     // UI
     ///////////////////////////////////////////	
@@ -157,30 +156,7 @@ public class CheckPlaceActivity extends FragmentActivity{
     }
     
     private void displaySelectedPlace(int resultCode) {
-//    	if(FacebookDialog.canPresentShareDialog(this,
-//                FacebookDialog.ShareDialogFeature.SHARE_DIALOG)){
-//    			FacebookDialog shareDialog = createShareDialogBuilder().build();
-//    			FBlifecycleHelper.trackPendingDialogCall(shareDialog.present());
-//    	}
-    	
-        
-//      String results = "";
-//      PlacePickerApplication application = (PlacePickerApplication) getApplication();
-//
-//      GraphPlace selection = application.getSelectedPlace();
-//      if (selection != null) {
-//          GraphLocation location = selection.getLocation();
-//
-//          results = String.format("Name: %s\nCategory: %s\nLocation: (%f,%f)\nStreet: %s, %s, %s, %s, %s",
-//                  selection.getName(), selection.getCategory(),
-//                  location.getLatitude(), location.getLongitude(),
-//                  location.getStreet(), location.getCity(), location.getState(), location.getZip(),
-//                  location.getCountry());
-//      } else {
-//          results = "<No place selected>";
-//      }
-//
-//      resultsTextView.setText(results);
+
   }
     
 //    private FacebookDialog.ShareDialogBuilder createShareDialogBuilder() {
@@ -195,59 +171,51 @@ public class CheckPlaceActivity extends FragmentActivity{
 //    }  
     
     private void sendToFriend() {
+
+/*Using FacebookDialog*/    	
+//    	if(FacebookDialog.canPresentShareDialog(this,
+//      FacebookDialog.ShareDialogFeature.SHARE_DIALOG)){
+//		FacebookDialog shareDialog = createShareDialogBuilder().build();
+//		FBlifecycleHelper.trackPendingDialogCall(shareDialog.present());
+//		}
+
+/*Using WebDialog*/     	
 //    	Bundle params = new Bundle();
 //    	  params.putString("app_id", Integer.toString(R.string.fb_app_id));
 //    	  params.putString("title", "發給你們做測試");
-//          params.putString("message", "發給你們做測試");
+//        params.putString("message", "發給你們做測試");
 //        params.putString("place", LocationUtil.selectedlocation.getId());
 //        params.putString("name", "An example parameter");
 //        params.putString("link", "https://www.example.com/");
         
-          Bundle params = new Bundle();   
-          params.putString("message",
-                  "hello world啦");
-          WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
-                  this, Session.getActiveSession(), params))
-                  .setOnCompleteListener(new OnCompleteListener() {
-
-                      @Override
-                      public void onComplete(Bundle values,
-                              FacebookException error) {
-                          // your code here 
-                      }
-
-                  }).build();
-          requestsDialog.show();
-        
-        
-//        WebDialog requestsDialog = (
-//            new WebDialog.RequestsDialogBuilder(CheckPlaceActivity.this,
-//                Session.getActiveSession()))
-//                .setOnCompleteListener(new WebDialog.OnCompleteListener() {
-//					
-//					@Override
-//					public void onComplete(Bundle values, FacebookException error) {
-//						// TODO Auto-generated method stub
-//						if (error != null) {
-//	                        if (error instanceof FacebookOperationCanceledException) {
-//	                               Log.w(TAG, "Request cancelled"); 
-//	                        } else {
-//	                        	   Log.w(TAG,"Network Error");
-//	                        }
-//	                    } else {
-//	                        final String requestId = values.getString("request");
-//	                        if (requestId != null) {
-//	                        	Log.w(TAG, "Request sent");
-//	                        } else {
-//	                        	Log.w(TAG, "Request cancel");
-//	                        }
-//	                    }   
-//					}
-//				})
-//                .setMessage("hello world啦 送出去啦拜託")
-//                .setTitle("發給你們做測試")
-//                .build();
-//        requestsDialog.show();
+        WebDialog requestsDialog = (
+            new WebDialog.RequestsDialogBuilder(CheckPlaceActivity.this,
+                Session.getActiveSession()))
+                .setOnCompleteListener(new WebDialog.OnCompleteListener() {
+					
+					@Override
+					public void onComplete(Bundle values, FacebookException error) {
+						// TODO Auto-generated method stub
+						if (error != null) {
+	                        if (error instanceof FacebookOperationCanceledException) {
+	                               Log.w(TAG, "Request cancelled"); 
+	                        } else {
+	                        	   Log.w(TAG,"Network Error");
+	                        }
+	                    } else {
+	                        final String requestId = values.getString("request");
+	                        if (requestId != null) {
+	                        	Log.w(TAG, "Request sent");
+	                        } else {
+	                        	Log.w(TAG, "Request cancel");
+	                        }
+	                    }   
+					}
+				})
+                .setMessage("hello world啦 送出去啦拜託")
+                .setTitle("發給你們做測試")
+                .build();
+        requestsDialog.show();
 
     }
 
