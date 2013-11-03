@@ -39,10 +39,18 @@
             </intent-filter>
         </activity>
         <activity android:name="RecordActivity" android:label="@string/record_title"></activity>
-         <activity android:name="ListenActivity" android:label="@string/listen_title"></activity>
-         <meta-data
+        <activity android:name="ListenActivity" android:label="@string/listen_title"></activity>
+        <activity android:name="ListenLocationActivity"></activity>
+        <activity android:name="PickLocationActivity"></activity>
+        <activity android:name="CheckPlaceActivity"></activity>
+        <activity android:name="PickPlaceActivity"></activity>
+         <activity android:name="com.facebook.LoginActivity"
+                  android:theme="@android:style/Theme.Translucent.NoTitleBar"
+                  android:label="@string/app_name" />
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/fb_app_id"/>
+        <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyCYICRjhx4KN3DV8AM_XEPu5wwLnptLhtk" />
+            android:value="@string/google_app_id" />
         
     </application>
     

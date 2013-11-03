@@ -1,7 +1,5 @@
 package com.wearapp;
 
-
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -11,8 +9,11 @@ import com.wearapp.R;
 import com.wearapp.R.id;
 import com.wearapp.R.layout;
 import com.wearapp.R.string;
+import com.wearapp.asyncTask.UploadAsyncTask;
+import com.wearapp.util.UploadUtil;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -26,35 +27,36 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-public class RecordActivity extends Activity implements OnClickListener{
+public class RecordActivity extends Activity implements OnClickListener {
 
-	///////////////////////////////////////////
+	// /////////////////////////////////////////
 	// debug
-	///////////////////////////////////////////	
-	
+	// /////////////////////////////////////////
+
 	public static final String TAG = RecordActivity.class.getSimpleName();
 
 	public static final boolean D = true;
 	public static final boolean D_METHOD = D && true;
-	
+
 	public static final boolean D_SHOW_TAG = D && true;
-	
+
 	public float startTime;
-	
-	///////////////////////////////////////////
+	private String uploadURL = "http://jadyenlin.tw/savevoice.php";
+	private File recordFile;
+	// /////////////////////////////////////////
 	// UI
-	///////////////////////////////////////////		
+	// /////////////////////////////////////////
 
 	ImageButton imagebutton_record;
 	ImageButton imagebutton_stop;
 	ImageButton imagebutton_play;
-	//Button button_play;
+	// Button button_play;
 	Button button_confirm;
 	TextView textview_status;
 
-	///////////////////////////////////////////
+	// /////////////////////////////////////////
 	// handler
-	///////////////////////////////////////////			
+	// /////////////////////////////////////////
 
 	UIHandler mUIHandler;
 
@@ -63,52 +65,46 @@ public class RecordActivity extends Activity implements OnClickListener{
 
 		}
 	}
-	
-	////////////////////////////////////////////
-	//          Media Controller              //
-	////////////////////////////////////////////
-	private  MediaRecorder mRecorder;
-	private  MediaPlayer   mPlayer ;
-	private  String VOICE_FILE_PATH;
+
+	// //////////////////////////////////////////
+	// Media Controller //
+	// //////////////////////////////////////////
+	private MediaRecorder mRecorder;
+	private MediaPlayer mPlayer;
+	private String VOICE_FILE_PATH;
 	private boolean isRecorded = false;
 	private boolean isPlayState = false;
-	
-	public void setVoiceFilePath(String filepath){
-        if(D_METHOD){
-            Log.w(TAG, "Set Voice File Path"+ filepath);
-        }
-        this.VOICE_FILE_PATH = filepath;
-    }
 
-    public String getVoiceFilePath(){
+	public void setVoiceFilePath(String filepath) {
+		if (D_METHOD) {
+			Log.w(TAG, "Set Voice File Path" + filepath);
+		}
+		this.VOICE_FILE_PATH = filepath;
+	}
 
-        return this.VOICE_FILE_PATH;
-    }
+	public String getVoiceFilePath() {
 
-	
-	
+		return this.VOICE_FILE_PATH;
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 
-		
 		setContentView(R.layout.record_activity);
 
 		initView();
 		button_confirm.setOnClickListener(this);
-		//button_play.setOnClickListener(this);
+		// button_play.setOnClickListener(this);
 		imagebutton_record.setOnClickListener(this);
 		imagebutton_stop.setOnClickListener(this);
 		imagebutton_play.setOnClickListener(this);
-		
+
 	}
-	
-	
-	
+
 	@Override
 	public void onClick(View view) {
-		switch (view.getId()){
+		switch (view.getId()) {
 		case R.id.imagebutton_record:
 			try {
 				startRecord();
@@ -120,68 +116,68 @@ public class RecordActivity extends Activity implements OnClickListener{
 			button_confirm.setText(R.string.string_complete);
 			imagebutton_record.setVisibility(View.INVISIBLE);
 			imagebutton_record.setClickable(false);
-			
+
 			imagebutton_stop.bringToFront();
 			imagebutton_stop.setVisibility(View.VISIBLE);
-			imagebutton_stop.setClickable(true);;
-			
+			imagebutton_stop.setClickable(true);
+			;
+
 			return;
-			
+
 		case R.id.imagebutton_stop:
 			stopRecord();
 			textview_status.setText(R.string.string_recordtext);
 			imagebutton_stop.setVisibility(View.INVISIBLE);
 			imagebutton_stop.setClickable(false);
-			
+
 			imagebutton_record.bringToFront();
 			imagebutton_record.setVisibility(View.VISIBLE);
 			imagebutton_record.setClickable(true);
 			setIsRecorded();
-			
+
 			return;
 		case R.id.button_confirm:
-			if(isRecorded){
+			if (isRecorded) {
 				button_confirm.setText(R.string.string_play);
-				setIsPlayState();	
+				setIsPlayState();
+				startCheckPlaceActivity();
+				uploadFile();
 				return;
 			}
-			
-			
 			return;
-			
+
 		case R.id.imagebutton_play:
-			if(isPlayState){
+			if (isPlayState) {
 				playVoice();
 				button_confirm.setText(R.string.string_confirm);
 			}
 			return;
 
 		}
-		
-		
+
 		return;
 	}
-	
+
 	private void setIsRecorded() {
 		isRecorded = true;
 	}
-	
-	private void setIsPlayState(){
-		
+
+	private void setIsPlayState() {
+
 		isPlayState = true;
-		
+
 		imagebutton_play.bringToFront();
 		imagebutton_play.setVisibility(View.VISIBLE);
 		imagebutton_play.setClickable(true);
-		
+
 		imagebutton_record.setVisibility(View.INVISIBLE);
 		imagebutton_stop.setVisibility(View.INVISIBLE);
-		
+
 		imagebutton_record.setClickable(false);
 		imagebutton_stop.setClickable(false);
-		
+
 		button_confirm.setClickable(false);
-		
+
 	}
 
 	@Override
@@ -192,22 +188,19 @@ public class RecordActivity extends Activity implements OnClickListener{
 		}
 
 	}
-	
-	
-	public void hideImageButton(View view){
+
+	public void hideImageButton(View view) {
 		switch (view.getId()) {
 		case R.id.imagebutton_record:
 			imagebutton_record = (ImageButton) findViewById(R.id.imagebutton_record);
-			
+
 			break;
-		
-		
+
 		}
-		
+
 		return;
 	}
-	
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -221,7 +214,7 @@ public class RecordActivity extends Activity implements OnClickListener{
 		if (D_METHOD) {
 			Log.w(TAG, "onPause");
 		}
-		
+
 		super.onPause();
 	}
 
@@ -241,94 +234,103 @@ public class RecordActivity extends Activity implements OnClickListener{
 		super.onDestroy();
 	}
 
-	public void initView(){
+	public void initView() {
 		imagebutton_record = (ImageButton) findViewById(R.id.imagebutton_record);
 		imagebutton_stop = (ImageButton) findViewById(R.id.imagebutton_stop);
 		imagebutton_stop.setVisibility(View.INVISIBLE);
-		imagebutton_play=  (ImageButton) findViewById(R.id.imagebutton_play);
+		imagebutton_play = (ImageButton) findViewById(R.id.imagebutton_play);
 		imagebutton_play.setVisibility(View.INVISIBLE);
 		button_confirm = (Button) findViewById(R.id.button_confirm);
-		//button_confirm = (Button) findViewById(R.id.button_confirm);
+		// button_confirm = (Button) findViewById(R.id.button_confirm);
 		textview_status = (TextView) findViewById(R.id.recordtext);
 		imagebutton_record.bringToFront();
-		
-		
+
 		return;
 	}
-	
-    public void startRecord() throws IOException {
-        if(D_METHOD){
-            Log.w(TAG, "In startRecord");
-        }
 
-        String filename  =  getDate();
-        File fExternalDataPath = Environment.getExternalStorageDirectory();
-        File myDataPath = new File( fExternalDataPath.getAbsolutePath() + "/record" );
-        if( !myDataPath.exists() ) myDataPath.mkdirs();
-        File recordFile = new File(fExternalDataPath.getAbsolutePath() + "/record/"+filename);
-        setVoiceFilePath(recordFile.getAbsolutePath());
+	public void startRecord() throws IOException {
+		if (D_METHOD) {
+			Log.w(TAG, "In startRecord");
+		}
 
-         mRecorder = new MediaRecorder();
-        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-        mRecorder.setOutputFile(recordFile.getAbsolutePath());
-        try {
-            mRecorder.prepare();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        mRecorder.start();   // Recording is now started
+		String filename = getDate();
+		File fExternalDataPath = Environment.getExternalStorageDirectory();
+		File myDataPath = new File(fExternalDataPath.getAbsolutePath()
+				+ "/record");
+		if (!myDataPath.exists())
+			myDataPath.mkdirs();
+		recordFile = new File(fExternalDataPath.getAbsolutePath() + "/record/"
+				+ filename);
+		setVoiceFilePath(recordFile.getAbsolutePath());
 
+		mRecorder = new MediaRecorder();
+		mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+		mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+		mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+		mRecorder.setOutputFile(recordFile.getAbsolutePath());
+		try {
+			mRecorder.prepare();
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		mRecorder.start(); // Recording is now started
 
+	}/* startRecord() */
 
-    }/*startRecord()*/
+	public void stopRecord() {
+		if (mRecorder != null) {
+			if (D_METHOD) {
+				Log.w(TAG, "In stopRecord");
+			}
 
-    public void stopRecord(){
-        if(mRecorder!=null){
-            if(D_METHOD){
-                Log.w(TAG, "In stopRecord");
-            }
+			mRecorder.stop();
+			// mRecorder.reset(); // You can reuse the object by going back to
+			// setAudioSource() step
+			mRecorder.release(); // Now the object cannot be reused
+			mRecorder = null;
+		}
 
-        mRecorder.stop();
-        //mRecorder.reset();   // You can reuse the object by going back to setAudioSource() step
-        mRecorder.release(); // Now the object cannot be reused
-        mRecorder = null;
-        }
+	}
 
-    }
+	public void playVoice() {
 
-    public void playVoice(){
+		if (getVoiceFilePath() == null) {
+			return;
+		}
 
-    if(getVoiceFilePath()==null){ return;}
+		mPlayer = new MediaPlayer();
+		try {
+			mPlayer.setDataSource(getVoiceFilePath());
+			mPlayer.prepare();
+		} catch (IllegalArgumentException e) {
+		} catch (IllegalStateException e) {
+		} catch (IOException e) {
+		}
 
-        mPlayer  = new MediaPlayer();
-        try {
-            mPlayer.setDataSource(getVoiceFilePath());
-            mPlayer.prepare();
-        } catch (IllegalArgumentException e) {
-        } catch (IllegalStateException e) {
-        } catch (IOException e) {
-        }
+		mPlayer.start();
 
-        mPlayer.start();
+		if (D_METHOD) {
+			Log.w(TAG, "In playVoice" + getVoiceFilePath());
+		}
+	}
 
+	public String getDate() {
+		SimpleDateFormat sdFormat = new SimpleDateFormat("yyMMddHHmmss");
+		Date date = new Date();
+		String strDate = sdFormat.format(date);
+		// System.out.println(strDate);
+		return strDate;
+	}/* getDate */
 
-        if(D_METHOD){
-            Log.w(TAG, "In playVoice"+getVoiceFilePath());
-        }
-    }
+	private void uploadFile() {
+		new UploadAsyncTask().execute(recordFile);
+	}
 
+	private void startCheckPlaceActivity() {
+		Intent intent = new Intent(this, CheckPlaceActivity.class);
+		startActivity(intent);
+	}
 
-    public String getDate(){
-        SimpleDateFormat sdFormat = new SimpleDateFormat("yyMMddHHmmss");
-        Date date = new Date();
-        String strDate = sdFormat.format(date);
-        //System.out.println(strDate);
-        return strDate;
-    }/*getDate*/
-	
-	
 }
