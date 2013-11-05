@@ -67,117 +67,68 @@ public class ListenActivity extends Activity implements OnClickListener,
 
 	@SuppressLint("NewApi")
 	@Override
-<<<<<<< HEAD
 	    protected void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
 	        setContentView(R.layout.listen_activity);
 	        ActionBar actionBar = getActionBar();
 			actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.background_title));
-	        //取得系統定位服務
-	  		LocationManager status = (LocationManager) (this.getSystemService(Context.LOCATION_SERVICE));
-	  		if (status.isProviderEnabled(LocationManager.GPS_PROVIDER) || status.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-	  			//如果GPS或網路定位開啟，呼叫locationServiceInitial()更新位置
-	  			locationServiceInitial();
-	  		} else {
-	  			Toast.makeText(this, "請開啟定位服務", Toast.LENGTH_LONG).show();
-	  			startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));	//開啟設定頁面
-	  		}
-	        
-	        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-	  		//map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
+			
+			// 取得系統定位服務
+			LocationManager status = (LocationManager) (this
+					.getSystemService(Context.LOCATION_SERVICE));
+			if (status.isProviderEnabled(LocationManager.GPS_PROVIDER)
+					|| status.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+				// 如果GPS或網路定位開啟，呼叫locationServiceInitial()更新位置
+				locationServiceInitial();
+			} else {
+				Toast.makeText(this, "請開啟定位服務", Toast.LENGTH_LONG).show();
+				startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)); // 開啟設定頁面
+			}
 
-	        Location loc1 = new Location("loc1");
-	        loc1.setLatitude(POS.latitude);
-	        loc1.setLongitude(POS.longitude);
-	        
-	        Location loc2 = new Location("loc2");
-	        loc2.setLatitude(POS.latitude+0.001);
-	        loc2.setLongitude(POS.longitude+0.001);
-	        
-	        ArrayList<Location> position_list = new ArrayList<Location>();
-	        position_list.add(loc1);
-	        position_list.add(loc2);
-	        
-	        for(int i=0;i<position_list.size();i++)
-	        {
-	        	MarkerOptions markerTest = new MarkerOptions().position(new LatLng(position_list.get(i).getLatitude(),position_list.get(i).getLongitude())).title("Jayden");
-	        	markerTest.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-	        	markerTest.snippet("AA");
-	        	markerTest.icon(BitmapDescriptorFactory.fromResource(android.R.drawable.ic_menu_mylocation));
-	            map.addMarker(markerTest);
-	        }
-	        
-	     
-	        map = ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
-	        //map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
-	  		
-	        map.setMyLocationEnabled(true);
-	            
-	        
-	        // Move the camera instantly to POS with a zoom of 16.
-	        map.moveCamera(CameraUpdateFactory.newLatLngZoom(POS, 16));
+			map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
+					.getMap();
+			// map = ((SupportMapFragment)
+			// getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
+
+			Location loc1 = new Location("loc1");
+			loc1.setLatitude(POS.latitude);
+			loc1.setLongitude(POS.longitude);
+
+			Location loc2 = new Location("loc2");
+			loc2.setLatitude(POS.latitude + 0.001);
+			loc2.setLongitude(POS.longitude + 0.001);
+
+			ArrayList<Location> position_list = new ArrayList<Location>();
+			position_list.add(loc1);
+			position_list.add(loc2);
+
+			for (int i = 0; i < position_list.size(); i++) {
+				MarkerOptions markerTest = new MarkerOptions().position(
+						new LatLng(position_list.get(i).getLatitude(),
+								position_list.get(i).getLongitude())).title(
+						"Jayden");
+				markerTest.icon(BitmapDescriptorFactory
+						.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+				markerTest.snippet("AA");
+				markerTest.icon(BitmapDescriptorFactory
+						.fromResource(android.R.drawable.ic_menu_mylocation));
+				map.addMarker(markerTest);
+			}
+
+			map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
+					.getMap();
+			// map = ((SupportMapFragment)
+			// getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
+
+			map.setMyLocationEnabled(true);
+
+			// Move the camera instantly to POS with a zoom of 16.
+			map.moveCamera(CameraUpdateFactory.newLatLngZoom(POS, 16));
 	    }
 	
 	
-=======
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.listen_activity);
 
-		// 取得系統定位服務
-		LocationManager status = (LocationManager) (this
-				.getSystemService(Context.LOCATION_SERVICE));
-		if (status.isProviderEnabled(LocationManager.GPS_PROVIDER)
-				|| status.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-			// 如果GPS或網路定位開啟，呼叫locationServiceInitial()更新位置
-			locationServiceInitial();
-		} else {
-			Toast.makeText(this, "請開啟定位服務", Toast.LENGTH_LONG).show();
-			startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)); // 開啟設定頁面
-		}
 
-		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
-				.getMap();
-		// map = ((SupportMapFragment)
-		// getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
-
-		Location loc1 = new Location("loc1");
-		loc1.setLatitude(POS.latitude);
-		loc1.setLongitude(POS.longitude);
-
-		Location loc2 = new Location("loc2");
-		loc2.setLatitude(POS.latitude + 0.001);
-		loc2.setLongitude(POS.longitude + 0.001);
-
-		ArrayList<Location> position_list = new ArrayList<Location>();
-		position_list.add(loc1);
-		position_list.add(loc2);
-
-		for (int i = 0; i < position_list.size(); i++) {
-			MarkerOptions markerTest = new MarkerOptions().position(
-					new LatLng(position_list.get(i).getLatitude(),
-							position_list.get(i).getLongitude())).title(
-					"Jayden");
-			markerTest.icon(BitmapDescriptorFactory
-					.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-			markerTest.snippet("AA");
-			markerTest.icon(BitmapDescriptorFactory
-					.fromResource(android.R.drawable.ic_menu_mylocation));
-			map.addMarker(markerTest);
-		}
-
-		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
-				.getMap();
-		// map = ((SupportMapFragment)
-		// getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
-
-		map.setMyLocationEnabled(true);
-
-		// Move the camera instantly to POS with a zoom of 16.
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(POS, 16));
-	}
-
->>>>>>> origin/integrateCodes
 	@Override
 	public void onClick(DialogInterface arg0, int arg1) {
 		// TODO Auto-generated method stub

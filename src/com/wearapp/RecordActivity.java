@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.pheelicks.visualizer.VisualizerView;
+import com.pheelicks.visualizer.renderer.LineRenderer;
+import com.pheelicks.visualizer.renderer.WaveRenderer;
 import com.wearapp.R;
 import com.wearapp.R.id;
 import com.wearapp.R.layout;
@@ -15,8 +18,11 @@ import com.wearapp.util.UploadUtil;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.media.audiofx.Visualizer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -72,6 +78,9 @@ public class RecordActivity extends Activity implements OnClickListener {
 	// //////////////////////////////////////////
 	private MediaRecorder mRecorder;
 	private MediaPlayer mPlayer;
+	private VisualizerView mVisualizerView;
+	
+	private Visualizer visual;
 	private String VOICE_FILE_PATH;
 	private boolean isRecorded = false;
 	private boolean isPlayState = false;
@@ -141,8 +150,8 @@ public class RecordActivity extends Activity implements OnClickListener {
 			if (isRecorded) {
 				button_confirm.setText(R.string.string_play);
 				setIsPlayState();
-				startCheckPlaceActivity();
-				uploadFile();
+				//startCheckPlaceActivity();
+				//uploadFile();
 				return;
 			}
 			return;
@@ -313,8 +322,17 @@ public class RecordActivity extends Activity implements OnClickListener {
 
 		mPlayer.start();
 
+        // Create the Visualizer object and attach it to our media player.
+	    // We need to link the visualizer view to the media player so that
+	    // it displays something
+	    mVisualizerView = (VisualizerView) findViewById(R.id.visualizerView);
+	    mVisualizerView.link(mPlayer);
+
+	    // Start with just line renderer
+	    addLineRenderer();
+				
 		if (D_METHOD) {
-			Log.w(TAG, "In playVoice" + getVoiceFilePath());
+			Log.w(TAG, "In playVoice " + getVoiceFilePath());
 		}
 	}
 
@@ -335,4 +353,21 @@ public class RecordActivity extends Activity implements OnClickListener {
 		startActivity(intent);
 	}
 
-}
+	
+	  private void addLineRenderer()
+	  {
+	    Paint linePaint = new Paint();
+	    linePaint.setStrokeWidth(1f);
+	    linePaint.setAntiAlias(true);
+	    linePaint.setColor(Color.argb(88, 0, 128, 255));
+
+	    Paint lineFlashPaint = new Paint();
+	    lineFlashPaint.setStrokeWidth(5f);
+	    
+	    lineFlashPaint.setAntiAlias(false);
+	    lineFlashPaint.setColor(Color.argb(188, 255, 255, 255));
+	    WaveRenderer waveRenderer = new WaveRenderer(linePaint, lineFlashPaint, false);
+	    mVisualizerView.addRenderer(waveRenderer);
+	  }
+	
+}/*RecordActivity*/
