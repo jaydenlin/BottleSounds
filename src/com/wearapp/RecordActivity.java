@@ -12,6 +12,7 @@ import com.wearapp.R.id;
 import com.wearapp.R.layout;
 import com.wearapp.R.string;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -250,7 +251,8 @@ public class RecordActivity extends Activity implements OnClickListener{
 		textview_status = (TextView) findViewById(R.id.recordtext);
 		imagebutton_record.bringToFront();
 		
-		
+		ActionBar actionBar = getActionBar();
+		actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.background_title));
 		return;
 	}
 	

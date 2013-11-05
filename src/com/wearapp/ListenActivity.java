@@ -4,13 +4,13 @@ package com.wearapp;
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-
 import android.content.Context;
 import android.content.Intent;
 import android.location.Criteria;
@@ -20,6 +20,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.widget.Toast;
+
 
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -75,7 +76,8 @@ public class ListenActivity extends Activity implements OnClickListener,Location
 	    protected void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
 	        setContentView(R.layout.listen_activity);
-
+	        ActionBar actionBar = getActionBar();
+			actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.background_title));
 	        //取得系統定位服務
 	  		LocationManager status = (LocationManager) (this.getSystemService(Context.LOCATION_SERVICE));
 	  		if (status.isProviderEnabled(LocationManager.GPS_PROVIDER) || status.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
