@@ -1,14 +1,6 @@
 package com.wearapp;
 
-
 import com.wearapp.ListenActivity;
-
-
-
-
-
-
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -26,67 +18,66 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-public class MainActivity extends Activity  {
+public class MainActivity extends Activity {
 
-
-	///////////////////////////////////////////
+	// /////////////////////////////////////////
 	// debug
-	///////////////////////////////////////////	
-	
+	// /////////////////////////////////////////
+
 	public static final String TAG = MainActivity.class.getSimpleName();
 
 	public static final boolean D = true;
 	public static final boolean D_METHOD = D && true;
-	
+
 	public static final boolean D_SHOW_TAG = D && true;
-	
+
 	public float startTime;
-	
-	
-	
-	///////////////////////////////////////////
+
+	// /////////////////////////////////////////
 	// UI
-	///////////////////////////////////////////		
+	// /////////////////////////////////////////
 
 	Button button_listen;
 	Button button_record;
 	
 
-	///////////////////////////////////////////
+	// /////////////////////////////////////////
 	// handler
-	///////////////////////////////////////////			
+	// /////////////////////////////////////////
 
 	UIHandler mUIHandler;
-	
+
 	class UIHandler extends Handler {
 		public void handleMessage(Message msg) {
-			
+
 		}
 	}
-	
-	public boolean onCreateOptionMenu(Menu menu){
-		
+
+	public boolean onCreateOptionMenu(Menu menu) {
+
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+<<<<<<< HEAD
 		ActionBar actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.background_title));
 		
 		//actBar.setBackgroundDrawable(new ColorDrawable(R.color.pink));
 		
+=======
+
+>>>>>>> origin/integrateCodes
 		setContentView(R.layout.activity_main);
 		
 		initButton();
 		setListener();
-	
+
 	}
 
-
-	
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -95,6 +86,7 @@ public class MainActivity extends Activity  {
 		}
 
 	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -108,7 +100,7 @@ public class MainActivity extends Activity  {
 		if (D_METHOD) {
 			Log.w(TAG, "onPause");
 		}
-		
+
 		super.onPause();
 	}
 
@@ -127,55 +119,46 @@ public class MainActivity extends Activity  {
 		}
 		super.onDestroy();
 	}
-	
-	public void initButton(){
-		button_listen = (Button)findViewById(R.id.button_listen);
-		button_record = (Button)findViewById(R.id.button_record_again); 
-	}
-	
-	public void setListener(){
-		Log.w(TAG,"initListener");
 
-		button_listen.setOnClickListener(mainlistener );
+	public void initButton() {
+		button_listen = (Button) findViewById(R.id.button_listen);
+		button_record = (Button) findViewById(R.id.button_record_again);
+	}
+
+	public void setListener() {
+		Log.w(TAG, "initListener");
+
+		button_listen.setOnClickListener(mainlistener);
 		button_record.setOnClickListener(mainlistener);
-		
-	}
-	
 
-	
-	public void startRecord(){
-		Intent intent = new Intent(this,RecordActivity.class);
-		startActivity(intent);
-		return;
 	}
-	
-	public void startListen(){
-		Intent intent = new Intent(this,ListenActivity.class);
+
+	public void startRecord() {
+		Intent intent = new Intent(this, RecordActivity.class);
 		startActivity(intent);
 		return;
 	}
 
-	
-	private Button.OnClickListener mainlistener = new OnClickListener(){
-		public void onClick(View view){
+	public void startListen() {
+		Intent intent = new Intent(this, CheckPlaceActivity.class);
+		startActivity(intent);
+		return;
+	}
+
+	private Button.OnClickListener mainlistener = new OnClickListener() {
+		public void onClick(View view) {
 			switch (view.getId()) {
 			case R.id.button_listen:
 				startListen();
 				return;
-			
+
 			case R.id.button_record_again:
 				startRecord();
 				return;
 			}
-			
-			
-			
+
 		}
-		
+
 	};
 
-
 }
-
-
-	

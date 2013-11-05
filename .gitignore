@@ -1,3 +1,6 @@
-./bin/*
-./gen/*
 project.properties
+.DS_Store
+bin.temp/
+bin/
+gen/
+
