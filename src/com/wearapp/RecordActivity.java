@@ -2,6 +2,7 @@ package com.wearapp;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -20,6 +21,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.media.audiofx.Visualizer;
@@ -28,10 +30,12 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 public class RecordActivity extends Activity implements OnClickListener {
@@ -50,6 +54,8 @@ public class RecordActivity extends Activity implements OnClickListener {
 	public float startTime;
 	private String uploadURL = "http://jadyenlin.tw/savevoice.php";
 	private File recordFile;
+	DecimalFormat df2 = new DecimalFormat("00");
+	
 	// /////////////////////////////////////////
 	// UI
 	// /////////////////////////////////////////
@@ -60,7 +66,34 @@ public class RecordActivity extends Activity implements OnClickListener {
 	// Button button_play;
 	Button button_confirm;
 	TextView textview_status;
-
+	TextView play_time_text;
+	public static LayoutInflater mInflater;
+	//SeekBar
+	private SeekBar seekBar1;
+	private SeekBar.OnSeekBarChangeListener seekBarOnSeekBarChange = new SeekBar.OnSeekBarChangeListener() {
+		
+		
+	
+		@Override
+		public void onStopTrackingTouch(SeekBar seekBar) {
+			// TODO Auto-generated method stub
+			mPlayer.seekTo(seekBar1.getProgress());
+		}
+		
+		@Override
+		public void onStartTrackingTouch(SeekBar seekBar) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void onProgressChanged(SeekBar seekBar, int progress,
+				boolean fromUser) {
+			// TODO Auto-generated method stub
+			
+		}
+	};
+	
 	// /////////////////////////////////////////
 	// handler
 	// /////////////////////////////////////////
@@ -80,10 +113,11 @@ public class RecordActivity extends Activity implements OnClickListener {
 	private MediaPlayer mPlayer;
 	private VisualizerView mVisualizerView;
 	
-	private Visualizer visual;
 	private String VOICE_FILE_PATH;
 	private boolean isRecorded = false;
 	private boolean isPlayState = false;
+
+	protected Handler handler =new Handler();
 
 	public void setVoiceFilePath(String filepath) {
 		if (D_METHOD) {
@@ -130,11 +164,16 @@ public class RecordActivity extends Activity implements OnClickListener {
 			imagebutton_stop.bringToFront();
 			imagebutton_stop.setVisibility(View.VISIBLE);
 			imagebutton_stop.setClickable(true);
-			;
+			
 
 			return;
 
 		case R.id.imagebutton_stop:
+			if(isPlayState){
+				stopPlay();
+					
+				return;
+			}
 			stopRecord();
 			textview_status.setText(R.string.string_recordtext);
 			imagebutton_stop.setVisibility(View.INVISIBLE);
@@ -150,17 +189,33 @@ public class RecordActivity extends Activity implements OnClickListener {
 			if (isRecorded) {
 				button_confirm.setText(R.string.string_play);
 				setIsPlayState();
-				//startCheckPlaceActivity();
-				//uploadFile();
+				defaultRecordState();
+				
 				return;
 			}
+			if(isPlayState){
+				defaultPlayStat();
+				startCheckPlaceActivity();
+				uploadFile();
+				
+			}
+			
 			return;
 
 		case R.id.imagebutton_play:
 			if (isPlayState) {
-				playVoice();
+				handler.post(playVoice);
 				button_confirm.setText(R.string.string_confirm);
+				
+				imagebutton_play.setClickable(false);
+				imagebutton_play.setVisibility(View.INVISIBLE);
+				
+				imagebutton_stop.bringToFront();
+				imagebutton_stop.setVisibility(View.VISIBLE);
+				imagebutton_stop.setClickable(true);		
 			}
+			
+			//调用handler播放
 			return;
 
 		}
@@ -172,6 +227,16 @@ public class RecordActivity extends Activity implements OnClickListener {
 		isRecorded = true;
 	}
 
+	private void defaultRecordState(){
+		isRecorded = false;
+		
+	}
+	
+	private void defaultPlayStat(){
+		isPlayState = false;
+		
+	}
+	
 	private void setIsPlayState() {
 
 		isPlayState = true;
@@ -254,8 +319,13 @@ public class RecordActivity extends Activity implements OnClickListener {
 		// button_confirm = (Button) findViewById(R.id.button_confirm);
 		textview_status = (TextView) findViewById(R.id.recordtext);
 		imagebutton_record.bringToFront();
+		
+		
+		
 		ActionBar actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.background_title));
+		
+		
 		return;
 	}
 
@@ -287,6 +357,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 			e.printStackTrace();
 		}
 		mRecorder.start(); // Recording is now started
+		
 
 	}/* startRecord() */
 
@@ -304,7 +375,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 		}
 
 	}
-
+/*
 	public void playVoice() {
 
 		if (getVoiceFilePath() == null) {
@@ -319,13 +390,15 @@ public class RecordActivity extends Activity implements OnClickListener {
 		} catch (IllegalStateException e) {
 		} catch (IOException e) {
 		}
-
+		seekBar1.setOnSeekBarChangeListener(seekBarOnSeekBarChange);
 		mPlayer.start();
+		
 
         // Create the Visualizer object and attach it to our media player.
 	    // We need to link the visualizer view to the media player so that
 	    // it displays something
 	    mVisualizerView = (VisualizerView) findViewById(R.id.visualizerView);
+	   
 	    mVisualizerView.link(mPlayer);
 
 	    // Start with just line renderer
@@ -335,6 +408,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 			Log.w(TAG, "In playVoice " + getVoiceFilePath());
 		}
 	}
+	*/
 
 	public String getDate() {
 		SimpleDateFormat sdFormat = new SimpleDateFormat("yyMMddHHmmss");
@@ -363,11 +437,128 @@ public class RecordActivity extends Activity implements OnClickListener {
 
 	    Paint lineFlashPaint = new Paint();
 	    lineFlashPaint.setStrokeWidth(5f);
-	    
 	    lineFlashPaint.setAntiAlias(false);
 	    lineFlashPaint.setColor(Color.argb(188, 255, 255, 255));
+	    
 	    WaveRenderer waveRenderer = new WaveRenderer(linePaint, lineFlashPaint, false);
 	    mVisualizerView.addRenderer(waveRenderer);
 	  }
+	  
+
+	    
+	    Runnable playVoice = new Runnable(){
+	 
+			@Override
+			public void run() {
+				if (getVoiceFilePath() == null) {
+					return;
+				}
+
+				button_confirm.setClickable(false);
+				mPlayer = new MediaPlayer();
+			    play_time_text = (TextView)findViewById(R.id.play_time_text);
+
+				
+				try {
+					mPlayer.setDataSource(getVoiceFilePath());
+					mPlayer.prepare();
+				} catch (IllegalArgumentException e) {
+				} catch (IllegalStateException e) {
+				} catch (IOException e) {
+				}
+				int duration= mPlayer.getDuration();
+		        //音乐文件持续时间
+				seekBar1 = (SeekBar)findViewById(R.id.seekBar1);
+				seekBar1.setMax(duration);
+				seekBar1.setOnSeekBarChangeListener(seekBarOnSeekBarChange);
+				
+		        // Create the Visualizer object and attach it to our media player.
+			    // We need to link the visualizer view to the media player so that
+			    // it displays something
+			    mVisualizerView = //new VisualizerView(RecordActivity.this);
+			    (VisualizerView) findViewById(R.id.visualizerView);
+			    mVisualizerView.link(mPlayer);
+			    mVisualizerView.setRenderWidth(1);
+			    mVisualizerView.setRenderDuration(duration);
+
+			    // Start with just line renderer
+			    addLineRenderer();
+						
+			    mPlayer.start();
+			    
+				if (D_METHOD) {
+					Log.w(TAG, "In playVoice " + getVoiceFilePath());
+					Log.w(TAG, "In playVoice - duration " + duration);
+				}
+	
+				handler.post(updatesb);
+				//用一个handler更新SeekBar
+			}
+	 
+	    };
+	    Runnable updatesb =new Runnable(){
+	 
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				seekBar1.setProgress(mPlayer.getCurrentPosition());
+				seekBar1.setBackground(mVisualizerView.getBitmap());
+				mVisualizerView.setRenderWidth(seekBar1.getProgress());
+				mVisualizerView.setRenderDuration(mPlayer.getDuration());
+				handler.postDelayed(updatesb, 100);
+				mPlayer.seekTo(seekBar1.getProgress());
+				int time = mPlayer.getCurrentPosition()/1000;
+				String sec = df2.format(time %60);
+				String min = df2.format(time /60);
+				play_time_text.setText(""+min+":"+sec);
+				//每秒钟更新一次
+				if(!mPlayer.isPlaying()){
+					stopPlay();
+					return;
+				}
+			}
+	 
+	    };
+	    
+	    public void stopPlay(){
+	    	
+	    	mPlayer.stop();
+	    	
+	    	Log.w(TAG, "In stop Play");
+			imagebutton_stop.setVisibility(View.INVISIBLE);
+			imagebutton_stop.setClickable(false);
+			
+			imagebutton_play.bringToFront();
+			imagebutton_play.setVisibility(View.VISIBLE);
+			imagebutton_play.setClickable(true);
+			
+			button_confirm.setClickable(true);
+			return;
+	    }
+
+	    /*pause or stop ?*/
+	    Runnable continuePlay = new Runnable(){
+	   	 
+			@Override
+			public void run() {
+				if (getVoiceFilePath() == null) {
+					return;
+				}
+
+				button_confirm.setClickable(false);
+				
+			    mPlayer.seekTo(seekBar1.getProgress());
+			    
+				if (D_METHOD) {
+					Log.w(TAG, "In playVoice " + getVoiceFilePath());
+				}
+	
+				handler.post(updatesb);
+				//用一个handler更新SeekBar
+			}
+	 
+	    };
+	  
+	  
 	
 }/*RecordActivity*/

@@ -44,21 +44,48 @@
         android:src="@drawable/icon_play" />
     
     
-    <FrameLayout       
+    <FrameLayout  
+        android:id="@+id/frameLayout1"     
         android:layout_width="fill_parent"
-        android:layout_height="100dp"
+        android:layout_height="150dp"
         android:layout_margin="1dp"
-        android:layout_weight="1"
-         >
-        
+        android:layout_weight="1">
       <com.pheelicks.visualizer.VisualizerView
             android:id="@+id/visualizerView"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
+            android:layout_height="150dp" >
         </com.pheelicks.visualizer.VisualizerView>
+        
+        <SeekBar
+        android:id="@+id/seekBar1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true" 
+        android:max="100"
+        android:progress="0" 
+        android:minHeight="150dp"
+        android:maxHeight="150dp"
+        android:thumb="@drawable/my_seekbar_thumb"
+        android:progressDrawable="@drawable/my_seekbar"
+        />    
+     
+      
     </FrameLayout>
     
+
     
+     <TextView
+         android:id="@+id/play_time_text"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/frameLayout1"
+         android:layout_centerHorizontal="true"
+         android:textSize="50sp"
+         android:textColor="@color/white"
+         android:text="@string/string_play_time_text"
+         
+         />
 
     <Button
         android:id="@+id/button_confirm"
@@ -69,5 +96,7 @@
         android:layout_toRightOf="@+id/imagebutton_record"
         android:text="@string/string_start"
         android:textColor="@color/white" />
+
+
 
 </RelativeLayout>

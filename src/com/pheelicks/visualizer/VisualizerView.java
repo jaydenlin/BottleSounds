@@ -19,12 +19,16 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.media.audiofx.Visualizer;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 
 import com.pheelicks.visualizer.renderer.Renderer;
+import com.wearapp.R;
+import com.wearapp.RecordActivity;
 
 /**
  * A class that draws visualizations of data received from a
@@ -43,6 +47,7 @@ public class VisualizerView extends View {
 
   private Paint mFlashPaint = new Paint();
   private Paint mFadePaint = new Paint();
+  
 
   public VisualizerView(Context context, AttributeSet attrs, int defStyle)
   {
@@ -65,11 +70,36 @@ public class VisualizerView extends View {
     mFFTBytes = null;
 
     mFlashPaint.setColor(Color.argb(122, 255, 255, 255));
-    mFadePaint.setColor(Color.argb(238, 255, 255, 255)); // Adjust alpha to change how quickly the image fades
+    mFadePaint.setColor(Color.argb(20, 255, 255, 255)); // Adjust alpha to change how quickly the image fades
+    
     mFadePaint.setXfermode(new PorterDuffXfermode(Mode.MULTIPLY));
 
+   
     mRenderers = new HashSet<Renderer>();
+    
   }
+  
+  public void setRenderWidth(float w){
+	  
+	  for(Renderer renderer: this.mRenderers){
+		  renderer.setWidth(w);
+		  
+	  }
+  }
+  
+  public void setRenderDuration(float d){
+	  
+	  for(Renderer renderer: this.mRenderers){
+		  renderer.setDuration(d);
+		  
+	  }
+  }
+  /*
+  public View testInit(){
+	  
+	    View view = RecordActivity.mInflater.inflate(R.layout.sekbarview, null);
+	  return view;
+  }*/
 
   /**
    * Links the visualizer to a player
@@ -121,6 +151,10 @@ public class VisualizerView extends View {
     });
   }
 
+  
+  
+  
+  
   public void addRenderer(Renderer renderer)
   {
     if(renderer != null)
@@ -190,11 +224,15 @@ public class VisualizerView extends View {
     if(mCanvasBitmap == null)
     {
       mCanvasBitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Config.ARGB_8888);
+      
     }
     if(mCanvas == null)
     {
       mCanvas = new Canvas(mCanvasBitmap);
+      
     }
+   
+   
 
     if (mBytes != null) {
       // Render all audio renderers
@@ -216,7 +254,13 @@ public class VisualizerView extends View {
 
     // Fade out old contents
     mCanvas.drawPaint(mFadePaint);
-
+    Paint linePaint = new Paint();
+    linePaint.setStrokeWidth(5f);
+    linePaint.setAlpha(255);
+    linePaint.setColor(Color.WHITE);
+    mCanvas.drawLine(0, 1, getWidth(), 1, linePaint);
+    mCanvas.drawLine(0, getHeight()-1, getWidth(), getHeight()-1, linePaint);
+    
     if(mFlash)
     {
       mFlash = false;
@@ -225,4 +269,12 @@ public class VisualizerView extends View {
 
     canvas.drawBitmap(mCanvasBitmap, new Matrix(), null);
   }
+  
+  
+  public BitmapDrawable getBitmap(){
+	  
+	  return new BitmapDrawable(getResources(), mCanvasBitmap);
+	  
+  }
+  
 }

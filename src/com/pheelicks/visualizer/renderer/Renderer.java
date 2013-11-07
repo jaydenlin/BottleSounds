@@ -17,6 +17,9 @@ abstract public class Renderer
   // Have these as members, so we don't have to re-create them each time
   protected float[] mPoints;
   protected float[] mFFTPoints;
+  protected float width =0;
+  protected float duration;
+  
   public Renderer()
   {
   }
@@ -69,5 +72,24 @@ abstract public class Renderer
     }
 
     onRender(canvas, data, rect);
+  }
+  
+  public void setWidth(float w){
+	  width=w;
+  }
+  
+  public float getWidth(){
+	  
+	  return width;
+  }
+  
+  public void setDuration(float d){
+	  
+	  duration = d;
+  }
+  
+  public float getDuration(){
+	  
+	  return duration;
   }
 }

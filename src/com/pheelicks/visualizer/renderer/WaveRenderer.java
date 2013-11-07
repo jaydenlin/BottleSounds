@@ -5,6 +5,7 @@ package com.pheelicks.visualizer.renderer;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 
 import com.pheelicks.visualizer.AudioData;
 import com.pheelicks.visualizer.FFTData;
@@ -26,19 +27,27 @@ public class WaveRenderer extends Renderer{
 	
 	  }
 	
+
 	
 	@Override
 	public void onRender(Canvas canvas, AudioData data, Rect rect) {
 	    // Calculate points for line
-	    for (int i = 0; i < data.bytes.length - 1; i++) {
-	      mPoints[i * 4] = rect.width() * i / (data.bytes.length - 1);
+		Log.w(WaveRenderer.this.getClass().toString(),rect.width()+" "+data.bytes.length+" "+ "width"+getWidth()+" duration "+getDuration());
+		
+		float window = getWidth()*(data.bytes.length - 1)/getDuration();
+		
+	    for (int i = 0; i < window; i++) {
+	      mPoints[i * 4] =  rect.width()* i / (data.bytes.length - 1);
 	      mPoints[i * 4 + 1] =  rect.height() / 2
 	          + ((byte) (data.bytes[i] + 128)) * (rect.height() / 3) / 128;
-	      mPoints[i * 4 + 2] = rect.width() * (i + 1) / (data.bytes.length - 1);
+	      mPoints[i * 4 + 2] = rect.width() *(i + 1) / (data.bytes.length - 1);
 	      mPoints[i * 4 + 3] = rect.height() / 2
 	          + ((byte) (data.bytes[i + 1] + 128)) * (rect.height() / 3) / 128;
+	      
+	      //Log.w(WaveRenderer.this.getClass().toString(), i+" "+mPoints[i*4]+" "+ mPoints[i * 4 + 1]+" "+ mPoints[i * 4 + 2]
+	    //		  +" "+mPoints[i * 4 + 3]+""
+	    //		  );
 	    }
-
 	    // Calc amplitude for this waveform
 	    float accumulator = 0;
 	    for (int i = 0; i < data.bytes.length - 1; i++) {
@@ -47,6 +56,7 @@ public class WaveRenderer extends Renderer{
 
 	    float amp = accumulator/(128 * data.bytes.length);
 	    canvas.drawLines(mPoints, mFlashPaint);
+	    
 	    /*
 	    if(amp > amplitude)
 	    {
