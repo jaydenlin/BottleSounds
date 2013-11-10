@@ -249,11 +249,27 @@ public class VisualizerView extends View {
         r.render(mCanvas, fftData, mRect);
       }
     }
+    
 
     // Fade out old contents
     drawBackGround(mCanvas);
     canvas.drawBitmap(mCanvasBitmap, new Matrix(), null);
 
+  }
+  
+  public void reDraw(){
+	  
+	  mCanvasBitmap =null;
+	  mCanvasBitmap =  Bitmap.createBitmap(mCanvas.getWidth(), mCanvas.getHeight(), Config.ARGB_8888); 
+	  mCanvas =null;
+	  mCanvas = new Canvas(mCanvasBitmap);
+	  mFadePaint = new Paint();
+	    mFadePaint.setColor(Color.argb(0, 255, 255, 255)); // Adjust alpha to change how quickly the image fades
+	    
+	    mFadePaint.setXfermode(new PorterDuffXfermode(Mode.MULTIPLY));
+	  mCanvas.drawColor(Color.TRANSPARENT);
+	  drawBackGround(mCanvas);
+	  mCanvas.drawBitmap(mCanvasBitmap, new Matrix(), null);
   }
   
   
@@ -272,9 +288,10 @@ public class VisualizerView extends View {
 	    linePaint.setColor(Color.WHITE);
 	    /*draw horizental line on the top and the bottom*/
 	    
+	    linePaint.setStrokeWidth(2f);
 	    canvas.drawLine(0, 1, width, 1, linePaint);
 	    canvas.drawLine(0, height-1, width, height-1, linePaint);
-	   
+	    canvas.drawLine(0, height/2, width, height/2, linePaint);
 	
   }
   

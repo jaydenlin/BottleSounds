@@ -65,7 +65,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 	ImageButton imagebutton_play;
 	// Button button_play;
 	Button button_confirm;
-	TextView textview_status;
+	//TextView textview_status;
 	TextView play_time_text;
 	public static LayoutInflater mInflater;
 	//SeekBar
@@ -156,8 +156,9 @@ public class RecordActivity extends Activity implements OnClickListener {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			textview_status.setText(R.string.status_recording);
+			//textview_status.setText(R.string.status_recording);
 			button_confirm.setText(R.string.string_complete);
+			button_confirm.setClickable(false);
 			imagebutton_record.setVisibility(View.INVISIBLE);
 			imagebutton_record.setClickable(false);
 
@@ -169,20 +170,13 @@ public class RecordActivity extends Activity implements OnClickListener {
 			return;
 
 		case R.id.imagebutton_stop:
-			if(isPlayState){
-				stopPlay();
-					
-				return;
+			if(mPlayer!=null && isPlayState){
+				stopPlay();			
 			}
-			stopRecord();
-			textview_status.setText(R.string.string_recordtext);
-			imagebutton_stop.setVisibility(View.INVISIBLE);
-			imagebutton_stop.setClickable(false);
-
-			imagebutton_record.bringToFront();
-			imagebutton_record.setVisibility(View.VISIBLE);
-			imagebutton_record.setClickable(true);
-			setIsRecorded();
+			if(mRecorder!=null){
+				stopRecord();
+				setIsRecorded();
+			}
 
 			return;
 		case R.id.button_confirm:
@@ -191,10 +185,12 @@ public class RecordActivity extends Activity implements OnClickListener {
 				setIsPlayState();
 				defaultRecordState();
 				
+				
 				return;
 			}
 			if(isPlayState){
 				defaultPlayStat();
+				resetAll();
 				startCheckPlaceActivity();
 				uploadFile();
 				
@@ -225,15 +221,29 @@ public class RecordActivity extends Activity implements OnClickListener {
 
 	private void setIsRecorded() {
 		isRecorded = true;
+		//textview_status.setText(R.string.string_recordtext);
+		imagebutton_stop.setVisibility(View.INVISIBLE);
+		imagebutton_stop.setClickable(false);
+
+		imagebutton_record.bringToFront();
+		imagebutton_record.setVisibility(View.VISIBLE);
+		imagebutton_record.setClickable(true);
+		button_confirm.setClickable(true);
 	}
 
 	private void defaultRecordState(){
 		isRecorded = false;
+		if(mRecorder!=null)mRecorder.release();
+		mRecorder = null;
 		
 	}
 	
 	private void defaultPlayStat(){
+		if(mPlayer!=null){mPlayer.release();}
+		mPlayer =null;
 		isPlayState = false;
+		
+		
 		
 	}
 	
@@ -317,16 +327,17 @@ public class RecordActivity extends Activity implements OnClickListener {
 		imagebutton_play.setVisibility(View.INVISIBLE);
 		button_confirm = (Button) findViewById(R.id.button_confirm);
 		// button_confirm = (Button) findViewById(R.id.button_confirm);
-		textview_status = (TextView) findViewById(R.id.recordtext);
+		//textview_status = (TextView) findViewById(R.id.recordtext);
 		imagebutton_record.bringToFront();
 		
-		
+		  play_time_text = (TextView)findViewById(R.id.play_time_text);
 		
 		GlobalAction globalAction = (GlobalAction)this.getApplicationContext();
 		globalAction.setActionBar(getActionBar());
 		return;
 	}
 
+	Long recordtime;
 	public void startRecord() throws IOException {
 		if (D_METHOD) {
 			Log.w(TAG, "In startRecord");
@@ -342,7 +353,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 				+ filename);
 		setVoiceFilePath(recordFile.getAbsolutePath());
 
-		mRecorder = new MediaRecorder();
+		if(mRecorder==null){mRecorder = new MediaRecorder();}
 		mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 		mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 		mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
@@ -355,6 +366,8 @@ public class RecordActivity extends Activity implements OnClickListener {
 			e.printStackTrace();
 		}
 		mRecorder.start(); // Recording is now started
+		recordtime = System.currentTimeMillis();
+		handler.post(updatesb);
 		
 
 	}/* startRecord() */
@@ -366,10 +379,10 @@ public class RecordActivity extends Activity implements OnClickListener {
 			}
 
 			mRecorder.stop();
-			// mRecorder.reset(); // You can reuse the object by going back to
+			 mRecorder.reset(); // You can reuse the object by going back to
 			// setAudioSource() step
-			mRecorder.release(); // Now the object cannot be reused
-			mRecorder = null;
+			//mRecorder.release(); // Now the object cannot be reused
+			//mRecorder = null;
 		}
 
 	}
@@ -454,7 +467,6 @@ public class RecordActivity extends Activity implements OnClickListener {
 
 				button_confirm.setClickable(false);
 				mPlayer = new MediaPlayer();
-			    play_time_text = (TextView)findViewById(R.id.play_time_text);
 
 				
 				try {
@@ -492,6 +504,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 	
 				handler.post(updatesb);
 				
+				
 				//用一个handler更新SeekBar
 			}
 	 
@@ -501,21 +514,30 @@ public class RecordActivity extends Activity implements OnClickListener {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				if(mPlayer.isPlaying()){
-				seekBar1.setProgress(mPlayer.getCurrentPosition());
-				seekBar1.setBackground(mVisualizerView.getBitmap());
-				mVisualizerView.setRenderWidth(seekBar1.getProgress());
-				mVisualizerView.setRenderDuration(mPlayer.getDuration());
-				handler.postDelayed(updatesb, 100);
-				mPlayer.seekTo(seekBar1.getProgress());
-				int time = mPlayer.getCurrentPosition()/1000;
-				String sec = df2.format(time %60);
-				String min = df2.format(time /60);
-				play_time_text.setText(""+min+":"+sec);
+				if(mPlayer!=null && mPlayer.isPlaying()){
+					seekBar1.setProgress(mPlayer.getCurrentPosition());
+					seekBar1.setBackground(mVisualizerView.getBitmap());
+					mVisualizerView.setRenderWidth(seekBar1.getProgress());
+					mVisualizerView.setRenderDuration(mPlayer.getDuration());
+					handler.postDelayed(updatesb, 100);
+					mPlayer.seekTo(seekBar1.getProgress());
+					int time = mPlayer.getCurrentPosition()/1000;
+					String sec = df2.format(time %60);
+					String min = df2.format(time /60);
+					play_time_text.setText(""+min+":"+sec);
 				//每秒钟更新一次
 				}
-				if(!mPlayer.isPlaying()){
+				if(mPlayer!=null &&!mPlayer.isPlaying() ){
 					stopPlay();
+					return;
+				}
+				
+				if(mRecorder!=null){		
+					handler.postDelayed(updatesb, 100);
+					Long time = (System.currentTimeMillis()-recordtime)/1000;
+					String sec = df2.format(time %60);
+					String min = df2.format(time /60);
+					play_time_text.setText(""+min+":"+sec);
 				}
 			}
 	 
@@ -523,6 +545,11 @@ public class RecordActivity extends Activity implements OnClickListener {
 	    
 	    public void stopPlay(){
 	    	
+	    	if(mPlayer.getDuration() == mPlayer.getCurrentPosition()){	    		
+	    		mVisualizerView.reDraw();
+				seekBar1.setBackground(mVisualizerView.getBitmap());
+				seekBar1.setBackground(findViewById(R.drawable.my_seekbar).getBackground());
+	    	}
 	    	mPlayer.stop();
 	    	
 	    	Log.w(TAG, "In stop Play");
@@ -560,6 +587,21 @@ public class RecordActivity extends Activity implements OnClickListener {
 	 
 	    };
 	  
-	  
+	  public void resetAll(){
+		  imagebutton_play.setVisibility(View.INVISIBLE);
+		  imagebutton_stop.setVisibility(View.INVISIBLE);
+		  imagebutton_record.setVisibility(View.VISIBLE);
+		  button_confirm.setText(R.string.string_start);
+		  imagebutton_record.bringToFront();
+		  
+		  imagebutton_record.setClickable(true);
+		  button_confirm.setClickable(false);
+		  
+
+		  
+		  
+		  
+	  }
 	
+	    
 }/*RecordActivity*/
