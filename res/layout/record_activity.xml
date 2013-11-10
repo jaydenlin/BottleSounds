@@ -2,21 +2,68 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background" >
+    android:background="@drawable/background" 
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:id="@+id/play_time_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/framelayout1"
+        android:layout_centerHorizontal="true"
+        android:text="@string/string_play_time_text"
+        android:textColor="@color/white"
+        android:textSize="50sp" />
+
+    <FrameLayout
+        android:id="@+id/framelayout1"
+        android:layout_width="match_parent"
+        android:layout_height="270dp"
+        android:layout_margin="1dp"
+        android:layout_weight="0" >
+
+        <com.pheelicks.visualizer.BackgroundView
+            android:id="@+id/backgroundview"
+            android:layout_width="match_parent"
+            android:layout_height="30dp" >
+        </com.pheelicks.visualizer.BackgroundView>
+
+        <com.pheelicks.visualizer.VisualizerView
+            android:id="@+id/visualizerview"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:layout_marginTop="30dp" >
+        </com.pheelicks.visualizer.VisualizerView>
+
+        <SeekBar
+            android:id="@+id/seekbar1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="30dp"
+            android:max="100"
+            android:maxHeight="240dp"
+            android:minHeight="240dp"
+            android:progress="0"
+            android:progressDrawable="@drawable/my_seekbar"
+            android:thumb="@drawable/my_seekbar_thumb" />
+    </FrameLayout>
 
     <ImageButton
         android:id="@+id/imagebutton_record"
         style="?android:borderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/play_time_text"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="250dp"
+        android:layout_marginTop="14dp"
         android:src="@drawable/icon_record" />
 
     <TextView
         android:id="@+id/recordtext"
-        android:layout_width="wrap_content"	
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/imagebutton_record"
         android:layout_centerHorizontal="true"
@@ -24,79 +71,31 @@
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <ImageButton
-        android:id="@+id/imagebutton_stop"
-        style="?android:borderlessButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/imagebutton_record"
-        android:layout_alignLeft="@+id/imagebutton_record"
-        android:layout_alignTop="@+id/imagebutton_record"
-        android:src="@drawable/icon_pause" />
-
-    <ImageButton
         android:id="@+id/imagebutton_play"
         style="?android:borderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/imagebutton_record"
         android:layout_alignLeft="@+id/imagebutton_record"
         android:layout_alignTop="@+id/imagebutton_record"
         android:src="@drawable/icon_play" />
-    
-    
-    <FrameLayout  
-        android:id="@+id/frameLayout1"     
-        android:layout_width="fill_parent"
-        android:layout_height="150dp"
-        android:layout_margin="1dp"
-        android:layout_weight="1">
-      <com.pheelicks.visualizer.VisualizerView
-            android:id="@+id/visualizerView"
-            android:layout_width="fill_parent"
-            android:layout_height="150dp" >
-        </com.pheelicks.visualizer.VisualizerView>
-        
-        <SeekBar
-        android:id="@+id/seekBar1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true" 
-        android:max="100"
-        android:progress="0" 
-        android:minHeight="150dp"
-        android:maxHeight="150dp"
-        android:thumb="@drawable/my_seekbar_thumb"
-        android:progressDrawable="@drawable/my_seekbar"
-        />    
-     
-      
-    </FrameLayout>
-    
-
-    
-     <TextView
-         android:id="@+id/play_time_text"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_below="@+id/frameLayout1"
-         android:layout_centerHorizontal="true"
-         android:textSize="50sp"
-         android:textColor="@color/white"
-         android:text="@string/string_play_time_text"
-         
-         />
 
     <Button
         android:id="@+id/button_confirm"
         style="?android:borderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/imagebutton_record"
+        android:layout_above="@+id/recordtext"
         android:layout_toRightOf="@+id/imagebutton_record"
         android:text="@string/string_start"
         android:textColor="@color/white" />
 
-
+    <ImageButton
+        android:id="@+id/imagebutton_stop"
+        style="?android:borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/imagebutton_record"
+        android:layout_alignTop="@+id/imagebutton_record"
+        android:src="@drawable/icon_pause" />
 
 </RelativeLayout>

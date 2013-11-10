@@ -56,12 +56,15 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		ActionBar actionBar = getActionBar();
-		actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.background_title));
+
 		setContentView(R.layout.activity_main);
 		
+		GlobalAction globalAction = (GlobalAction)this.getApplicationContext();
+		globalAction.setActionBar(getActionBar());
+		getActionBar().hide();
 		initButton();
 		setListener();
+		
 	}
 
 	@Override

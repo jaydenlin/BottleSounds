@@ -322,10 +322,8 @@ public class RecordActivity extends Activity implements OnClickListener {
 		
 		
 		
-		ActionBar actionBar = getActionBar();
-		actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.background_title));
-		
-		
+		GlobalAction globalAction = (GlobalAction)this.getApplicationContext();
+		globalAction.setActionBar(getActionBar());
 		return;
 	}
 
@@ -436,9 +434,9 @@ public class RecordActivity extends Activity implements OnClickListener {
 	    linePaint.setColor(Color.argb(88, 0, 128, 255));
 
 	    Paint lineFlashPaint = new Paint();
-	    lineFlashPaint.setStrokeWidth(5f);
-	    lineFlashPaint.setAntiAlias(false);
-	    lineFlashPaint.setColor(Color.argb(188, 255, 255, 255));
+	    lineFlashPaint.setStrokeWidth(3f);
+	    lineFlashPaint.setAntiAlias(true);
+	    lineFlashPaint.setColor(Color.argb(255, 255, 255, 255));
 	    
 	    WaveRenderer waveRenderer = new WaveRenderer(linePaint, lineFlashPaint, false);
 	    mVisualizerView.addRenderer(waveRenderer);
@@ -468,15 +466,16 @@ public class RecordActivity extends Activity implements OnClickListener {
 				}
 				int duration= mPlayer.getDuration();
 		        //音乐文件持续时间
-				seekBar1 = (SeekBar)findViewById(R.id.seekBar1);
+				seekBar1 = (SeekBar)findViewById(R.id.seekbar1);
 				seekBar1.setMax(duration);
+				seekBar1.setProgress(0);
 				seekBar1.setOnSeekBarChangeListener(seekBarOnSeekBarChange);
 				
 		        // Create the Visualizer object and attach it to our media player.
 			    // We need to link the visualizer view to the media player so that
 			    // it displays something
 			    mVisualizerView = //new VisualizerView(RecordActivity.this);
-			    (VisualizerView) findViewById(R.id.visualizerView);
+			    (VisualizerView) findViewById(R.id.visualizerview);
 			    mVisualizerView.link(mPlayer);
 			    mVisualizerView.setRenderWidth(1);
 			    mVisualizerView.setRenderDuration(duration);
@@ -492,6 +491,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 				}
 	
 				handler.post(updatesb);
+				
 				//用一个handler更新SeekBar
 			}
 	 
@@ -501,6 +501,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
+				if(mPlayer.isPlaying()){
 				seekBar1.setProgress(mPlayer.getCurrentPosition());
 				seekBar1.setBackground(mVisualizerView.getBitmap());
 				mVisualizerView.setRenderWidth(seekBar1.getProgress());
@@ -512,9 +513,9 @@ public class RecordActivity extends Activity implements OnClickListener {
 				String min = df2.format(time /60);
 				play_time_text.setText(""+min+":"+sec);
 				//每秒钟更新一次
+				}
 				if(!mPlayer.isPlaying()){
 					stopPlay();
-					return;
 				}
 			}
 	 

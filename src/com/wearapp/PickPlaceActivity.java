@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.widget.Toast;
+
 import com.facebook.FacebookException;
 import com.facebook.widget.PickerFragment;
 import com.facebook.widget.PlacePickerFragment;
@@ -96,6 +97,8 @@ public class PickPlaceActivity extends FragmentActivity {
 			setPickPlaceFragment();
 		}
 
+		GlobalAction globalAction = (GlobalAction)this.getApplicationContext();
+		globalAction.setActionBar(getActionBar());
 		setGoogleMap();
 
 	}

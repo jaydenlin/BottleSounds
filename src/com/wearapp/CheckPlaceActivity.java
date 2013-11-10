@@ -9,6 +9,7 @@ import com.facebook.UiLifecycleHelper;
 import com.facebook.widget.WebDialog;
 import com.facebook.widget.WebDialog.OnCompleteListener;
 import com.wearapp.util.LocationUtil;
+
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -41,6 +42,8 @@ public class CheckPlaceActivity extends FragmentActivity {
 
 	private void initView() {
 		checkButton = (Button) findViewById(R.id.check_place);
+		GlobalAction globalAction = (GlobalAction)this.getApplicationContext();
+		globalAction.setActionBar(getActionBar());
 	}
 
 	private void setListener() {

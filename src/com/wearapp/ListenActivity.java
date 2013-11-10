@@ -70,8 +70,8 @@ public class ListenActivity extends Activity implements OnClickListener,
 	    protected void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
 	        setContentView(R.layout.listen_activity);
-	        ActionBar actionBar = getActionBar();
-			actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.background_title));
+	        GlobalAction globalAction = (GlobalAction)this.getApplicationContext();
+			globalAction.setActionBar(getActionBar());
 			
 			// 取得系統定位服務
 			LocationManager status = (LocationManager) (this

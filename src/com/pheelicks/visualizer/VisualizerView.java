@@ -45,7 +45,6 @@ public class VisualizerView extends View {
 
   private Set<Renderer> mRenderers;
 
-  private Paint mFlashPaint = new Paint();
   private Paint mFadePaint = new Paint();
   
 
@@ -69,8 +68,7 @@ public class VisualizerView extends View {
     mBytes = null;
     mFFTBytes = null;
 
-    mFlashPaint.setColor(Color.argb(122, 255, 255, 255));
-    mFadePaint.setColor(Color.argb(20, 255, 255, 255)); // Adjust alpha to change how quickly the image fades
+    mFadePaint.setColor(Color.argb(0, 255, 255, 255)); // Adjust alpha to change how quickly the image fades
     
     mFadePaint.setXfermode(new PorterDuffXfermode(Mode.MULTIPLY));
 
@@ -206,7 +204,7 @@ public class VisualizerView extends View {
    * of a song/loop etc...
    */
   public void flash() {
-    mFlash = true;
+    mFlash = false;
     invalidate();
   }
 
@@ -232,8 +230,8 @@ public class VisualizerView extends View {
       
     }
    
-   
-
+    mCanvas.drawPaint(mFadePaint);
+    
     if (mBytes != null) {
       // Render all audio renderers
       AudioData audioData = new AudioData(mBytes);
@@ -253,21 +251,9 @@ public class VisualizerView extends View {
     }
 
     // Fade out old contents
-    mCanvas.drawPaint(mFadePaint);
-    Paint linePaint = new Paint();
-    linePaint.setStrokeWidth(5f);
-    linePaint.setAlpha(255);
-    linePaint.setColor(Color.WHITE);
-    mCanvas.drawLine(0, 1, getWidth(), 1, linePaint);
-    mCanvas.drawLine(0, getHeight()-1, getWidth(), getHeight()-1, linePaint);
-    
-    if(mFlash)
-    {
-      mFlash = false;
-      mCanvas.drawPaint(mFlashPaint);
-    }
-
+    drawBackGround(mCanvas);
     canvas.drawBitmap(mCanvasBitmap, new Matrix(), null);
+
   }
   
   
@@ -275,6 +261,21 @@ public class VisualizerView extends View {
 	  
 	  return new BitmapDrawable(getResources(), mCanvasBitmap);
 	  
+  }
+  
+  public void drawBackGround(Canvas canvas){
+	  Paint linePaint = new Paint();
+	  float width = getWidth();
+	  float height = getHeight();
+	  linePaint.setStrokeWidth(3f);
+	    linePaint.setAlpha(255);
+	    linePaint.setColor(Color.WHITE);
+	    /*draw horizental line on the top and the bottom*/
+	    
+	    canvas.drawLine(0, 1, width, 1, linePaint);
+	    canvas.drawLine(0, height-1, width, height-1, linePaint);
+	   
+	
   }
   
 }

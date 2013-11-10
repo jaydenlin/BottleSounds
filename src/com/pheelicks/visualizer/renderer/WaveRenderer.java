@@ -55,6 +55,7 @@ public class WaveRenderer extends Renderer{
 	    }
 
 	    float amp = accumulator/(128 * data.bytes.length);
+
 	    canvas.drawLines(mPoints, mFlashPaint);
 	    
 	    /*
