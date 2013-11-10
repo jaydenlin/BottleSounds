@@ -1,117 +1,142 @@
 package com.wearapp.util;
 
-import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import android.util.Log;
 
-
 public class UploadUtil {
 
-    private static String executeRequest(HttpRequestBase requestBase){
+	private HttpURLConnection httpURLConnection;
+	private FileInputStream fileInputStream;
+	private DataOutputStream dataOutputStream;
+	private String uplaodServerCGI = "http://jadyenlin.tw/newre/savetest.php";
+	private File uploadedFile;
+	private String parameterNameToServer;
 
-        String responseString = "" ;
-        InputStream responseStream = null ;
-        HttpClient client = new DefaultHttpClient () ;
+	String lineEnd = "\r\n";
+	String twoHyphens = "--";
+	String boundary = "*****";
 
-        try{
-            HttpResponse response = client.execute(requestBase) ;
+	int bytesRead, bytesAvailable, bufferSize;
+	byte[] buffer;
+	int maxBufferSize = 1 * 1024 * 1024;
 
-            if (response != null){
-                HttpEntity responseEntity = response.getEntity() ;
+	public UploadUtil(File uploadFile,String parameterNameToServer) {
+		this.uploadedFile = uploadFile;
+		this.parameterNameToServer = parameterNameToServer;
+	}
 
-                if (responseEntity != null){
-                    responseStream = responseEntity.getContent() ;
+	public void upload() {
+		setFileInputStream(this.uploadedFile);
+		setSimpleHttpURLConnection(this.uplaodServerCGI);
+		setSimpleDataOutputStream(this.httpURLConnection);
+		writeDataOutputStrean();
+	}
 
-                    if (responseStream != null){
-                        BufferedReader br = new BufferedReader(new InputStreamReader(responseStream)) ;
+	private void setSimpleHttpURLConnection(String uplaodServerCGI) {
+		try {
+			httpURLConnection = (HttpURLConnection) new URL(uplaodServerCGI)
+					.openConnection();
+			httpURLConnection.setDoInput(true);
+			httpURLConnection.setDoOutput(true);
+			httpURLConnection.setUseCaches(false);
+			httpURLConnection.setRequestProperty("Connection", "Keep-Alive");
+			httpURLConnection.setRequestProperty("ENCTYPE",
+					"multipart/form-data");
+			httpURLConnection.setRequestProperty("Content-Type",
+					"multipart/form-data;boundary=" + boundary);
+			httpURLConnection.setRequestProperty(parameterNameToServer,
+					uploadedFile.getAbsolutePath());
 
-                        String responseLine = br.readLine() ;
-                        String tempResponseString = "" ;
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
 
-                        while (responseLine != null){
-                            tempResponseString = tempResponseString + responseLine + System.getProperty("line.separator") ;
+	}
 
-                            responseLine = br.readLine() ;
+	private void setSimpleDataOutputStream(
+			HttpURLConnection settledHttpURLConnection) {
+		try {
+			dataOutputStream = new DataOutputStream(
+					settledHttpURLConnection.getOutputStream());
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
-                        }
+	private void writeDataOutputStrean() {
+		try {
+			///////////////////
+			///write data start
+			///////////////////
+			dataOutputStream.writeBytes(twoHyphens + boundary + lineEnd);
+			dataOutputStream
+					.writeBytes("Content-Disposition: form-data; name=\""+parameterNameToServer+"\";filename=\""
+							+ uploadedFile.getAbsolutePath() + "\"" + lineEnd);
+			dataOutputStream.writeBytes(lineEnd);
+			
+			// read file and write it into form...
+			bytesAvailable = fileInputStream.available();
+			bufferSize = Math.min(bytesAvailable, maxBufferSize);
+			buffer = new byte[bufferSize];
+			
+			bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+			while (bytesRead > 0) {
 
-                        br.close() ;
+				dataOutputStream.write(buffer, 0, bufferSize);
+				bytesAvailable = fileInputStream.available();
+				bufferSize = Math.min(bytesAvailable, maxBufferSize);
+				bytesRead = fileInputStream.read(buffer, 0, bufferSize);
 
-                        if (tempResponseString.length() > 0){
-                            responseString = tempResponseString ;
+			}
 
-                        }
-                    }
-                }
-            }
+			// send multipart form data necesssary after file data...
+			dataOutputStream.writeBytes(lineEnd);
+			dataOutputStream.writeBytes(twoHyphens + boundary + lineEnd);
+			///////////////////
+			///write data end
+			///////////////////
+			
+			
+			// Responses from the server (code and message)
+			int serverResponseCode = httpURLConnection.getResponseCode();
+			String serverResponseMessage = httpURLConnection
+					.getResponseMessage();
 
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+			Log.i("uploadFile", "HTTP Response is : " + serverResponseMessage
+					+ ": " + serverResponseCode);
 
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
+			// close the streams //
+			fileInputStream.close();
+			dataOutputStream.flush();
+			dataOutputStream.close();
 
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-        } catch (IOException e) {
-            e.printStackTrace();
+	}
 
-        }finally{
+	private void setFileInputStream(File uploadedFile) {
+		try {
+			fileInputStream = new FileInputStream(uploadedFile);
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
+	}
 
-            if (responseStream != null){
-                try {
-                    responseStream.close() ;
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        client.getConnectionManager().shutdown() ;
-
-        return responseString ;
-    }
-
-    public String executeMultiPartRequest(String urlString, File file, String fileName, String fileDescription) {
-
-        HttpPost postRequest = new HttpPost (urlString) ;
-        try{
-
-            MultipartEntity multiPartEntity = new MultipartEntity () ;
-
-            //The usual form parameters can be added this way
-
-            multiPartEntity.addPart("fileDescription", new StringBody(fileDescription != null ? fileDescription : "")) ;
-
-            multiPartEntity.addPart("fileName", new StringBody(fileName != null ? fileName : file.getName())) ;
-
-            FileBody fileBody = new FileBody(file, "application/octect-stream") ;
-            multiPartEntity.addPart("attachment", fileBody) ;
-            postRequest.setEntity(multiPartEntity) ;
-
-        }catch (UnsupportedEncodingException ex){
-            ex.printStackTrace() ;
-
-        }
-
-        return executeRequest (postRequest) ;
-
-    }
 }

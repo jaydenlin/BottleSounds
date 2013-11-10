@@ -121,7 +121,7 @@ public class PickPlaceActivity extends FragmentActivity {
 	// /////////////////////////////////////////
 
 	private void finishActivity() {
-		setResult(RESULT_OK, null);
+		setResult(RESULT_OK,null);
 		finish();
 	}
 

@@ -1,11 +1,20 @@
 package com.wearapp;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import com.facebook.AppEventsLogger;
 import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
+import com.facebook.Request;
+import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.facebook.model.GraphPlace;
+import com.facebook.model.GraphUser;
+import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.WebDialog;
 import com.facebook.widget.WebDialog.OnCompleteListener;
 import com.wearapp.util.LocationUtil;
@@ -112,6 +121,7 @@ public class CheckPlaceActivity extends FragmentActivity {
 		switch (requestCode) {
 		case PLACE_ACTIVITY:
 			sendToFriend();
+			Log.w(TAG,"sendFriend");
 			break;
 		default:
 			break;
@@ -166,38 +176,40 @@ public class CheckPlaceActivity extends FragmentActivity {
 
 	}
 
-	// private FacebookDialog.ShareDialogBuilder createShareDialogBuilder() {
-	//
-	// String selectedPlaceID = LocationUtil.selectedlocation.getId();
-	// Log.w(TAG,selectedPlaceID);
-	// return new FacebookDialog.ShareDialogBuilder(this)
-	// .setName("Just a test")
-	// .setDescription("test")
-	// .setLink("http://developers.facebook.com/android")
-	// .setPlace(selectedPlaceID);
-	// }
+//	 private FacebookDialog.ShareDialogBuilder createShareDialogBuilder() {
+//	 List<String> friends = new ArrayList<String>();
+//	 friends.add("4723146631600");
+//	 String selectedPlaceID = LocationUtil.selectedlocation.getId();
+//	 Log.w(TAG,selectedPlaceID);
+//	 return new FacebookDialog.ShareDialogBuilder(this)
+//	 .setName("Just a test")
+//	 .setDescription("test")
+//	 .setLink("http://developers.facebook.com/android")
+//	 .setPlace("159310107428142");
+//	 }
 
 	private void sendToFriend() {
-
+		
 		/* Using FacebookDialog */
-		// if(FacebookDialog.canPresentShareDialog(this,
-		// FacebookDialog.ShareDialogFeature.SHARE_DIALOG)){
-		// FacebookDialog shareDialog = createShareDialogBuilder().build();
-		// FBlifecycleHelper.trackPendingDialogCall(shareDialog.present());
-		// }
+//		 if(FacebookDialog.canPresentShareDialog(this,
+//		 FacebookDialog.ShareDialogFeature.SHARE_DIALOG)){
+//		 FacebookDialog shareDialog = createShareDialogBuilder().build();
+//		 FBlifecycleHelper.trackPendingDialogCall(shareDialog.present());
+//		 }
+	           
 
 		/* Using WebDialog */
-		// Bundle params = new Bundle();
-		// params.putString("app_id", Integer.toString(R.string.fb_app_id));
-		// params.putString("title", "發給你們做測試");
-		// params.putString("message", "發給你們做測試");
-		// params.putString("place", LocationUtil.selectedlocation.getId());
-		// params.putString("name", "An example parameter");
-		// params.putString("link", "https://www.example.com/");
-
+		 Bundle params = new Bundle();
+		 params.putString("app_id", Integer.toString(R.string.fb_app_id));
+		 params.putString("title", "發給你們做測試");
+		 params.putString("message", "發給你們做測試");
+//		 params.putString("place", LocationUtil.selectedlocation.getId());
+//		 params.putString("name", "An example parameter");
+//		 params.putString("link", "https://www.example.com/");
+//
 		WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
-				CheckPlaceActivity.this, Session.getActiveSession()))
-				.setOnCompleteListener(new WebDialog.OnCompleteListener() {
+				CheckPlaceActivity.this, Session.getActiveSession(),params))
+				.setOnCompleteListener( new WebDialog.OnCompleteListener() {
 
 					@Override
 					public void onComplete(Bundle values,
@@ -219,7 +231,7 @@ public class CheckPlaceActivity extends FragmentActivity {
 							}
 						}
 					}
-				}).setMessage("hello world啦 送出去啦拜託").setTitle("發給你們做測試")
+				})
 				.build();
 		requestsDialog.show();
 
