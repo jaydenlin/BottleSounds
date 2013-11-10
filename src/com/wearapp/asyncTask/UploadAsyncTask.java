@@ -13,7 +13,7 @@ public class UploadAsyncTask extends AsyncTask<File, Void, Void> {
 	@Override
 	protected Void doInBackground(File... params) {
 		this.sourceFile = params[0];
-		UploadUtil uploadUtil = new UploadUtil(sourceFile);
+		UploadUtil uploadUtil = new UploadUtil(sourceFile,"uploaded_file");
 		uploadUtil.upload();
 		Log.w("UploadAsyncTask", "uploading:" + this.sourceFile.getAbsolutePath());
 		return null;

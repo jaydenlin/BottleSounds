@@ -18,6 +18,7 @@ public class UploadUtil {
 	private DataOutputStream dataOutputStream;
 	private String uplaodServerCGI = "http://jadyenlin.tw/newre/savetest.php";
 	private File uploadedFile;
+	private String parameterNameToServer;
 
 	String lineEnd = "\r\n";
 	String twoHyphens = "--";
@@ -27,8 +28,9 @@ public class UploadUtil {
 	byte[] buffer;
 	int maxBufferSize = 1 * 1024 * 1024;
 
-	public UploadUtil(File uploadFile) {
+	public UploadUtil(File uploadFile,String parameterNameToServer) {
 		this.uploadedFile = uploadFile;
+		this.parameterNameToServer = parameterNameToServer;
 	}
 
 	public void upload() {
@@ -50,7 +52,7 @@ public class UploadUtil {
 					"multipart/form-data");
 			httpURLConnection.setRequestProperty("Content-Type",
 					"multipart/form-data;boundary=" + boundary);
-			httpURLConnection.setRequestProperty("uploaded_file",
+			httpURLConnection.setRequestProperty(parameterNameToServer,
 					uploadedFile.getAbsolutePath());
 
 		} catch (MalformedURLException e) {
@@ -77,19 +79,21 @@ public class UploadUtil {
 
 	private void writeDataOutputStrean() {
 		try {
-			
+			///////////////////
+			///write data start
+			///////////////////
 			dataOutputStream.writeBytes(twoHyphens + boundary + lineEnd);
 			dataOutputStream
-					.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
+					.writeBytes("Content-Disposition: form-data; name=\""+parameterNameToServer+"\";filename=\""
 							+ uploadedFile.getAbsolutePath() + "\"" + lineEnd);
 			dataOutputStream.writeBytes(lineEnd);
 			
+			// read file and write it into form...
 			bytesAvailable = fileInputStream.available();
 			bufferSize = Math.min(bytesAvailable, maxBufferSize);
 			buffer = new byte[bufferSize];
-			// read file and write it into form...
+			
 			bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
 			while (bytesRead > 0) {
 
 				dataOutputStream.write(buffer, 0, bufferSize);
@@ -101,9 +105,12 @@ public class UploadUtil {
 
 			// send multipart form data necesssary after file data...
 			dataOutputStream.writeBytes(lineEnd);
-			dataOutputStream.writeBytes(twoHyphens + boundary + twoHyphens
-					+ lineEnd);
-
+			dataOutputStream.writeBytes(twoHyphens + boundary + lineEnd);
+			///////////////////
+			///write data end
+			///////////////////
+			
+			
 			// Responses from the server (code and message)
 			int serverResponseCode = httpURLConnection.getResponseCode();
 			String serverResponseMessage = httpURLConnection
@@ -128,7 +135,6 @@ public class UploadUtil {
 		try {
 			fileInputStream = new FileInputStream(uploadedFile);
 		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 	}
