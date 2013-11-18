@@ -34,8 +34,11 @@ public class WaveRenderer extends Renderer{
 	    // Calculate points for line
 		Log.w(WaveRenderer.this.getClass().toString(),rect.width()+" "+data.bytes.length+" "+ "width"+getWidth()+" duration "+getDuration());
 		
-		float window = getWidth()*(data.bytes.length - 1)/getDuration();
-		
+		float width = (getWidth()/1000);
+		float duration = (getDuration()/1000);
+		float window = width*(data.bytes.length - 1)/duration;
+		Log.w(WaveRenderer.this.getClass().toString(),""+width+"   "+duration+" "+window);
+		//float window = (data.bytes.length - 1);
 	    for (int i = 0; i < window; i++) {
 	      mPoints[i * 4] =  rect.width()* i / (data.bytes.length - 1);
 	      mPoints[i * 4 + 1] =  rect.height() / 2

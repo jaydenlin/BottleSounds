@@ -23,13 +23,19 @@
         android:layout_margin="1dp"
         android:layout_weight="0" >
 
-        <com.pheelicks.visualizer.VisualizerView
-            android:id="@+id/visualizerview"
+        <com.pheelicks.visualizer.MediaSeekBar
+            android:id="@+id/mediaseekbar"
             android:layout_width="match_parent"
             android:layout_height="240dp"
-            android:layout_marginTop="30dp" >
-        </com.pheelicks.visualizer.VisualizerView>
+            android:layout_marginTop="30dp" 
+            android:maxHeight="240dp"
+            android:minHeight="240dp"
+            android:progress="0"
+            android:progressDrawable="@drawable/my_seekbar"
+            android:thumb="@drawable/my_seekbar_thumb">
+        </com.pheelicks.visualizer.MediaSeekBar>
 
+        <!-- 
         <SeekBar
             android:id="@+id/seekbar1"
             android:layout_width="match_parent"
@@ -43,54 +49,76 @@
             android:progress="0"
             android:progressDrawable="@drawable/my_seekbar"
             android:thumb="@drawable/my_seekbar_thumb" />
-
-        <com.pheelicks.visualizer.BackgroundView
+ 		-->
+ 		
+ 		<com.pheelicks.visualizer.BackgroundView
             android:id="@+id/backgroundview"
             android:layout_width="match_parent"
-            android:layout_height="30dp" />
+            android:layout_height="30dp" >
 
-        <TextView
-            android:id="@+id/text_time_sep_01"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="00:00"
-            android:textColor="@color/op_white"
-            android:textSize="20sp" />
+           
+        </com.pheelicks.visualizer.BackgroundView>
+        
+ 		 <LinearLayout
+ 		     android:id="@+id/linearlayout1"
+ 		     android:layout_width="match_parent"
+ 		     android:layout_height="30dp"
+ 		     android:orientation="horizontal" 
+ 		     android:weightSum="5"
+ 		     >
 
-        <TextView
-            android:id="@+id/text_time_sep_02"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="80dp"
-            android:text="00:00"
-            android:textColor="@color/op_white"
-            android:textSize="20sp" />
-           <TextView
-            android:id="@+id/text_time_sep_03"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="155dp"
-            android:text="00:00"
-            android:textColor="@color/op_white"
-            android:textSize="20sp" />
-              <TextView
-            android:id="@+id/text_time_sep_04"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="230dp"
-            android:text="00:00"
-            android:textColor="@color/op_white"
-            android:textSize="20sp" />
-                 <TextView
-            android:id="@+id/text_time_sep_05"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="305dp"
-            android:text="00:00"
-            android:textColor="@color/op_white"
-            android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/text_time_sep_01"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:textColor="@color/op_white"
+                    android:textSize="20sp" 
+                    android:layout_weight="1"
+                    />
 
-    </FrameLayout>
+                <TextView
+                    android:id="@+id/text_time_sep_02"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:textColor="@color/op_white"
+                    android:textSize="20sp" 
+                    android:layout_weight="1"
+                    />
+
+                <TextView
+                    android:id="@+id/text_time_sep_03"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:textColor="@color/op_white"
+                    android:textSize="20sp" 
+                    android:layout_weight="1"
+                    
+                    />
+
+                <TextView
+                    android:id="@+id/text_time_sep_04"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:textColor="@color/op_white"
+                    android:textSize="20sp" 
+                    android:layout_weight="1"
+                    />
+
+                <TextView
+                    android:id="@+id/text_time_sep_05"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:textColor="@color/op_white"
+                    android:textSize="20sp" 
+                    android:layout_weight="1"
+                    />
+            </LinearLayout>
+</FrameLayout>
 
     <ImageButton
         android:id="@+id/imagebutton_record"

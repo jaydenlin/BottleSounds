@@ -23,6 +23,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.media.audiofx.Visualizer;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -46,6 +47,7 @@ public class VisualizerView extends View {
   private Set<Renderer> mRenderers;
 
   private Paint mFadePaint = new Paint();
+  private static boolean finish = false;
   
 
   public VisualizerView(Context context, AttributeSet attrs, int defStyle)
@@ -74,7 +76,18 @@ public class VisualizerView extends View {
 
    
     mRenderers = new HashSet<Renderer>();
+    finish = false;
     
+  }
+  
+  public void setFinished(){
+	  finish= true;
+	  
+  }
+
+  public void setUnFinished(){
+	  finish= false;
+	  
   }
   
   public void setRenderWidth(float w){
@@ -139,12 +152,15 @@ public class VisualizerView extends View {
 
     // Enabled Visualizer and disable when we're done with the stream
     mVisualizer.setEnabled(true);
+    
     player.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
     {
       @Override
       public void onCompletion(MediaPlayer mediaPlayer)
       {
+    	Log.i("VisualizerView", "In onCompletion");
         mVisualizer.setEnabled(false);
+        mediaPlayer.stop();
       }
     });
   }
@@ -215,6 +231,7 @@ public class VisualizerView extends View {
   @Override
   protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
+    Log.i(VisualizerView.class.getSimpleName(), "In on draw "+getWidth());
 
     // Create canvas once we're ready to draw
     mRect.set(0, 0, getWidth(), getHeight());
@@ -250,26 +267,19 @@ public class VisualizerView extends View {
       }
     }
     
-
+    
     // Fade out old contents
     drawBackGround(mCanvas);
     canvas.drawBitmap(mCanvasBitmap, new Matrix(), null);
-
+    if(finish){reDraw();}
   }
   
   public void reDraw(){
-	  
-	  mCanvasBitmap =null;
-	  mCanvasBitmap =  Bitmap.createBitmap(mCanvas.getWidth(), mCanvas.getHeight(), Config.ARGB_8888); 
-	  mCanvas =null;
-	  mCanvas = new Canvas(mCanvasBitmap);
-	  mFadePaint = new Paint();
-	    mFadePaint.setColor(Color.argb(0, 255, 255, 255)); // Adjust alpha to change how quickly the image fades
-	    
-	    mFadePaint.setXfermode(new PorterDuffXfermode(Mode.MULTIPLY));
-	  mCanvas.drawColor(Color.TRANSPARENT);
+	    Log.i(VisualizerView.class.getSimpleName(), "In redraw ");	
+	  mCanvas.drawPaint(mFadePaint);
 	  drawBackGround(mCanvas);
 	  mCanvas.drawBitmap(mCanvasBitmap, new Matrix(), null);
+	  
   }
   
   
