@@ -63,12 +63,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 	Button button_confirm;
 	//TextView textview_status;
 	TextView play_time_text;
-	
-	TextView text_timeStamp1;
-	TextView text_timeStamp2;
-	TextView text_timeStamp3;
-	TextView text_timeStamp4;
-	TextView text_timeStamp5;
+
 	
 	
 	public static LayoutInflater mInflater;
@@ -429,12 +424,15 @@ public class RecordActivity extends Activity implements OnClickListener {
 	  private void addLineRenderer()
 	  {
 	    Paint linePaint = new Paint();
-	    linePaint.setStrokeWidth(1f);
+	    linePaint.setStrokeWidth(4f);
 	    linePaint.setAntiAlias(true);
 	    linePaint.setColor(Color.argb(88, 0, 128, 255));
 
 	    Paint lineFlashPaint = new Paint();
-	    lineFlashPaint.setStrokeWidth(3f);
+	    
+	    lineFlashPaint.setStrokeWidth(4f);
+	    lineFlashPaint.setStrokeJoin(Paint.Join.ROUND);
+	    lineFlashPaint.setStrokeCap(Paint.Cap.ROUND);
 	    lineFlashPaint.setAntiAlias(true);
 	    lineFlashPaint.setColor(Color.argb(255, 255, 255, 255));
 	    
@@ -465,7 +463,6 @@ public class RecordActivity extends Activity implements OnClickListener {
 	    	  mMediaSeekBar.reDraw();
 	    	  mMediaSeekBar.setFinished();
 	    	  mMediaSeekBar.getVisualizer().setEnabled(false);
-	    	  mMediaSeekBar.releaseVisulizer();
 	    	  mediaPlayer.stop();
 	          setMediaState(MediaState.isPlayStopState);
 	          handler.postDelayed(updatesb, 100);
@@ -478,21 +475,25 @@ public class RecordActivity extends Activity implements OnClickListener {
 		//			Handler Area									//
 		//														    //
 		//////////////////////////////////////////////////////////////
-		
+		int maxProgress =0;
 	Runnable updatesb = new Runnable() {
 		@Override
 		public void run() {
 				if (mPlayer != null && mPlayer.isPlaying()) {
 
-					mMediaSeekBar.setProgress(mPlayer.getCurrentPosition());
+					//mMediaSeekBar.setProgress(mPlayer.getCurrentPosition());
 					int time = mPlayer.getCurrentPosition() / 1000;
 					String sec = df2.format(time % 60);
 					String min = df2.format(time / 60);
-					play_time_text.setText("" + min + ":" + sec);		
-					//play_time_text.setText(""+mPlayer.getCurrentPosition());
+					//play_time_text.setText("" + min + ":" + sec);		
+					play_time_text.setText(" "+mMediaSeekBar.getProgress()+" Max:"+maxProgress);
+					if(mMediaSeekBar.getProgress() > maxProgress){
+						maxProgress = mMediaSeekBar.getProgress();
+						
+					}
 					//mPlayer.seekTo(mMediaSeekBar.getProgress());
-					handler.post(updatesb);
-
+					handler.postDelayed(updatesb,10);
+					
 				}
 				
 				if(mediaState == MediaState.isPlayStopState){
@@ -510,6 +511,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 		}
 	};
     
+	/*
     public void continuePlay(){
     	if (getVoiceFilePath() == null) {
 			return;
@@ -524,7 +526,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 		}
 		
 		//用一个handler更新SeekBar
-	} 
+	} */
     
 	private void setButton(MediaState mediastate){
 		switch(mediastate){
@@ -647,7 +649,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 			String identifier = df2.format(i+1);		
     		id = getResources().getIdentifier("text_time_sep_"+identifier, "id",RecordActivity.this.getPackageName());
     		textview = (TextView) findViewById(id);
-			textview.setText("00:"+i+")");
+			textview.setText("00:"+i+"0");
 		}
 		
 	}

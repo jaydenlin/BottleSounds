@@ -31,6 +31,9 @@ public class MediaSeekBar extends SeekBar {
 	  private byte[] mFFTBytes;
 	  private Rect mRect = new Rect();
 	  private Visualizer mVisualizer;
+	  private MediaPlayer mPlayer;
+	  private int mProgress;
+	  private int maxProgress;
 
 	  private Set<Renderer> mRenderers;
 
@@ -60,10 +63,7 @@ public class MediaSeekBar extends SeekBar {
 	    mFFTBytes = null;
 
 	    mFadePaint.setColor(Color.argb(0, 255, 255, 255)); // Adjust alpha to change how quickly the image fades
-	    
 	    mFadePaint.setXfermode(new PorterDuffXfermode(Mode.MULTIPLY));
-
-	   
 	    mRenderers = new HashSet<Renderer>();
 	    finish = false;
 	    
@@ -119,14 +119,18 @@ public class MediaSeekBar extends SeekBar {
 	   */
 	  public void link(MediaPlayer player)
 	  {
+		  
+		  maxProgress = 0;
+		  mProgress =0;
 	    if(player == null)
 	    {
 	      throw new NullPointerException("Cannot link to null MediaPlayer");
 	    }
-
+	    if(mVisualizer != null){ releaseVisulizer();}
 	    // Create the Visualizer object and attach it to our media player.
 	    mVisualizer = new Visualizer(player.getAudioSessionId());
 	    mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
+	    mPlayer = player;
 
 	    // Pass through Visualizer data to MediaSeekBar
 	    Visualizer.OnDataCaptureListener captureListener = new Visualizer.OnDataCaptureListener()
@@ -191,6 +195,15 @@ public class MediaSeekBar extends SeekBar {
 	   */
 	  public synchronized void updateVisualizer(byte[] bytes) {
 	    mBytes = bytes;
+	    mProgress = mPlayer.getCurrentPosition();
+	    if(maxProgress < mProgress){
+	    	
+	    	maxProgress = mProgress;
+	    }
+	    
+	    setRenderWidth(maxProgress);
+	    this.setProgress(maxProgress);
+	    Log.i(TAG, mProgress+" "+System.currentTimeMillis());
 	    invalidate();
 	  }
 
@@ -202,6 +215,9 @@ public class MediaSeekBar extends SeekBar {
 	   */
 	  public synchronized void updateVisualizerFFT(byte[] bytes) {
 	    mFFTBytes = bytes;
+	   // mProgress = mPlayer.getCurrentPosition();
+	   // setRenderWidth(mProgress);
+	   // this.setProgress(mProgress);
 	    invalidate();
 	  }
 
@@ -226,7 +242,7 @@ public class MediaSeekBar extends SeekBar {
 	    Log.i(MediaSeekBar.class.getSimpleName(), "In on draw "+getWidth());
 
 	    int maxProgress = getMax();
-	    setRenderWidth(this.getProgress());
+	    
 	    setRenderDuration(maxProgress);
 	    
 	    // Create canvas once we're ready to draw
@@ -234,13 +250,12 @@ public class MediaSeekBar extends SeekBar {
 
 	    if(mCanvasBitmap == null)
 	    {
-	      mCanvasBitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Config.ARGB_8888);
+	      mCanvasBitmap = Bitmap.createBitmap(this.getWidth(), this.getHeight(), Config.ARGB_8888);
 	      
 	    }
 	    if(mCanvas == null)
 	    {
-	      mCanvas = new Canvas(mCanvasBitmap);
-	      
+	      mCanvas = new Canvas(mCanvasBitmap);	      
 	    }
 	   
 	    mCanvas.drawPaint(mFadePaint);
@@ -272,11 +287,9 @@ public class MediaSeekBar extends SeekBar {
 	  
 	  public void reDraw(){
 		    Log.i(MediaSeekBar.class.getSimpleName(), "In redraw ");
-		    mFadePaint.reset();
-		    mFadePaint.setColor(Color.argb(0, 255, 255, 255)); // Adjust alpha to change how quickly the image fades		    
-		    mFadePaint.setXfermode(new PorterDuffXfermode(Mode.MULTIPLY));		    
-		   
-		    mCanvas.drawPaint(mFadePaint);
+		    Paint clearPaint = new Paint();
+		    clearPaint.setXfermode(new PorterDuffXfermode(Mode.CLEAR));
+		    mCanvas.drawPaint(clearPaint);
 		   drawBackGround(mCanvas);
 		   mCanvas.drawBitmap(mCanvasBitmap, new Matrix(), null);
 		  
@@ -303,11 +316,6 @@ public class MediaSeekBar extends SeekBar {
 		    canvas.drawLine(0, height-1, width, height-1, linePaint);
 		    canvas.drawLine(0, height/2, width, height/2, linePaint);
 		
-	  }
-	  
-	  
-	  
-	  
-	  
+	  }	  
 
 }
