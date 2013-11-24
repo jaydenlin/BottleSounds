@@ -19,12 +19,18 @@
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-            
-    
-    
+             <item name="android:windowBackground">@drawable/background</item>
+          <!--     <item name="android:actionBarStyle">@style/WindowTitleBackground</item> -->
     </style>
 
-    
+    <style name="MainTheme" parent="AppTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+             <item name="android:windowBackground">@drawable/background</item>
+             <item name="android:windowNoTitle">True</item>
+             
+    </style>
+
+  
     
     
 </resources>
