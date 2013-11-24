@@ -1,9 +1,9 @@
-BottleSounds
+Heare
 ============
 
 Y! Hack Day Project
 
-* 加入Facebook SDK到ShareVoice專案裡
+* 加入Facebook SDK到Heare專案裡
    * Step 1: 下載Facebook SDK 3.5.2，並且import到eclipse裡(as an Android Project)
    
    ```
