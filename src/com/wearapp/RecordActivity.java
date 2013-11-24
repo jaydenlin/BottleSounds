@@ -101,7 +101,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 
 	class UIHandler extends Handler {
 		public void handleMessage(Message msg) {
-
+			
 		}
 	}
 
@@ -154,8 +154,8 @@ public class RecordActivity extends Activity implements OnClickListener {
 		imagebutton_stop.setOnClickListener(this);
 		imagebutton_play.setOnClickListener(this);
 		setMediaState(MediaState.Default);
-		
-
+		button_confirm.setVisibility(View.INVISIBLE);
+		button_confirm.setClickable(false);
 	}
 
 	@Override
@@ -191,6 +191,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 				defaultRecorder();						
 				return;
 			}
+			
 			if(mediaState == MediaState.isPlayStopState){
 				setMediaState(MediaState.Default);
 				defaultMediaPlayer();
@@ -199,15 +200,8 @@ public class RecordActivity extends Activity implements OnClickListener {
 				uploadFile();
 				return;
 			}
-			if(mediaState == MediaState.Default){
-				try {
-					startRecord();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				setMediaState(MediaState.isRecordingState);
-				setButton(mediaState);
-			}
+			
+		
 			
 			return;
 
@@ -375,7 +369,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 				Log.w(TAG, "In stopRecord");
 			}
 
-			mRecorder.stop();
+			 mRecorder.stop();
 			 mRecorder.reset(); // You can reuse the object by going back to
 			// setAudioSource() step
 			//mRecorder.release(); // Now the object cannot be reused
@@ -383,6 +377,10 @@ public class RecordActivity extends Activity implements OnClickListener {
 		}
 
 	}
+	
+
+	
+	
 
 		public void playVoice () {
 		
@@ -510,23 +508,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 
 		}
 	};
-    
-	/*
-    public void continuePlay(){
-    	if (getVoiceFilePath() == null) {
-			return;
-		}
-		mPlayer.prepareAsync();
-		mMediaSeekBar.setEnabled(true);
-		
-		//mPlayer.seekTo(mMediaSeekBar.getProgress());
-	    
-		if (D_METHOD) {
-			Log.w(TAG, "In playVoice " + getVoiceFilePath());
-		}
-		
-		//用一个handler更新SeekBar
-	} */
+
     
 	private void setButton(MediaState mediastate){
 		switch(mediastate){
@@ -558,8 +540,8 @@ public class RecordActivity extends Activity implements OnClickListener {
 	
 	public void buttonStartRecord(){
 		//textview_status.setText(R.string.status_recording);
-		button_confirm.setText(R.string.string_complete);
-		button_confirm.setClickable(false);
+		//button_confirm.setText(R.string.string_complete);
+		//button_confirm.setClickable(false);
 		imagebutton_record.setVisibility(View.INVISIBLE);
 		imagebutton_record.setClickable(false);
 
@@ -579,6 +561,8 @@ public class RecordActivity extends Activity implements OnClickListener {
 		imagebutton_record.bringToFront();
 		imagebutton_record.setVisibility(View.VISIBLE);
 		imagebutton_record.setClickable(true);
+		button_confirm.setVisibility(View.VISIBLE);
+		button_confirm.setText(R.string.string_complete);
 		button_confirm.setClickable(true);
 		
 	}
@@ -623,8 +607,8 @@ public class RecordActivity extends Activity implements OnClickListener {
 		imagebutton_record.setClickable(false);
 		imagebutton_stop.setClickable(false);
 
-		button_confirm.setClickable(true);
-		button_confirm.setText(R.string.string_play);
+		button_confirm.setClickable(false);
+		button_confirm.setText("");
 	}
 
 	private void setButtonPlaying(){
