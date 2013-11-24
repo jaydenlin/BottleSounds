@@ -1,8 +1,22 @@
 package com.wearapp;
 
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.security.auth.callback.CallbackHandler;
+
+import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.SASLAuthentication;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.sasl.SASLMechanism;
 
 import com.facebook.AppEventsLogger;
 import com.facebook.FacebookException;
@@ -10,6 +24,8 @@ import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
+import com.facebook.Session.NewPermissionsRequest;
+import com.facebook.Session.StatusCallback;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphPlace;
@@ -17,8 +33,12 @@ import com.facebook.model.GraphUser;
 import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.WebDialog;
 import com.facebook.widget.WebDialog.OnCompleteListener;
+import com.wearapp.asyncTask.FacebookChatAsyncTask;
 import com.wearapp.util.LocationUtil;
 
+import de.measite.smack.Sasl;
+
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -28,6 +48,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class CheckPlaceActivity extends FragmentActivity {
 
@@ -87,12 +108,26 @@ public class CheckPlaceActivity extends FragmentActivity {
 		ensureOpenFBSession();
 		initView();
 		setListener();
+		
+		
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		// displaySelectedPlace(RESULT_OK);
+		
+//		Session session = Session.getActiveSession();
+//	    if (session.isOpened()) {
+//	    	session.requestNewReadPermissions(new NewPermissionsRequest(this, Arrays.asList("xmpp_login")));
+//	    	Toast.makeText(getApplicationContext(), session.getAccessToken(), Toast.LENGTH_LONG).show();
+//	 	    String targetFacebookId = "1746264605";
+//	 	    String title = "MESSAGE";
+//	        String message = "test";
+//	        new FacebookChatAsyncTask().execute(targetFacebookId,title,message);
+//	        
+//	    }
+		///
+	    
 	}
 
 	@Override
@@ -143,6 +178,7 @@ public class CheckPlaceActivity extends FragmentActivity {
 			pickPlaceForLocationWhenSessionOpened = null;
 			startPickPlaceActivity(location);
 		}
+		
 	}
 
 	private void startPickPlaceActivity(Location location) {
@@ -190,6 +226,9 @@ public class CheckPlaceActivity extends FragmentActivity {
 
 	private void sendToFriend() {
 		
+		Intent intent=new Intent(this,PickFriendsActivity.class);
+		startActivity(intent);
+		
 		/* Using FacebookDialog */
 //		 if(FacebookDialog.canPresentShareDialog(this,
 //		 FacebookDialog.ShareDialogFeature.SHARE_DIALOG)){
@@ -198,43 +237,44 @@ public class CheckPlaceActivity extends FragmentActivity {
 //		 }
 	           
 
-		/* Using WebDialog */
-		 Bundle params = new Bundle();
-		 params.putString("app_id", Integer.toString(R.string.fb_app_id));
-		 params.putString("title", "發給你們做測試");
-		 params.putString("message", "發給你們做測試");
-//		 params.putString("place", LocationUtil.selectedlocation.getId());
-//		 params.putString("name", "An example parameter");
-//		 params.putString("link", "https://www.example.com/");
+//		/* Using WebDialog */
+//		 Bundle params = new Bundle();
+//		 params.putString("app_id", Integer.toString(R.string.fb_app_id));
+//		 params.putString("title", "發給你們做測試");
+//		 params.putString("message", "發給你們做測試");
 //
-		WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
-				CheckPlaceActivity.this, Session.getActiveSession(),params))
-				.setOnCompleteListener( new WebDialog.OnCompleteListener() {
-
-					@Override
-					public void onComplete(Bundle values,
-							FacebookException error) {
-						// TODO Auto-generated method stub
-						if (error != null) {
-							if (error instanceof FacebookOperationCanceledException) {
-								Log.w(TAG, "Request cancelled");
-							} else {
-								Log.w(TAG, "Network Error");
-							}
-						} else {
-							final String requestId = values
-									.getString("request");
-							if (requestId != null) {
-								Log.w(TAG, "Request sent");
-							} else {
-								Log.w(TAG, "Request cancel");
-							}
-						}
-					}
-				})
-				.build();
-		requestsDialog.show();
+////
+//		WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
+//				CheckPlaceActivity.this, Session.getActiveSession(),params))
+//				.setOnCompleteListener( new WebDialog.OnCompleteListener() {
+//
+//					@Override
+//					public void onComplete(Bundle values,
+//							FacebookException error) {
+//						// TODO Auto-generated method stub
+//						if (error != null) {
+//							if (error instanceof FacebookOperationCanceledException) {
+//								Log.w(TAG, "Request cancelled");
+//							} else {
+//								Log.w(TAG, "Network Error");
+//							}
+//						} else {
+//							final String requestId = values
+//									.getString("request");
+//							if (requestId != null) {
+//								Log.w(TAG, "Request sent");
+//							} else {
+//								Log.w(TAG, "Request cancel");
+//							}
+//						}
+//					}
+//				})
+//				.build();
+//		requestsDialog.show();
+		
+		
 
 	}
+	
 
 }
