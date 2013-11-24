@@ -36,10 +36,10 @@
             android:theme="@style/MainTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
         <activity android:name="RecordActivity" android:label="@string/record_title"></activity>
         <activity android:name="ListenActivity" android:label="@string/listen_title"></activity>
         <activity android:name="ListenLocationActivity" ></activity>

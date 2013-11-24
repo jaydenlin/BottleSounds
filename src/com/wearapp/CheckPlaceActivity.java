@@ -1,22 +1,14 @@
 package com.wearapp;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import com.facebook.AppEventsLogger;
 import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
-import com.facebook.Request;
-import com.facebook.Response;
+
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
-import com.facebook.model.GraphPlace;
-import com.facebook.model.GraphUser;
-import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.WebDialog;
-import com.facebook.widget.WebDialog.OnCompleteListener;
 import com.wearapp.util.LocationUtil;
 
 import android.content.Context;
