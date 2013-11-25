@@ -89,7 +89,7 @@ public class PickFriendsActivity extends FragmentActivity {
         	    	session.requestNewReadPermissions(newPermissionsRequest);
             	for (GraphUser selectedUser : selectedUsers){
             		
-            	    	Toast.makeText(getApplicationContext(), session.getAccessToken(), Toast.LENGTH_LONG).show();
+            	    	//Toast.makeText(getApplicationContext(), session.getAccessToken(), Toast.LENGTH_LONG).show();
             	 	    String targetFacebookId = selectedUser.getId();;
             	 	    String title = "Heare Rock!";
             	        String message = "Heare Rock! Goodnight";
