@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 public class MainActivity extends Activity {
 
@@ -31,8 +32,8 @@ public class MainActivity extends Activity {
 	// UI
 	// /////////////////////////////////////////
 
-	Button button_listen;
-	Button button_record;
+	ImageButton button_listen;
+	ImageButton button_record;
 	
 
 	// /////////////////////////////////////////
@@ -108,8 +109,8 @@ public class MainActivity extends Activity {
 	}
 
 	public void initButton() {
-		button_listen = (Button) findViewById(R.id.button_listen);
-		button_record = (Button) findViewById(R.id.button_record_again);
+		button_listen = (ImageButton) findViewById(R.id.button_listen);
+		button_record = (ImageButton) findViewById(R.id.button_record_again);
 	}
 
 	public void setListener() {
@@ -132,7 +133,7 @@ public class MainActivity extends Activity {
 		return;
 	}
 
-	private Button.OnClickListener mainlistener = new OnClickListener() {
+	private ImageButton.OnClickListener mainlistener = new OnClickListener() {
 		public void onClick(View view) {
 			switch (view.getId()) {
 			case R.id.button_listen:

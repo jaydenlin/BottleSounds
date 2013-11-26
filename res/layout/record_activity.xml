@@ -18,7 +18,7 @@
     <FrameLayout
         android:id="@+id/framelayout1"
         android:layout_width="match_parent"
-        android:layout_height="270dp"
+        android:layout_height="280dp"
         android:layout_margin="1dp"
         android:layout_weight="0" >
 
@@ -34,21 +34,7 @@
             android:thumb="@drawable/my_seekbar_thumb">
         </com.pheelicks.visualizer.MediaSeekBar>
 
-        <!-- 
-        <SeekBar
-            android:id="@+id/seekbar1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="30dp"
-            android:max="100"
-            android:maxHeight="240dp"
-            android:minHeight="240dp"
-            android:progress="0"
-            android:progressDrawable="@drawable/my_seekbar"
-            android:thumb="@drawable/my_seekbar_thumb" />
- 		-->
+       
  		
  		<com.pheelicks.visualizer.BackgroundView
             android:id="@+id/backgroundview"
@@ -129,16 +115,7 @@
         android:layout_marginTop="14dp"
         android:src="@drawable/icon_record" />
 
-    <!-- 
-    <TextView
-        android:id="@+id/recordtext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/imagebutton_record"
-        android:layout_centerHorizontal="true"
-        android:text="@string/string_recordtext"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
- 	-->
+   
     <ImageButton
         android:id="@+id/imagebutton_play"
         style="?android:borderlessButtonStyle"

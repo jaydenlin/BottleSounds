@@ -7,11 +7,15 @@
     <string name="string_listen">收聽</string>
     <string name="string_check_place">打卡</string>
     <string name="string_record">錄音</string>
-	<string name="longitude_label">經度：</string>
+    <string name="longitude_label">經度：</string>
     <string name="latitude_label">緯度：</string>
+
     <color name="pink">#f29c9f</color>
     <color name="white">#ffffff</color>
     <color name="op_white">#aaffffff</color>
+
     <string name="google_app_id">AIzaSyCYICRjhx4KN3DV8AM_XEPu5wwLnptLhtk</string>
     <string name="fb_app_id">611899052182749</string>
+    <string name="title_activity_main_activity_first">MainActivity_first</string>
+
 </resources>

@@ -345,7 +345,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 		if(mRecorder==null){mRecorder = new MediaRecorder();}
 		mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 		
-		mRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+		mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 		mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 		mRecorder.setOutputFile(recordFile.getAbsolutePath());
 		try {
@@ -356,6 +356,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 			e.printStackTrace();
 		}
 		mRecorder.start(); // Recording is now started
+		mediaState = MediaState.isRecordingState;
 		recordtime = System.currentTimeMillis();
 
 		handler.post(updatesb);
@@ -446,7 +447,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 				Log.i(TAG, "In Prepare  Async");
 				playVoice();
 				player.start();
-				handler.postDelayed(updatesb, 100);
+				handler.postDelayed(updatesb, 10);
 			}
 									
 		};
@@ -463,7 +464,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 	    	  mMediaSeekBar.getVisualizer().setEnabled(false);
 	    	  mediaPlayer.stop();
 	          setMediaState(MediaState.isPlayStopState);
-	          handler.postDelayed(updatesb, 100);
+	          handler.postDelayed(updatesb, 10);
 	      }
 	    };
 	  
@@ -489,7 +490,6 @@ public class RecordActivity extends Activity implements OnClickListener {
 						maxProgress = mMediaSeekBar.getProgress();
 						
 					}
-					//mPlayer.seekTo(mMediaSeekBar.getProgress());
 					handler.postDelayed(updatesb,10);
 					
 				}
@@ -498,11 +498,12 @@ public class RecordActivity extends Activity implements OnClickListener {
 					stopPlay();					
 				}
 
-				if (mRecorder != null) {
+				if (mRecorder != null && mediaState == MediaState.isRecordingState) {
 					Long timetmp = (System.currentTimeMillis() - recordtime) / 1000;
 					String sectmp = df2.format(timetmp % 60);
 					String mintmp = df2.format(timetmp / 60);
 					play_time_text.setText("" + mintmp + ":" + sectmp);
+					handler.postDelayed(updatesb,10);
 				}
 
 

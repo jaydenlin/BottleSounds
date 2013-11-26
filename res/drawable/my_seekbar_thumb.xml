@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >      
     <item android:id="@+id/bg_oval">
+  
+            
          <shape xmlns:android="http://schemas.android.com/apk/res/android" 
        			android:shape="rectangle">
-       		<solid android:color="@color/white"/>
+       			<solid android:color="@android:color/transparent"/>
+       		<!--  
+       		
       		<stroke 
       		    android:width="0dp"
-      		    android:color="@color/white"/>      
+      		    android:color="@color/white"/>    -->  
       	    <size android:width="2dp"
-      	          android:height="240dp" />
+      	          android:height="200dp" />
+      	    
+      	    
       	          
         </shape>
         </item>  
+        <item android:drawable="@drawable/weave_bar" />
       
 </layer-list>

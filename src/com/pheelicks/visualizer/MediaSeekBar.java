@@ -312,8 +312,8 @@ public class MediaSeekBar extends SeekBar {
 		    /*draw horizental line on the top and the bottom*/
 		    
 		    linePaint.setStrokeWidth(2f);
-		    canvas.drawLine(0, 1, width, 1, linePaint);
-		    canvas.drawLine(0, height-1, width, height-1, linePaint);
+		    canvas.drawLine(0, 5, width, 5, linePaint);
+		    canvas.drawLine(0, height-5, width, height-5, linePaint);
 		    canvas.drawLine(0, height/2, width, height/2, linePaint);
 		
 	  }	  
