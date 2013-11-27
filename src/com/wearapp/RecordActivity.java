@@ -9,7 +9,6 @@ import java.util.Date;
 
 import com.pheelicks.visualizer.MediaSeekBar;
 import com.pheelicks.visualizer.renderer.WaveRenderer;
-import com.wearapp.R;
 import com.wearapp.asyncTask.UploadAsyncTask;
 
 import android.app.Activity;
