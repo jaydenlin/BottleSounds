@@ -13,44 +13,52 @@
 
     <ImageView
         android:id="@+id/ImageView01"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="3"
-        android:src="@drawable/logo_main"
-        android:visibility="invisible" />
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"   />
     
     <ImageView
         android:id="@+id/image_logo"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="2"
         android:scaleType="centerInside"
         android:src="@drawable/logo_main" />
+    <ImageView
+        android:id="@+id/ImageView03"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"   />
 
     <ImageButton
         android:id="@+id/button_listen"
         style="?android:borderlessButtonStyle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:scaleType="centerInside"
         android:src="@drawable/button_message" />
 
+    <ImageView
+        android:id="@+id/ImageView03"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"   />
+    
+    
     <ImageButton
         android:id="@+id/button_record_again"
         style="?android:borderlessButtonStyle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:scaleType="centerInside"
         android:src="@drawable/button_record" />
 
     <ImageView
-        android:id="@+id/image_logo1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="3"
-        android:src="@drawable/logo_main"
-        android:visibility="invisible" />
+        android:id="@+id/imageview02"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.5"  />
 
 </LinearLayout>

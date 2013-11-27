@@ -62,7 +62,6 @@ public class BackgroundView extends View{
 		      mCanvas = new Canvas(mCanvasBitmap);
 		      
 		    }
-		    Paint linePaint = new Paint();
 			  Paint slinePaint = new Paint();
 			  float width = getWidth();
 			  float height = getHeight();
@@ -78,7 +77,7 @@ public class BackgroundView extends View{
 			    	float startX = gapWidth*(i+1);
 			    	float stopX = startX; 
 			    	float startY = 10;
-			    	float stopY = height-1;
+			    	float stopY = height;
 			    	canvas.drawLine(startX, startY, stopX, stopY, slinePaint);
 			    	
 			    	
@@ -89,7 +88,7 @@ public class BackgroundView extends View{
 				    	 float smallstartX = startX-smallgapWidth*j;
 				    	 float smallstopX = smallstartX; 
 				    	 float smallstartY = height-10;
-				    	 float smallstopY = height-1;
+				    	 float smallstopY = height;
 				    	canvas.drawLine(smallstartX, smallstartY, smallstopX, smallstopY, slinePaint);
 			    	}
 			    	

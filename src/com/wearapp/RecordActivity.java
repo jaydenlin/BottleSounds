@@ -429,7 +429,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 
 	    Paint lineFlashPaint = new Paint();
 	    
-	    lineFlashPaint.setStrokeWidth(4f);
+	    lineFlashPaint.setStrokeWidth(2f);
 	    lineFlashPaint.setStrokeJoin(Paint.Join.ROUND);
 	    lineFlashPaint.setStrokeCap(Paint.Cap.ROUND);
 	    lineFlashPaint.setAntiAlias(true);

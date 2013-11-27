@@ -9,46 +9,49 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     
     tools:context=".MainActivity" 
-    android:weightSum="10" >
+    android:weightSum="11" >
 
     <ImageView
-        android:id="@+id/ImageView01"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="3"
-        android:src="@drawable/logo_main"
-        android:visibility="invisible" />
-    
+        android:id="@+id/imageview01"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"  />
+
     <ImageView
         android:id="@+id/image_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
         android:scaleType="centerInside"
         android:src="@drawable/logo_main" />
 
     <ImageView
-        android:id="@+id/image_logo1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="3"
-        android:src="@drawable/logo_main"
-        android:visibility="invisible" />
+        android:id="@+id/imageview02"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"    />
 
     <ImageButton
         android:id="@+id/button_facebook"
         style="?android:borderlessButtonStyle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_height="0dp"
+        android:layout_weight="1.5"
         android:scaleType="centerInside"
         android:src="@drawable/button_fb_login" />
+    
+    <ImageView
+        android:id="@+id/imageview03"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"    />
 
     <Button
         android:id="@+id/button_direct"
         style="?android:borderlessButtonStyle"
         android:layout_width="wrap_content"
-        android:layout_height="80dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:gravity="center_vertical|top"
         android:text="          或 直接開始使用       "
         android:textColor="@color/white"

@@ -31,7 +31,7 @@
             android:minHeight="240dp"
             android:progress="0"
             android:progressDrawable="@drawable/my_seekbar"
-            android:thumb="@drawable/my_seekbar_thumb">
+            android:thumb="@drawable/weave_bar">
         </com.pheelicks.visualizer.MediaSeekBar>
 
        

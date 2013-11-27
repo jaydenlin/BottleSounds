@@ -312,10 +312,49 @@ public class MediaSeekBar extends SeekBar {
 		    /*draw horizental line on the top and the bottom*/
 		    
 		    linePaint.setStrokeWidth(2f);
-		    canvas.drawLine(0, 5, width, 5, linePaint);
-		    canvas.drawLine(0, height-5, width, height-5, linePaint);
+		    canvas.drawLine(0, 10, width, 10, linePaint);
+		    canvas.drawLine(0, height-10, width, height-10, linePaint);
 		    canvas.drawLine(0, height/2, width, height/2, linePaint);
+		    drawExtraLine(canvas);
 		
 	  }	  
+	  
+	  public void drawExtraLine(Canvas canvas){
+		  Paint slinePaint = new Paint();
+		  float width = getWidth();
+		  float height = getHeight();
+		   
+		  /*draw vertical line in the background*/
+		    slinePaint.setStrokeWidth(2f);
+		   
+		    slinePaint.setColor(Color.WHITE);
+		    slinePaint.setAlpha(80);
+		    int gap = 5;
+		    for (int i = 0; i< gap;i++){
+		    	float gapWidth = (width/gap)-1;
+		    	float startX = gapWidth*(i+1);
+		    	float stopX = startX; 
+		    	float startY = 0;
+		    	float stopY = 8;
+		    	canvas.drawLine(startX, startY, stopX, stopY, slinePaint);
+		    	
+		    	
+		    	/*draw small gap*/
+		    	 int smallgap = 3;
+		    	for(int j =1 ; j< smallgap; j++){
+			    	 float smallgapWidth = (gapWidth/smallgap);
+			    	 float smallstartX = startX-smallgapWidth*j;
+			    	 float smallstopX = smallstartX; 
+			    	 float smallstartY = 0;
+			    	 float smallstopY = 8;
+			    	canvas.drawLine(smallstartX, smallstartY, smallstopX, smallstopY, slinePaint);
+		    	}
+		    	
+		    	
+		    }
+		  
+		  
+		  
+	  } 
 
 }

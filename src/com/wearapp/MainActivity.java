@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 public class MainActivity extends Activity {
@@ -18,6 +19,8 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_activity_first);
+		initButton();
+		setListener();
 	}
 
 	
@@ -40,7 +43,7 @@ public class MainActivity extends Activity {
 		// /////////////////////////////////////////
 
 		ImageButton button_facebook;
-		ImageButton button_direct;
+		Button button_direct;
 		
 
 		// /////////////////////////////////////////
@@ -107,7 +110,7 @@ public class MainActivity extends Activity {
 
 		public void initButton() {
 			button_facebook = (ImageButton) findViewById(R.id.button_facebook);
-			button_direct = (ImageButton) findViewById(R.id.button_direct);
+			button_direct = (Button) findViewById(R.id.button_direct);
 		}
 
 		public void setListener() {
