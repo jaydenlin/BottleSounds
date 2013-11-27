@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="record_title">錄製留言</string>
     <string name="status_recording">錄音中 …</string>
     <string name="string_recordtext">開始錄音</string>
@@ -8,7 +9,5 @@
     <string name="string_play">試聽</string>
     <string name="string_confirm">確認</string>
     <string name="string_play_time_text">00:00</string>
-    
 
-    
 </resources>
