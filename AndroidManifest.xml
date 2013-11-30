@@ -60,6 +60,8 @@
         </activity>
         <activity android:name="com.wearapp.PickLocationActivity" >
         </activity>
+        <activity android:name="com.wearapp.PickFriendsActivity" >
+        </activity>
         <activity android:name="com.wearapp.CheckPlaceActivity" >
         </activity>
         <activity android:name="com.wearapp.PickPlaceActivity" >
