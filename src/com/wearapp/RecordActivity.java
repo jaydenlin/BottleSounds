@@ -159,8 +159,8 @@ public class RecordActivity extends Activity implements OnClickListener {
 
 	@Override
 	public void onClick(View view) {
-		switch (view.getId()) {
-		case R.id.imagebutton_record:
+		int id = view.getId();
+		if (id == R.id.imagebutton_record) {
 			try {
 				startRecord();
 			} catch (IOException e) {
@@ -169,8 +169,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 			setMediaState(MediaState.isRecordingState);
 			setButton(mediaState);
 			return;
-
-		case R.id.imagebutton_stop:
+		} else if (id == R.id.imagebutton_stop) {
 			if(mPlayer!=null && mediaState == MediaState.isPlayingState){
 				setMediaState(MediaState.isPlayStopState);
 				setButton(mediaState);
@@ -181,16 +180,14 @@ public class RecordActivity extends Activity implements OnClickListener {
 				setMediaState(MediaState.isRecordedState);
 				setButton(mediaState);
 			}
-
 			return;
-		case R.id.button_confirm:
+		} else if (id == R.id.button_confirm) {
 			if (mediaState == MediaState.isRecordedState) {
 				setMediaState(MediaState.isStartPlayState);
 				setButton(mediaState);
 				defaultRecorder();						
 				return;
 			}
-			
 			if(mediaState == MediaState.isPlayStopState){
 				setMediaState(MediaState.Default);
 				defaultMediaPlayer();
@@ -199,12 +196,8 @@ public class RecordActivity extends Activity implements OnClickListener {
 				uploadFile();
 				return;
 			}
-			
-		
-			
 			return;
-
-		case R.id.imagebutton_play:
+		} else if (id == R.id.imagebutton_play) {
 			if (mediaState == MediaState.isStartPlayState||
 				mediaState == MediaState.isPlayStopState) {
 				setMediaState(MediaState.isPlayingState);
@@ -231,9 +224,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 				mPlayer.prepareAsync();
 				
 			}
-			
 			return;
-
 		}
 
 		return;
@@ -261,12 +252,9 @@ public class RecordActivity extends Activity implements OnClickListener {
 	}
 
 	public void hideImageButton(View view) {
-		switch (view.getId()) {
-		case R.id.imagebutton_record:
+		int id = view.getId();
+		if (id == R.id.imagebutton_record) {
 			imagebutton_record = (ImageButton) findViewById(R.id.imagebutton_record);
-
-			break;
-
 		}
 
 		return;
