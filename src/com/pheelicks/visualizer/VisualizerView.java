@@ -28,7 +28,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.pheelicks.visualizer.renderer.Renderer;
-import com.wearapp.R;
 import com.wearapp.RecordActivity;
 
 /**

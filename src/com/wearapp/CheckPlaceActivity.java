@@ -1,39 +1,15 @@
 package com.wearapp;
 
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import javax.security.auth.callback.CallbackHandler;
 
-import org.jivesoftware.smack.Chat;
-import org.jivesoftware.smack.ConnectionConfiguration;
-import org.jivesoftware.smack.SASLAuthentication;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.sasl.SASLMechanism;
 
-import bin.classes.com.facebook.AppEventsLogger;
 
-import com.facebook.FacebookException;
-import com.facebook.FacebookOperationCanceledException;
+import com.facebook.AppEventsLogger;
 import com.facebook.Session;
-import com.facebook.Session.NewPermissionsRequest;
-import com.facebook.Session.StatusCallback;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
-import com.facebook.widget.WebDialog;
-import com.facebook.widget.WebDialog.OnCompleteListener;
-import com.wearapp.asyncTask.FacebookChatAsyncTask;
 import com.wearapp.util.LocationUtil;
 
-import de.measite.smack.Sasl;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -43,7 +19,6 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 public class CheckPlaceActivity extends FragmentActivity {
 
