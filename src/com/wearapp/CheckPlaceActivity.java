@@ -18,23 +18,21 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 
-import com.facebook.AppEventsLogger;
+import bin.classes.com.facebook.AppEventsLogger;
+
 import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
-
 import com.facebook.Session;
 import com.facebook.Session.NewPermissionsRequest;
 import com.facebook.Session.StatusCallback;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.widget.WebDialog;
-
 import com.facebook.widget.WebDialog.OnCompleteListener;
 import com.wearapp.asyncTask.FacebookChatAsyncTask;
 import com.wearapp.util.LocationUtil;
 
 import de.measite.smack.Sasl;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
