@@ -15,6 +15,7 @@ import com.facebook.widget.PlacePickerFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.wearapp.util.LocationUtil;
 
@@ -72,9 +73,13 @@ public class PickPlaceActivity extends FragmentActivity {
 	private void setGoogleMap() {
 		map = ((SupportMapFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.map)).getMap();
-		map.setMyLocationEnabled(true);
+		map.setMyLocationEnabled(true);		
 		map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
 				userLocation.getLatitude(), userLocation.getLongitude()), 16));
+		
+		UiSettings uisettings = map.getUiSettings();
+		uisettings.setZoomControlsEnabled(false);
+		
 	}
 
 	public static void populateParameters(Intent intent, Location location,
