@@ -94,11 +94,10 @@ public class PickFriendsActivity extends FragmentActivity {
             	 	    String title = "Heare Rock!";
             	        String message = "Heare Rock! Goodnight";
             	        new FacebookChatAsyncTask().execute(targetFacebookId,title,message);
-            	        
+            	        Toast.makeText(getApplicationContext(), "message sent", Toast.LENGTH_LONG).show();
             	    }
             	}
-               
-               // finish();
+               finish();
             }
         });
     }

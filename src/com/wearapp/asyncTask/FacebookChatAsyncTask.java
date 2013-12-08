@@ -22,10 +22,12 @@ import com.facebook.Session;
 import com.facebook.Session.NewPermissionsRequest;
 
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.StrictMode;
 import android.util.Log;
+import android.widget.Toast;
 
 public class FacebookChatAsyncTask extends AsyncTask<String, Void, Void>{
 
@@ -35,7 +37,6 @@ public class FacebookChatAsyncTask extends AsyncTask<String, Void, Void>{
 	    String targetFacebookId = params[0];
 	    String title=params[1];
 	    String message = params[2];
-	   
 	    ConnectionConfiguration config = new ConnectionConfiguration("chat.facebook.com", 5222);
 	    config.setSASLAuthenticationEnabled(true);
         config.setSecurityMode(ConnectionConfiguration.SecurityMode.enabled);
