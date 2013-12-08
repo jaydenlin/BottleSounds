@@ -1,6 +1,8 @@
 package com.wearapp;
 
 
+import com.facebook.UiLifecycleHelper;
+
 import android.app.ActionBar;
 import android.app.Application;
 import android.content.Context;
@@ -15,7 +17,6 @@ import android.view.WindowManager;
 
 public class GlobalAction extends Application{
 
-	
 	public void setActionBar(ActionBar actionBar){
 		 
 		actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.background_title));

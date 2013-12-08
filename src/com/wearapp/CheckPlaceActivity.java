@@ -76,28 +76,15 @@ public class CheckPlaceActivity extends FragmentActivity {
 				});
 		FBlifecycleHelper.onCreate(savedInstanceState);
 		ensureOpenFBSession();
+		
 		initView();
 		setListener();
-		
 		
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		
-//		Session session = Session.getActiveSession();
-//	    if (session.isOpened()) {
-//	    	session.requestNewReadPermissions(new NewPermissionsRequest(this, Arrays.asList("xmpp_login")));
-//	    	Toast.makeText(getApplicationContext(), session.getAccessToken(), Toast.LENGTH_LONG).show();
-//	 	    String targetFacebookId = "1746264605";
-//	 	    String title = "MESSAGE";
-//	        String message = "test";
-//	        new FacebookChatAsyncTask().execute(targetFacebookId,title,message);
-//	        
-//	    }
-		///
-	    
 	}
 
 	@Override
@@ -123,10 +110,10 @@ public class CheckPlaceActivity extends FragmentActivity {
 		super.onActivityResult(requestCode, resultCode, data);
 		FBlifecycleHelper.onActivityResult(requestCode, resultCode, data);
 		Log.w(TAG, "onActivityResult");
+		
 		switch (requestCode) {
 		case PLACE_ACTIVITY:
 			sendToFriend();
-			Log.w(TAG,"sendFriend");
 			break;
 		default:
 			break;
@@ -178,72 +165,9 @@ public class CheckPlaceActivity extends FragmentActivity {
 		return true;
 	}
 
-	private void displaySelectedPlace(int resultCode) {
-
-	}
-
-//	 private FacebookDialog.ShareDialogBuilder createShareDialogBuilder() {
-//	 List<String> friends = new ArrayList<String>();
-//	 friends.add("4723146631600");
-//	 String selectedPlaceID = LocationUtil.selectedlocation.getId();
-//	 Log.w(TAG,selectedPlaceID);
-//	 return new FacebookDialog.ShareDialogBuilder(this)
-//	 .setName("Just a test")
-//	 .setDescription("test")
-//	 .setLink("http://developers.facebook.com/android")
-//	 .setPlace("159310107428142");
-//	 }
-
 	private void sendToFriend() {
-		
 		Intent intent=new Intent(this,PickFriendsActivity.class);
 		startActivity(intent);
-		
-		/* Using FacebookDialog */
-//		 if(FacebookDialog.canPresentShareDialog(this,
-//		 FacebookDialog.ShareDialogFeature.SHARE_DIALOG)){
-//		 FacebookDialog shareDialog = createShareDialogBuilder().build();
-//		 FBlifecycleHelper.trackPendingDialogCall(shareDialog.present());
-//		 }
-	           
-
-//		/* Using WebDialog */
-//		 Bundle params = new Bundle();
-//		 params.putString("app_id", Integer.toString(R.string.fb_app_id));
-//		 params.putString("title", "發給你們做測試");
-//		 params.putString("message", "發給你們做測試");
-//
-////
-//		WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
-//				CheckPlaceActivity.this, Session.getActiveSession(),params))
-//				.setOnCompleteListener( new WebDialog.OnCompleteListener() {
-//
-//					@Override
-//					public void onComplete(Bundle values,
-//							FacebookException error) {
-//						// TODO Auto-generated method stub
-//						if (error != null) {
-//							if (error instanceof FacebookOperationCanceledException) {
-//								Log.w(TAG, "Request cancelled");
-//							} else {
-//								Log.w(TAG, "Network Error");
-//							}
-//						} else {
-//							final String requestId = values
-//									.getString("request");
-//							if (requestId != null) {
-//								Log.w(TAG, "Request sent");
-//							} else {
-//								Log.w(TAG, "Request cancel");
-//							}
-//						}
-//					}
-//				})
-//				.build();
-//		requestsDialog.show();
-		
-		
-
 	}
 	
 
