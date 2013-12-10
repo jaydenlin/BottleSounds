@@ -19,6 +19,8 @@ package com.wearapp;
 import java.util.Arrays;
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -40,6 +42,7 @@ import com.wearapp.asyncTask.FacebookChatAsyncTask;
 public class PickFriendsActivity extends FragmentActivity {
     FriendPickerFragment friendPickerFragment;
     NewPermissionsRequest newPermissionsRequest;
+    StringBuffer friendslist_selected;
     // A helper to simplify life for callers who want to populate a Bundle with the necessary
     // parameters. A more sophisticated Activity might define its own set of parameters; our needs
     // are simple, so we just populate what we want to pass to the FriendPickerFragment.
@@ -49,6 +52,20 @@ public class PickFriendsActivity extends FragmentActivity {
         intent.putExtra(FriendPickerFragment.SHOW_TITLE_BAR_BUNDLE_KEY, showTitleBar);
     }
 
+    private void sendMessage() {
+		// TODO Auto-generated method stub
+    	List<GraphUser> selectedUsers = friendPickerFragment.getSelection();
+    
+    	for (GraphUser selectedUser : selectedUsers){            		            	    	
+			String targetFacebookId = selectedUser.getId();;
+	 	    String title = "Heare Rock!";
+	        String message = "Heare Rock! Goodnight";
+	        new FacebookChatAsyncTask().execute(targetFacebookId,title,message);	             
+	    }	   
+    	Toast.makeText(getApplicationContext(), "Message just sent to "+friendslist_selected.toString(), Toast.LENGTH_LONG).show();
+    	friendslist_selected.delete(0, friendslist_selected.length());
+	}
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,23 +98,46 @@ public class PickFriendsActivity extends FragmentActivity {
             @Override
             public void onDoneButtonClicked(PickerFragment<?> fragment) {
                 // We just store our selection in the Application for other activities to look at.
-//                FriendPickerApplication application = (FriendPickerApplication) getApplication();
-//                application.setSelectedUsers(friendPickerFragment.getSelection());
+				// FriendPickerApplication application = (FriendPickerApplication) getApplication();
             	List<GraphUser> selectedUsers = friendPickerFragment.getSelection();
-            	Session session = Session.getActiveSession();
+            	Session session = Session.getActiveSession();            	
+            	friendslist_selected = new StringBuffer();
+            	friendslist_selected.delete(0, friendslist_selected.length());
+            	
         	    if (session.isOpened()) {
         	    	session.requestNewReadPermissions(newPermissionsRequest);
-            	for (GraphUser selectedUser : selectedUsers){
-            		
-            	    	//Toast.makeText(getApplicationContext(), session.getAccessToken(), Toast.LENGTH_LONG).show();
-            	 	    String targetFacebookId = selectedUser.getId();;
-            	 	    String title = "Heare Rock!";
-            	        String message = "Heare Rock! Goodnight";
-            	        new FacebookChatAsyncTask().execute(targetFacebookId,title,message);
-            	        Toast.makeText(getApplicationContext(), "message sent", Toast.LENGTH_LONG).show();
-            	    }
+        	    	
+    	    	for (GraphUser selectedUser : selectedUsers){            		            	    	        				        
+        	        if(selectedUsers.size()-1 != selectedUsers.indexOf(selectedUser) )
+        	        	friendslist_selected.append( selectedUser.getName()+",");
+        	        else
+        	        	friendslist_selected.append( selectedUser.getName());        	        
+        	    }
+                	
+    	    
+    	    	new AlertDialog.Builder(PickFriendsActivity.this).setMessage("Are you sure to send message to "+friendslist_selected+"?"
+            	).setPositiveButton("YES", 
+            			new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								// TODO Auto-generated method stub													
+								sendMessage();
+								finish();
+							}
             	}
-               finish();
+            	).setNegativeButton("NO", 
+    			new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						Toast.makeText(getApplicationContext(), "Message not sent", Toast.LENGTH_LONG).show();
+						finish();
+					}
+				}
+            	).show();
+
+            	}
+              
             }
         });
     }
@@ -117,5 +157,12 @@ public class PickFriendsActivity extends FragmentActivity {
         } catch (Exception ex) {
             onError(ex);
         }
+    }
+    
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+       Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+
     }
 }
