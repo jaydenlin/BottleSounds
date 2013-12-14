@@ -42,19 +42,16 @@ public class LocationUtil {
 	 * @param locationManager
 	 * @return location
 	 */
-	public static void locateCurrentLocation(Activity activity,
-			LocateLocationDoneDelegate locateLocationDoneDelegate) {
+	public static void locateCurrentLocation(Activity activity, LocateLocationDoneDelegate locateLocationDoneDelegate) {
 
 		locateLocationDoneDelegateForInteral = locateLocationDoneDelegate;
-		
-		LocationManager locationManager = (LocationManager) activity
-				.getSystemService(Context.LOCATION_SERVICE);
+
+		LocationManager locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
 
 		Criteria criteria = new Criteria();
 		String bestProvider = locationManager.getBestProvider(criteria, false);
 		lastKnownLocation = locationManager.getLastKnownLocation(bestProvider);
-		locationManager.requestLocationUpdates(bestProvider, 0, 0,
-				locationListener);
+		locationManager.requestLocationUpdates(bestProvider, 0, 0, locationListener);
 		lastKnownLocation = locationManager.getLastKnownLocation(bestProvider);
 
 		if (lastKnownLocation != null) {
@@ -95,7 +92,7 @@ public class LocationUtil {
 			Log.w(TAG, "on location changed");
 			lastKnownLocation = location;
 			locateLocationDoneDelegateForInteral.postExec(location);
-			
+
 		}
 	};
 

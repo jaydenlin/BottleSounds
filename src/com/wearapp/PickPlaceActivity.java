@@ -35,53 +35,44 @@ public class PickPlaceActivity extends FragmentActivity {
 
 	private void setPickPlaceFragment() {
 		FragmentManager fm = getSupportFragmentManager();
-		placePickerFragment = (PlacePickerFragment) fm
-				.findFragmentById(R.id.place_picker_fragment);
+		placePickerFragment = (PlacePickerFragment) fm.findFragmentById(R.id.place_picker_fragment);
 
 		placePickerFragment.setSettingsFromBundle(getIntent().getExtras());
 
-		placePickerFragment
-				.setOnErrorListener(new PickerFragment.OnErrorListener() {
-					@Override
-					public void onError(PickerFragment<?> fragment,
-							FacebookException error) {
-						PickPlaceActivity.this.onError(error);
-					}
-				});
+		placePickerFragment.setOnErrorListener(new PickerFragment.OnErrorListener() {
+			@Override
+			public void onError(PickerFragment<?> fragment, FacebookException error) {
+				PickPlaceActivity.this.onError(error);
+			}
+		});
 
-		placePickerFragment
-				.setOnSelectionChangedListener(new PickerFragment.OnSelectionChangedListener() {
-					@Override
-					public void onSelectionChanged(PickerFragment<?> fragment) {
-						if (placePickerFragment.getSelection() != null) {
-							LocationUtil.selectedlocation = placePickerFragment
-									.getSelection();
-							finishActivity();
-						}
-					}
-				});
-		placePickerFragment
-				.setOnDoneButtonClickedListener(new PickerFragment.OnDoneButtonClickedListener() {
-					@Override
-					public void onDoneButtonClicked(PickerFragment<?> fragment) {
-						finishActivity();
-					}
-				});
+		placePickerFragment.setOnSelectionChangedListener(new PickerFragment.OnSelectionChangedListener() {
+			@Override
+			public void onSelectionChanged(PickerFragment<?> fragment) {
+				if (placePickerFragment.getSelection() != null) {
+					LocationUtil.selectedlocation = placePickerFragment.getSelection();
+					finishActivity();
+				}
+			}
+		});
+		placePickerFragment.setOnDoneButtonClickedListener(new PickerFragment.OnDoneButtonClickedListener() {
+			@Override
+			public void onDoneButtonClicked(PickerFragment<?> fragment) {
+				finishActivity();
+			}
+		});
 	}
 
 	@SuppressLint("NewApi")
 	private void setGoogleMap() {
-		map = ((SupportMapFragment) getSupportFragmentManager()
-				.findFragmentById(R.id.map)).getMap();
-		map.setMyLocationEnabled(true);		
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
-				userLocation.getLatitude(), userLocation.getLongitude()), 16));
+		map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
+		map.setMyLocationEnabled(true);
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 16));
 		UiSettings uisettings = map.getUiSettings();
 		uisettings.setZoomControlsEnabled(false);
 	}
 
-	public static void populateParameters(Intent intent, Location location,
-			String searchText) {
+	public static void populateParameters(Intent intent, Location location, String searchText) {
 		intent.putExtra(PlacePickerFragment.LOCATION_BUNDLE_KEY, location);
 		intent.putExtra(PlacePickerFragment.SEARCH_TEXT_BUNDLE_KEY, searchText);
 		userLocation = location;
@@ -100,7 +91,7 @@ public class PickPlaceActivity extends FragmentActivity {
 			setPickPlaceFragment();
 		}
 
-		GlobalAction globalAction = (GlobalAction)this.getApplicationContext();
+		GlobalAction globalAction = (GlobalAction) this.getApplicationContext();
 		globalAction.setActionBar(getActionBar());
 		setGoogleMap();
 
@@ -124,7 +115,7 @@ public class PickPlaceActivity extends FragmentActivity {
 	// /////////////////////////////////////////
 
 	private void finishActivity() {
-		setResult(RESULT_OK,null);
+		setResult(RESULT_OK, null);
 		finish();
 	}
 

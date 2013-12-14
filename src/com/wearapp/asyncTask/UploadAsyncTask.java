@@ -9,16 +9,14 @@ public class UploadAsyncTask extends AsyncTask<File, Void, Void> {
 
 	public static final String upLoadServerUri = "http://jadyenlin.tw/newre/savetest.php";
 	public File sourceFile;
-	
+
 	@Override
 	protected Void doInBackground(File... params) {
 		this.sourceFile = params[0];
-		UploadUtil uploadUtil = new UploadUtil(sourceFile,"uploaded_file");
+		UploadUtil uploadUtil = new UploadUtil(sourceFile, "uploaded_file");
 		uploadUtil.upload();
 		Log.w("UploadAsyncTask", "uploading:" + this.sourceFile.getAbsolutePath());
 		return null;
 	}
 
-	
-	
 }

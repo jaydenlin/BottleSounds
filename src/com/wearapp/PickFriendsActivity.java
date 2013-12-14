@@ -40,129 +40,132 @@ import com.wearapp.asyncTask.FacebookChatAsyncTask;
 // Activity creating a fragment (in this case a PlacePickerFragment) via XML layout rather than
 // programmatically.
 public class PickFriendsActivity extends FragmentActivity {
-    FriendPickerFragment friendPickerFragment;
-    NewPermissionsRequest newPermissionsRequest;
-    StringBuffer friendslist_selected;
-    // A helper to simplify life for callers who want to populate a Bundle with the necessary
-    // parameters. A more sophisticated Activity might define its own set of parameters; our needs
-    // are simple, so we just populate what we want to pass to the FriendPickerFragment.
-    public static void populateParameters(Intent intent, String userId, boolean multiSelect, boolean showTitleBar) {
-        intent.putExtra(FriendPickerFragment.USER_ID_BUNDLE_KEY, userId);
-        intent.putExtra(FriendPickerFragment.MULTI_SELECT_BUNDLE_KEY, multiSelect);
-        intent.putExtra(FriendPickerFragment.SHOW_TITLE_BAR_BUNDLE_KEY, showTitleBar);
-    }
+	FriendPickerFragment friendPickerFragment;
+	NewPermissionsRequest newPermissionsRequest;
+	StringBuffer friendslist_selected;
 
-    private void sendMessage() {
-		// TODO Auto-generated method stub
-    	List<GraphUser> selectedUsers = friendPickerFragment.getSelection();
-    
-    	for (GraphUser selectedUser : selectedUsers){            		            	    	
-			String targetFacebookId = selectedUser.getId();;
-	 	    String title = "Heare Rock!";
-	        String message = "Heare Rock! Goodnight";
-	        new FacebookChatAsyncTask().execute(targetFacebookId,title,message);	             
-	    }	   
-    	Toast.makeText(getApplicationContext(), "Message just sent to "+friendslist_selected.toString(), Toast.LENGTH_LONG).show();
-    	friendslist_selected.delete(0, friendslist_selected.length());
+	// A helper to simplify life for callers who want to populate a Bundle with
+	// the necessary
+	// parameters. A more sophisticated Activity might define its own set of
+	// parameters; our needs
+	// are simple, so we just populate what we want to pass to the
+	// FriendPickerFragment.
+	public static void populateParameters(Intent intent, String userId, boolean multiSelect, boolean showTitleBar) {
+		intent.putExtra(FriendPickerFragment.USER_ID_BUNDLE_KEY, userId);
+		intent.putExtra(FriendPickerFragment.MULTI_SELECT_BUNDLE_KEY, multiSelect);
+		intent.putExtra(FriendPickerFragment.SHOW_TITLE_BAR_BUNDLE_KEY, showTitleBar);
 	}
-    
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.pick_friends_activity);
-        newPermissionsRequest=new NewPermissionsRequest(this, Arrays.asList("xmpp_login"));
-        FragmentManager fm = getSupportFragmentManager();
 
-        if (savedInstanceState == null) {
-            // First time through, we create our fragment programmatically.
-            final Bundle args = getIntent().getExtras();
-            friendPickerFragment = new FriendPickerFragment(args);
-            fm.beginTransaction()
-                    .add(R.id.friend_picker_fragment, friendPickerFragment)
-                    .commit();
-        } else {
-            // Subsequent times, our fragment is recreated by the framework and already has saved and
-            // restored its state, so we don't need to specify args again. (In fact, this might be
-            // incorrect if the fragment was modified programmatically since it was created.)
-            friendPickerFragment = (FriendPickerFragment) fm.findFragmentById(R.id.friend_picker_fragment);
-        }
+	private void sendMessage() {
+		// TODO Auto-generated method stub
+		List<GraphUser> selectedUsers = friendPickerFragment.getSelection();
 
-        friendPickerFragment.setOnErrorListener(new PickerFragment.OnErrorListener() {
-            @Override
-            public void onError(PickerFragment<?> fragment, FacebookException error) {
-                PickFriendsActivity.this.onError(error);
-            }
-        });
+		for (GraphUser selectedUser : selectedUsers) {
+			String targetFacebookId = selectedUser.getId();
+			;
+			String title = "Heare Rock!";
+			String message = "Heare Rock! Goodnight";
+			new FacebookChatAsyncTask().execute(targetFacebookId, title, message);
+		}
+		Toast.makeText(getApplicationContext(), "Message just sent to " + friendslist_selected.toString(), Toast.LENGTH_LONG).show();
+		friendslist_selected.delete(0, friendslist_selected.length());
+	}
 
-        friendPickerFragment.setOnDoneButtonClickedListener(new PickerFragment.OnDoneButtonClickedListener() {
-            @Override
-            public void onDoneButtonClicked(PickerFragment<?> fragment) {
-                // We just store our selection in the Application for other activities to look at.
-				// FriendPickerApplication application = (FriendPickerApplication) getApplication();
-            	List<GraphUser> selectedUsers = friendPickerFragment.getSelection();
-            	Session session = Session.getActiveSession();            	
-            	friendslist_selected = new StringBuffer();
-            	friendslist_selected.delete(0, friendslist_selected.length());
-            	
-        	    if (session.isOpened()) {
-        	    	session.requestNewReadPermissions(newPermissionsRequest);
-        	    	
-    	    	for (GraphUser selectedUser : selectedUsers){            		            	    	        				        
-        	        if(selectedUsers.size()-1 != selectedUsers.indexOf(selectedUser) )
-        	        	friendslist_selected.append( selectedUser.getName()+",");
-        	        else
-        	        	friendslist_selected.append( selectedUser.getName());        	        
-        	    }
-                	
-    	    
-    	    	new AlertDialog.Builder(PickFriendsActivity.this).setMessage("Are you sure to send message to "+friendslist_selected+"?"
-            	).setPositiveButton("YES", 
-            			new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								// TODO Auto-generated method stub													
-								sendMessage();
-								finish();
-							}
-            	}
-            	).setNegativeButton("NO", 
-    			new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
-						Toast.makeText(getApplicationContext(), "Message not sent", Toast.LENGTH_LONG).show();
-						finish();
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.pick_friends_activity);
+		newPermissionsRequest = new NewPermissionsRequest(this, Arrays.asList("xmpp_login"));
+		FragmentManager fm = getSupportFragmentManager();
+
+		if (savedInstanceState == null) {
+			// First time through, we create our fragment programmatically.
+			final Bundle args = getIntent().getExtras();
+			friendPickerFragment = new FriendPickerFragment(args);
+			fm.beginTransaction().add(R.id.friend_picker_fragment, friendPickerFragment).commit();
+		} else {
+			// Subsequent times, our fragment is recreated by the framework and
+			// already has saved and
+			// restored its state, so we don't need to specify args again. (In
+			// fact, this might be
+			// incorrect if the fragment was modified programmatically since it
+			// was created.)
+			friendPickerFragment = (FriendPickerFragment) fm.findFragmentById(R.id.friend_picker_fragment);
+		}
+
+		friendPickerFragment.setOnErrorListener(new PickerFragment.OnErrorListener() {
+			@Override
+			public void onError(PickerFragment<?> fragment, FacebookException error) {
+				PickFriendsActivity.this.onError(error);
+			}
+		});
+
+		friendPickerFragment.setOnDoneButtonClickedListener(new PickerFragment.OnDoneButtonClickedListener() {
+			@Override
+			public void onDoneButtonClicked(PickerFragment<?> fragment) {
+				// We just store our selection in the Application for other
+				// activities to look at.
+				// FriendPickerApplication application =
+				// (FriendPickerApplication) getApplication();
+				List<GraphUser> selectedUsers = friendPickerFragment.getSelection();
+				Session session = Session.getActiveSession();
+				friendslist_selected = new StringBuffer();
+				friendslist_selected.delete(0, friendslist_selected.length());
+
+				if (session.isOpened()) {
+					session.requestNewReadPermissions(newPermissionsRequest);
+
+					for (GraphUser selectedUser : selectedUsers) {
+						if (selectedUsers.size() - 1 != selectedUsers.indexOf(selectedUser))
+							friendslist_selected.append(selectedUser.getName() + ",");
+						else
+							friendslist_selected.append(selectedUser.getName());
 					}
+
+					new AlertDialog.Builder(PickFriendsActivity.this).setMessage("Are you sure to send message to " + friendslist_selected + "?")
+							.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									// TODO Auto-generated method stub
+									sendMessage();
+									finish();
+								}
+							}).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									// TODO Auto-generated method stub
+									Toast.makeText(getApplicationContext(), "Message not sent", Toast.LENGTH_LONG).show();
+									finish();
+								}
+							}).show();
+
 				}
-            	).show();
 
-            	}
-              
-            }
-        });
-    }
+			}
+		});
+	}
 
-    private void onError(Exception error) {
-//        String text = getString("Error", error.getMessage());
-//        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-//        toast.show();
-    }
+	private void onError(Exception error) {
+		// String text = getString("Error", error.getMessage());
+		// Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+		// toast.show();
+	}
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        try {
-            // Load data, unless a query has already taken place.
-            friendPickerFragment.loadData(false);
-        } catch (Exception ex) {
-            onError(ex);
-        }
-    }
-    
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-       Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+	@Override
+	protected void onStart() {
+		super.onStart();
+		try {
+			// Load data, unless a query has already taken place.
+			friendPickerFragment.loadData(false);
+		} catch (Exception ex) {
+			onError(ex);
+		}
+	}
 
-    }
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+
+	}
 }

@@ -28,7 +28,7 @@ public class UploadUtil {
 	byte[] buffer;
 	int maxBufferSize = 1 * 1024 * 1024;
 
-	public UploadUtil(File uploadFile,String parameterNameToServer) {
+	public UploadUtil(File uploadFile, String parameterNameToServer) {
 		this.uploadedFile = uploadFile;
 		this.parameterNameToServer = parameterNameToServer;
 	}
@@ -42,18 +42,14 @@ public class UploadUtil {
 
 	private void setSimpleHttpURLConnection(String uplaodServerCGI) {
 		try {
-			httpURLConnection = (HttpURLConnection) new URL(uplaodServerCGI)
-					.openConnection();
+			httpURLConnection = (HttpURLConnection) new URL(uplaodServerCGI).openConnection();
 			httpURLConnection.setDoInput(true);
 			httpURLConnection.setDoOutput(true);
 			httpURLConnection.setUseCaches(false);
 			httpURLConnection.setRequestProperty("Connection", "Keep-Alive");
-			httpURLConnection.setRequestProperty("ENCTYPE",
-					"multipart/form-data");
-			httpURLConnection.setRequestProperty("Content-Type",
-					"multipart/form-data;boundary=" + boundary);
-			httpURLConnection.setRequestProperty(parameterNameToServer,
-					uploadedFile.getAbsolutePath());
+			httpURLConnection.setRequestProperty("ENCTYPE", "multipart/form-data");
+			httpURLConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+			httpURLConnection.setRequestProperty(parameterNameToServer, uploadedFile.getAbsolutePath());
 
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
@@ -65,12 +61,10 @@ public class UploadUtil {
 
 	}
 
-	private void setSimpleDataOutputStream(
-			HttpURLConnection settledHttpURLConnection) {
+	private void setSimpleDataOutputStream(HttpURLConnection settledHttpURLConnection) {
 		try {
-			dataOutputStream = new DataOutputStream(
-					settledHttpURLConnection.getOutputStream());
-			
+			dataOutputStream = new DataOutputStream(settledHttpURLConnection.getOutputStream());
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -79,20 +73,18 @@ public class UploadUtil {
 
 	private void writeDataOutputStrean() {
 		try {
-			///////////////////
-			///write data start
-			///////////////////
+			// /////////////////
+			// /write data start
+			// /////////////////
 			dataOutputStream.writeBytes(twoHyphens + boundary + lineEnd);
-			dataOutputStream
-					.writeBytes("Content-Disposition: form-data; name=\""+parameterNameToServer+"\";filename=\""
-							+ uploadedFile.getAbsolutePath() + "\"" + lineEnd);
+			dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"" + parameterNameToServer + "\";filename=\"" + uploadedFile.getAbsolutePath() + "\"" + lineEnd);
 			dataOutputStream.writeBytes(lineEnd);
-			
+
 			// read file and write it into form...
 			bytesAvailable = fileInputStream.available();
 			bufferSize = Math.min(bytesAvailable, maxBufferSize);
 			buffer = new byte[bufferSize];
-			
+
 			bytesRead = fileInputStream.read(buffer, 0, bufferSize);
 			while (bytesRead > 0) {
 
@@ -106,18 +98,15 @@ public class UploadUtil {
 			// send multipart form data necesssary after file data...
 			dataOutputStream.writeBytes(lineEnd);
 			dataOutputStream.writeBytes(twoHyphens + boundary + lineEnd);
-			///////////////////
-			///write data end
-			///////////////////
-			
-			
+			// /////////////////
+			// /write data end
+			// /////////////////
+
 			// Responses from the server (code and message)
 			int serverResponseCode = httpURLConnection.getResponseCode();
-			String serverResponseMessage = httpURLConnection
-					.getResponseMessage();
+			String serverResponseMessage = httpURLConnection.getResponseMessage();
 
-			Log.i("uploadFile", "HTTP Response is : " + serverResponseMessage
-					+ ": " + serverResponseCode);
+			Log.i("uploadFile", "HTTP Response is : " + serverResponseMessage + ": " + serverResponseCode);
 
 			// close the streams //
 			fileInputStream.close();

@@ -30,23 +30,45 @@ public class CheckPlaceActivity extends FragmentActivity {
 	// /////////////////////////////////////////
 	// UI
 	// /////////////////////////////////////////
-	private Button checkButton;
 
 	// /////////////////////////////////////////
 	// Initialize
 	// /////////////////////////////////////////
 	private static final int PLACE_ACTIVITY = 1;
 	private UiLifecycleHelper FBlifecycleHelper;
-	private Location lastKnoLocation; 
-	private boolean isLocationDone=false;
-	private boolean isFBSessionDone=false;
+	private Location lastKnoLocation;
+	private boolean isLocationDone = false;
+	private boolean isFBSessionDone = false;
 
 	private void initView() {
-		checkButton = (Button) findViewById(R.id.check_place);
 		GlobalAction globalAction = (GlobalAction) this.getApplicationContext();
 		globalAction.setActionBar(getActionBar());
 	}
 	
+	private void initFBSessionAndLocation(){
+		initIsFBSessionDone();
+		initIsLocationDone();
+
+		FacebookUtil.ensureThenOpenActiveSession(this, new FacebookOpenSessionDoneDelegate() {
+			@Override
+			public void postExec(Session session, SessionState state, Exception exception) {
+				// TODO Auto-generated method stub
+				Log.w(this.getClass().getSimpleName(), "facebook session postExec");
+				isFBSessionDone = true;
+			}
+		});
+
+		LocationUtil.locateCurrentLocation(this, new LocateLocationDoneDelegate() {
+			@Override
+			public void postExec(Location location) {
+				// TODO Auto-generated method stub
+				Log.w(this.getClass().getSimpleName(), "location session postExec");
+				isLocationDone = true;
+				lastKnoLocation = location;
+			}
+		});
+	}
+
 	// /////////////////////////////////////////
 	// LifeCycle
 	// /////////////////////////////////////////
@@ -56,47 +78,24 @@ public class CheckPlaceActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.check_place_activity);
 		initView();
-		
-		FBlifecycleHelper = new UiLifecycleHelper(this,
-				new Session.StatusCallback() {
-					@Override
-					public void call(Session session, SessionState state,
-							Exception exception) {
-						onSessionStateChanged(session, state, exception);
-					}
-				});
-		FBlifecycleHelper.onCreate(savedInstanceState);
 
+		FBlifecycleHelper = new UiLifecycleHelper(this, new Session.StatusCallback() {
+			@Override
+			public void call(Session session, SessionState state, Exception exception) {
+				onSessionStateChanged(session, state, exception);
+			}
+		});
+		FBlifecycleHelper.onCreate(savedInstanceState);
+		initFBSessionAndLocation();
+		startPickPlaceActivity(lastKnoLocation);
+		
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		
-		initIsFBSessionDone();
-		initIsLocationDone();
-		
-		FacebookUtil.ensureThenOpenActiveSession(this, new FacebookOpenSessionDoneDelegate() {
-			@Override
-			public void postExec(Session session, SessionState state,
-					Exception exception) {
-				// TODO Auto-generated method stub
-				Log.w(this.getClass().getSimpleName(),"facebook session postExec");
-				isFBSessionDone=true;
-			}
-		});
-		
-		LocationUtil.locateCurrentLocation(this, new LocateLocationDoneDelegate() {
-			@Override
-			public void postExec(Location location) {
-				// TODO Auto-generated method stub
-				Log.w(this.getClass().getSimpleName(),"location session postExec");
-				isLocationDone=true;
-				lastKnoLocation=location;
-			}
-		});
-		
-		startPickPlaceActivity(lastKnoLocation);
+		initFBSessionAndLocation();
+
 	}
 
 	@Override
@@ -136,46 +135,42 @@ public class CheckPlaceActivity extends FragmentActivity {
 	// Method
 	// /////////////////////////////////////////
 
-	private void onSessionStateChanged(Session session, SessionState state,
-			Exception exception) {
+	private void onSessionStateChanged(Session session, SessionState state, Exception exception) {
 		Log.w(TAG, "onSessionStateChanged");
-		
-		if(isFBSessionDone&&isLocationDone){
-			startPickPlaceActivity(lastKnoLocation);
-		}
+		startPickPlaceActivity(lastKnoLocation);
 	}
 
 	private void startPickPlaceActivity(Location location) {
 
 		Log.w(TAG, "OnstartPickPlaceActivity");
-
-		if(isFBSessionDone&&isLocationDone){
+		if (isFBSessionDone && isLocationDone) {
 			Intent intent = new Intent(this, PickPlaceActivity.class);
 			PickPlaceActivity.populateParameters(intent, location, null);
 			startActivityForResult(intent, PLACE_ACTIVITY);
-			//reset
-			isFBSessionDone=false;
-			isLocationDone=false;
-			lastKnoLocation=null;
+			// reset
+			isFBSessionDone = false;
+			isLocationDone = false;
+			lastKnoLocation = null;
 		}
-		
+
 	}
 
-	private void initIsFBSessionDone(){
-		if(FacebookUtil.isActiveSessionOpen()){
-			isFBSessionDone=true;
-		}else{
-			isFBSessionDone=false;
+	private void initIsFBSessionDone() {
+		if (FacebookUtil.isActiveSessionOpen()) {
+			isFBSessionDone = true;
+		} else {
+			isFBSessionDone = false;
 		}
 	}
-	private void initIsLocationDone(){
-		if(lastKnoLocation!=null){
-			isLocationDone=true;
-		}else{
-			isLocationDone=false;
+
+	private void initIsLocationDone() {
+		if (lastKnoLocation != null) {
+			isLocationDone = true;
+		} else {
+			isLocationDone = false;
 		}
 	}
-	
+
 	private void sendToFriend() {
 		Intent intent = new Intent(this, PickFriendsActivity.class);
 		startActivity(intent);
