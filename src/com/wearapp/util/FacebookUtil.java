@@ -15,10 +15,16 @@ public class FacebookUtil {
 
 		if (!isActiveSessionOpen()) {
 			Session.openActiveSession(activity, true, new Session.StatusCallback() {
+
 				@Override
 				public void call(Session session, SessionState state, Exception exception) {
-					facebookOpenSessionDoneDelegateForInternal.postExec(session, state, exception);
+					if(session.isOpened()){
+						facebookOpenSessionDoneDelegateForInternal.postExec(session, state, exception);
+					}else{
+						Log.w(this.getClass().getSimpleName(),"Session not create");
+					}
 				}
+				
 			});
 		}
 	}

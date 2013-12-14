@@ -95,7 +95,6 @@ public class CheckPlaceActivity extends FragmentActivity {
 	protected void onStart() {
 		super.onStart();
 		initFBSessionAndLocation();
-
 	}
 
 	@Override
@@ -114,7 +113,7 @@ public class CheckPlaceActivity extends FragmentActivity {
 	protected void onResume() {
 		super.onResume();
 		FBlifecycleHelper.onResume();
-		AppEventsLogger.activateApp(this);
+		//AppEventsLogger.activateApp(this);
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -137,6 +136,7 @@ public class CheckPlaceActivity extends FragmentActivity {
 
 	private void onSessionStateChanged(Session session, SessionState state, Exception exception) {
 		Log.w(TAG, "onSessionStateChanged");
+		//initFBSessionAndLocation();
 		startPickPlaceActivity(lastKnoLocation);
 	}
 
