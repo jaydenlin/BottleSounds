@@ -153,7 +153,7 @@ public class MainActivity extends Activity {
 
 	public void startFacebook() {
 		ensureOpenFBSession();
-		Intent intent = new Intent(this, CheckPlaceActivity.class);
+		Intent intent = new Intent(this, CheckVoiceActivity.class);
 		startActivity(intent);
 		return;
 	}

@@ -17,6 +17,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
+import com.wearapp.resultcode.ResultCode;
 import com.wearapp.util.LocationUtil;
 
 public class PickPlaceActivity extends FragmentActivity {
@@ -115,7 +116,9 @@ public class PickPlaceActivity extends FragmentActivity {
 	// /////////////////////////////////////////
 
 	private void finishActivity() {
-		setResult(RESULT_OK, null);
+		Intent intent = new Intent();
+		intent.putExtra("Place", placePickerFragment.getSelection().getName());
+		setResult(ResultCode.PickPlaceActivity, intent);
 		finish();
 	}
 

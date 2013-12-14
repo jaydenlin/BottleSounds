@@ -126,7 +126,7 @@ public class SecondMainActivity extends Activity {
 	}
 
 	public void startListen() {
-		Intent intent = new Intent(this, CheckPlaceActivity.class);
+		Intent intent = new Intent(this, CheckVoiceActivity.class);
 		startActivity(intent);
 		return;
 	}

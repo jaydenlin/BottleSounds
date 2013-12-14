@@ -393,7 +393,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 	}
 
 	private void startCheckPlaceActivity() {
-		Intent intent = new Intent(this, CheckPlaceActivity.class);
+		Intent intent = new Intent(this, CheckVoiceActivity.class);
 		startActivity(intent);
 	}
 

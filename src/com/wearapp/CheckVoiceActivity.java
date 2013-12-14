@@ -1,31 +1,25 @@
 package com.wearapp;
 
-import com.facebook.AppEventsLogger;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.wearapp.resultcode.ResultCode;
 import com.wearapp.util.FacebookOpenSessionDoneDelegate;
 import com.wearapp.util.FacebookUtil;
 import com.wearapp.util.LocateLocationDoneDelegate;
 import com.wearapp.util.LocationUtil;
-
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 
-public class CheckPlaceActivity extends FragmentActivity {
+public class CheckVoiceActivity extends FragmentActivity {
 
 	// /////////////////////////////////////////
 	// debug
 	// /////////////////////////////////////////
-	public static final String TAG = CheckPlaceActivity.class.getSimpleName();
+	public static final String TAG = CheckVoiceActivity.class.getSimpleName();
 
 	// /////////////////////////////////////////
 	// UI
@@ -34,9 +28,8 @@ public class CheckPlaceActivity extends FragmentActivity {
 	// /////////////////////////////////////////
 	// Initialize
 	// /////////////////////////////////////////
-	private static final int PLACE_ACTIVITY = 1;
 	private UiLifecycleHelper FBlifecycleHelper;
-	private Location lastKnoLocation;
+	private Location lastKnownLocation;
 	private boolean isLocationDone = false;
 	private boolean isFBSessionDone = false;
 
@@ -64,7 +57,7 @@ public class CheckPlaceActivity extends FragmentActivity {
 				// TODO Auto-generated method stub
 				Log.w(this.getClass().getSimpleName(), "location session postExec");
 				isLocationDone = true;
-				lastKnoLocation = location;
+				lastKnownLocation = location;
 			}
 		});
 	}
@@ -87,7 +80,7 @@ public class CheckPlaceActivity extends FragmentActivity {
 		});
 		FBlifecycleHelper.onCreate(savedInstanceState);
 		initFBSessionAndLocation();
-		startPickPlaceActivity(lastKnoLocation);
+		startPickPlaceActivityForResult(lastKnownLocation);
 		
 	}
 
@@ -119,13 +112,22 @@ public class CheckPlaceActivity extends FragmentActivity {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		FBlifecycleHelper.onActivityResult(requestCode, resultCode, data);
+	
 		Log.w(TAG, "onActivityResult");
-
+		
 		switch (requestCode) {
-		case PLACE_ACTIVITY:
-			sendToFriend();
+		case ResultCode.PickPlaceActivity:
+			if(data!=null){
+				startPickFriendsActivityForResult();
+			}else{
+				startMainActivity();
+			}
 			break;
+		case ResultCode.PickFriendsActivity:
+			startPickPlaceActivityForResult(lastKnownLocation);
+			break;	
 		default:
+			startMainActivity();
 			break;
 		}
 	}
@@ -137,20 +139,20 @@ public class CheckPlaceActivity extends FragmentActivity {
 	private void onSessionStateChanged(Session session, SessionState state, Exception exception) {
 		Log.w(TAG, "onSessionStateChanged");
 		//initFBSessionAndLocation();
-		startPickPlaceActivity(lastKnoLocation);
+		startPickPlaceActivityForResult(lastKnownLocation);
 	}
 
-	private void startPickPlaceActivity(Location location) {
+	private void startPickPlaceActivityForResult(Location location) {
 
 		Log.w(TAG, "OnstartPickPlaceActivity");
 		if (isFBSessionDone && isLocationDone) {
 			Intent intent = new Intent(this, PickPlaceActivity.class);
 			PickPlaceActivity.populateParameters(intent, location, null);
-			startActivityForResult(intent, PLACE_ACTIVITY);
+			startActivityForResult(intent, ResultCode.PickPlaceActivity);
 			// reset
 			isFBSessionDone = false;
 			isLocationDone = false;
-			lastKnoLocation = null;
+			lastKnownLocation = null;
 		}
 
 	}
@@ -164,15 +166,20 @@ public class CheckPlaceActivity extends FragmentActivity {
 	}
 
 	private void initIsLocationDone() {
-		if (lastKnoLocation != null) {
+		if (lastKnownLocation != null) {
 			isLocationDone = true;
 		} else {
 			isLocationDone = false;
 		}
 	}
 
-	private void sendToFriend() {
+	private void startPickFriendsActivityForResult() {
 		Intent intent = new Intent(this, PickFriendsActivity.class);
+		startActivityForResult(intent, ResultCode.PickFriendsActivity);
+	}
+	
+	private void startMainActivity() {
+		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
 	}
 
