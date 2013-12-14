@@ -69,7 +69,7 @@ public class CheckVoiceActivity extends FragmentActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.check_place_activity);
+		setContentView(R.layout.check_voice_activity);
 		initView();
 
 		FBlifecycleHelper = new UiLifecycleHelper(this, new Session.StatusCallback() {
