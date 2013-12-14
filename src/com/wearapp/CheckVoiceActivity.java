@@ -120,14 +120,15 @@ public class CheckVoiceActivity extends FragmentActivity {
 			if(data!=null){
 				startPickFriendsActivityForResult();
 			}else{
-				startMainActivity();
+				startMainActivityAndFinishSelf();
 			}
 			break;
 		case ResultCode.PickFriendsActivity:
 			startPickPlaceActivityForResult(lastKnownLocation);
 			break;	
 		default:
-			startMainActivity();
+			startMainActivityAndFinishSelf();
+			
 			break;
 		}
 	}
@@ -178,9 +179,10 @@ public class CheckVoiceActivity extends FragmentActivity {
 		startActivityForResult(intent, ResultCode.PickFriendsActivity);
 	}
 	
-	private void startMainActivity() {
+	private void startMainActivityAndFinishSelf() {
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
+		finish();
 	}
 
 }
