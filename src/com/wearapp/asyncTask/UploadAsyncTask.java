@@ -9,7 +9,7 @@ public class UploadAsyncTask extends AsyncTask<File, Void, Void> {
 
 	public static final String upLoadServerUri = "http://jadyenlin.tw/newre/savetest.php";
 	public File sourceFile;
-
+	
 	@Override
 	protected Void doInBackground(File... params) {
 		this.sourceFile = params[0];
@@ -19,4 +19,6 @@ public class UploadAsyncTask extends AsyncTask<File, Void, Void> {
 		return null;
 	}
 
+	
+	
 }

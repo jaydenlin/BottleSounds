@@ -76,10 +76,8 @@ public class PickPlaceActivity extends FragmentActivity {
 		map.setMyLocationEnabled(true);		
 		map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
 				userLocation.getLatitude(), userLocation.getLongitude()), 16));
-		
 		UiSettings uisettings = map.getUiSettings();
 		uisettings.setZoomControlsEnabled(false);
-		
 	}
 
 	public static void populateParameters(Intent intent, Location location,
