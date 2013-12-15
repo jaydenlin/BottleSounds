@@ -22,9 +22,12 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.text.InputType;
+import android.widget.EditText;
 import android.widget.Toast;
 import com.facebook.FacebookException;
 import com.facebook.Session;
@@ -33,6 +36,7 @@ import com.facebook.model.GraphUser;
 import com.facebook.widget.FriendPickerFragment;
 import com.facebook.widget.PickerFragment;
 import com.wearapp.asyncTask.FacebookChatAsyncTask;
+import com.wearapp.util.LocationUtil;
 
 // This class provides an example of an Activity that uses FriendPickerFragment to display a list of
 // the user's friends. It takes a programmatic approach to creating the FriendPickerFragment with the
@@ -42,8 +46,9 @@ import com.wearapp.asyncTask.FacebookChatAsyncTask;
 public class PickFriendsActivity extends FragmentActivity {
 	FriendPickerFragment friendPickerFragment;
 	NewPermissionsRequest newPermissionsRequest;
-	StringBuffer friendslist_selected;
-
+	EditText editDialog;
+    StringBuffer friendslist_selected;
+   
 	// A helper to simplify life for callers who want to populate a Bundle with
 	// the necessary
 	// parameters. A more sophisticated Activity might define its own set of
@@ -59,16 +64,17 @@ public class PickFriendsActivity extends FragmentActivity {
 	private void sendMessage() {
 		// TODO Auto-generated method stub
 		List<GraphUser> selectedUsers = friendPickerFragment.getSelection();
-
-		for (GraphUser selectedUser : selectedUsers) {
-			String targetFacebookId = selectedUser.getId();
-			;
-			String title = "Heare Rock!";
-			String message = "Heare Rock! Goodnight";
-			new FacebookChatAsyncTask().execute(targetFacebookId, title, message);
-		}
-		Toast.makeText(getApplicationContext(), "Message just sent to " + friendslist_selected.toString(), Toast.LENGTH_LONG).show();
-		friendslist_selected.delete(0, friendslist_selected.length());
+		String targetFacebookId;
+		String title = "Heare";	    
+		String message = "\n---------------------------\n"+editDialog.getText().toString() + "\n---------------------------\n"+"\n Sent by Heare in "+ LocationUtil.selectedlocation.getName() + "\n"+"https://maps.google.com/maps?q="+LocationUtil.selectedlocation.getLocation().getLatitude()+","+LocationUtil.selectedlocation.getLocation().getLongitude() +"\n---------------------------\n"; 
+		
+    	for (GraphUser selectedUser : selectedUsers){            		            	    	
+			targetFacebookId = selectedUser.getId();;	 	   
+	        new FacebookChatAsyncTask().execute(targetFacebookId,title,message);	             
+	    }	   
+    	    	    	     	
+    	Toast.makeText(getApplicationContext(), "Message just sent to "+friendslist_selected.toString(), Toast.LENGTH_LONG).show();
+    	friendslist_selected.delete(0, friendslist_selected.length());
 	}
 
 	@Override
@@ -111,6 +117,10 @@ public class PickFriendsActivity extends FragmentActivity {
 				Session session = Session.getActiveSession();
 				friendslist_selected = new StringBuffer();
 				friendslist_selected.delete(0, friendslist_selected.length());
+				
+				editDialog = new EditText(PickFriendsActivity.this);
+				editDialog.setRawInputType(Configuration.KEYBOARD_QWERTY);
+    	    	editDialog.setInputType(InputType.TYPE_CLASS_TEXT);    	    	     	    		    	    	    	 								
 
 				if (session.isOpened()) {
 					session.requestNewReadPermissions(newPermissionsRequest);
@@ -122,22 +132,30 @@ public class PickFriendsActivity extends FragmentActivity {
 							friendslist_selected.append(selectedUser.getName());
 					}
 
-					new AlertDialog.Builder(PickFriendsActivity.this).setMessage("Are you sure to send message to " + friendslist_selected + "?")
-							.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									// TODO Auto-generated method stub
-									sendMessage();
-									finish();
-								}
-							}).setNegativeButton("NO", new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									// TODO Auto-generated method stub
-									Toast.makeText(getApplicationContext(), "Message not sent", Toast.LENGTH_LONG).show();
-									finish();
-								}
-							}).show();
+				
+    	    	 new AlertDialog.Builder(PickFriendsActivity.this
+    	    			).setMessage("Please edit the messages to send to "+friendslist_selected+" in "+LocationUtil.selectedlocation.getName()+" ?" 
+    	             	).setView(editDialog
+    	    			).setPositiveButton("YES", 
+    	             			new DialogInterface.OnClickListener() {
+    	 							@Override
+    	 							public void onClick(DialogInterface dialog, int which) {
+    	 								// TODO Auto-generated method stub													
+    	 								sendMessage();
+    	 								finish();
+    	 							}
+    	             	}
+    	             	).setNegativeButton("NO", 
+    	     			new DialogInterface.OnClickListener() {
+    	 					@Override
+    	 					public void onClick(DialogInterface dialog, int which) {
+    	 						// TODO Auto-generated method stub
+    	 						Toast.makeText(getApplicationContext(), "Message not sent", Toast.LENGTH_LONG).show();
+    	 						finish();
+    	 					}
+    	 				}
+    	             	).show();
+	    	    	 
 
 				}
 
