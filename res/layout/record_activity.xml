@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    >
+    android:background="@drawable/background_record">
 
     <TextView
         android:id="@+id/play_time_text"
@@ -35,6 +35,17 @@
         </com.pheelicks.visualizer.MediaSeekBar>
 
        
+         <com.pheelicks.visualizer.RecorderSeekBar
+            android:id="@+id/recorderseekbar"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:layout_marginTop="30dp" 
+            android:maxHeight="240dp"
+            android:minHeight="240dp"
+            android:progress="0"
+            android:progressDrawable="@drawable/my_seekbar"
+            android:thumb="@drawable/weave_bar">
+        </com.pheelicks.visualizer.RecorderSeekBar>
  		
  		<com.pheelicks.visualizer.BackgroundView
             android:id="@+id/backgroundview"
@@ -113,7 +124,7 @@
         android:layout_below="@+id/play_time_text"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="14dp"
-        android:src="@drawable/icon_record" />
+        android:background="@drawable/custom_icon_record" />
 
    
     <ImageButton
@@ -123,7 +134,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/imagebutton_record"
         android:layout_alignTop="@+id/imagebutton_record"
-        android:src="@drawable/icon_play" />
+        android:background="@drawable/custom_icon_play" />
 
     <ImageButton
         android:id="@+id/imagebutton_stop"
@@ -132,7 +143,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/imagebutton_record"
         android:layout_alignTop="@+id/imagebutton_record"
-        android:src="@drawable/icon_pause" />
+        android:background="@drawable/custom_icon_pause" />
 
     <Button
         android:id="@+id/button_confirm"

@@ -7,7 +7,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
+
+
+
 import com.pheelicks.visualizer.MediaSeekBar;
+import com.pheelicks.visualizer.RecorderSeekBar;
+import com.pheelicks.visualizer.renderer.PointRenderer;
 import com.pheelicks.visualizer.renderer.WaveRenderer;
 import com.wearapp.asyncTask.UploadAsyncTask;
 
@@ -15,6 +20,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.AudioRecord;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.media.MediaRecorder;
@@ -28,7 +34,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
-
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -58,9 +63,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 	ImageButton imagebutton_record;
 	ImageButton imagebutton_stop;
 	ImageButton imagebutton_play;
-	// Button button_play;
 	Button button_confirm;
-	//TextView textview_status;
 	TextView play_time_text;
 
 	
@@ -110,11 +113,10 @@ public class RecordActivity extends Activity implements OnClickListener {
 	private MediaRecorder mRecorder;
 	private MediaPlayer mPlayer;
 	private MediaSeekBar  mMediaSeekBar;
+	private RecorderSeekBar mRecorderSeekBar;
 	private String VOICE_FILE_PATH;
 	
 	private MediaState mediaState;
-	
-
 	protected Handler handler = new Handler();
 	
 	
@@ -148,7 +150,6 @@ public class RecordActivity extends Activity implements OnClickListener {
 
 		initView();
 		button_confirm.setOnClickListener(this);
-		// button_play.setOnClickListener(this);
 		imagebutton_record.setOnClickListener(this);
 		imagebutton_stop.setOnClickListener(this);
 		imagebutton_play.setOnClickListener(this);
@@ -300,13 +301,14 @@ public class RecordActivity extends Activity implements OnClickListener {
 		imagebutton_play = (ImageButton) findViewById(R.id.imagebutton_play);
 		imagebutton_play.setVisibility(View.INVISIBLE);
 		button_confirm = (Button) findViewById(R.id.button_confirm);
-		// button_confirm = (Button) findViewById(R.id.button_confirm);
-		//textview_status = (TextView) findViewById(R.id.recordtext);
 		imagebutton_record.bringToFront();
 		
 		play_time_text = (TextView)findViewById(R.id.play_time_text);
 		mMediaSeekBar = (MediaSeekBar)findViewById(R.id.mediaseekbar);
+		mMediaSeekBar.setVisibility(View.INVISIBLE);
+		mRecorderSeekBar = (RecorderSeekBar)findViewById(R.id.recorderseekbar);
 		addLineRenderer();
+		addPointRenderer();
 		GlobalAction globalAction = (GlobalAction)this.getApplicationContext();
 		globalAction.setActionBar(getActionBar());
 		setTextView();
@@ -342,6 +344,8 @@ public class RecordActivity extends Activity implements OnClickListener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		mRecorderSeekBar.link(mRecorder);
+		mRecorderSeekBar.setMax(10000);
 		mRecorder.start(); // Recording is now started
 		mediaState = MediaState.isRecordingState;
 		recordtime = System.currentTimeMillis();
@@ -426,6 +430,25 @@ public class RecordActivity extends Activity implements OnClickListener {
 	    mMediaSeekBar.addRenderer(waveRenderer);
 	  }
 	  
+	  private void addPointRenderer()
+	  {
+	    Paint linePaint = new Paint();
+	    linePaint.setStrokeWidth(4f);
+	    linePaint.setAntiAlias(true);
+	    linePaint.setColor(Color.argb(88, 0, 128, 255));
+
+	    Paint lineFlashPaint = new Paint();
+	    
+	    lineFlashPaint.setStrokeWidth(2f);
+	    lineFlashPaint.setStrokeJoin(Paint.Join.ROUND);
+	    lineFlashPaint.setStrokeCap(Paint.Cap.ROUND);
+	    lineFlashPaint.setAntiAlias(true);
+	    lineFlashPaint.setColor(Color.argb(255, 255, 255, 255));
+	    
+	    PointRenderer pointRenderer = new PointRenderer(linePaint, lineFlashPaint, false);
+	    mRecorderSeekBar.addRenderer(pointRenderer);
+	  }
+	  
 	      
 	  private OnPreparedListener  preparedListener = new OnPreparedListener(){
 
@@ -489,8 +512,11 @@ public class RecordActivity extends Activity implements OnClickListener {
 					Long timetmp = (System.currentTimeMillis() - recordtime) / 1000;
 					String sectmp = df2.format(timetmp % 60);
 					String mintmp = df2.format(timetmp / 60);
-					play_time_text.setText("" + mintmp + ":" + sectmp);
-					handler.postDelayed(updatesb,10);
+					String amplitutde = df2.format(mRecorder.getMaxAmplitude());
+					play_time_text.setText("" + mintmp + ":" + sectmp+" "+amplitutde);
+					int time_duration = (int) (System.currentTimeMillis() - recordtime);
+					mRecorderSeekBar.setProgress(time_duration);
+					handler.postDelayed(updatesb,100);
 				}
 
 
@@ -585,6 +611,9 @@ public class RecordActivity extends Activity implements OnClickListener {
 
 	
 	private void setButtonStartPlaying() {
+		mRecorderSeekBar.setVisibility(View.INVISIBLE);
+		mMediaSeekBar.setVisibility(View.VISIBLE);
+		
 		imagebutton_play.bringToFront();
 		imagebutton_play.setVisibility(View.VISIBLE);
 		imagebutton_play.setClickable(true);

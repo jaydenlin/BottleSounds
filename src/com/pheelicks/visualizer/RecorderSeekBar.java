@@ -1,9 +1,11 @@
 package com.pheelicks.visualizer;
 
+
 import java.util.HashSet;
 import java.util.Set;
 
 import com.pheelicks.visualizer.renderer.Renderer;
+import com.wearapp.util.ByteUtils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -16,25 +18,21 @@ import android.graphics.Rect;
 import android.graphics.Bitmap.Config;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.MediaPlayer;
 import android.media.MediaRecorder;
-import android.media.audiofx.Visualizer;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.SeekBar;
 
-public class MediaSeekBar extends SeekBar {
+public class RecorderSeekBar extends SeekBar {
 
 
-	private static final String TAG = "MediaSeekBar";
+	private static final String TAG = "RecorderSeekBar";
 
 	  private byte[] mBytes;
 	  private byte[] mFFTBytes;
 	  private Rect mRect = new Rect();
-	  private Visualizer mVisualizer;
-	  private MediaPlayer mPlayer;
-	  private int mProgress;
-	  private int maxProgress;
+	  private MediaRecorder mRecorder;
+
 
 	  private Set<Renderer> mRenderers;
 
@@ -43,18 +41,18 @@ public class MediaSeekBar extends SeekBar {
 	  
 	  
 
-	  public MediaSeekBar(Context context, AttributeSet attrs, int defStyle)
+	  public RecorderSeekBar(Context context, AttributeSet attrs, int defStyle)
 	  {
 	    super(context, attrs);
 	    init();
 	  }
 
-	  public MediaSeekBar(Context context, AttributeSet attrs)
+	  public RecorderSeekBar(Context context, AttributeSet attrs)
 	  {
 	    this(context, attrs, 0);
 	  }
 
-	  public MediaSeekBar(Context context)
+	  public RecorderSeekBar(Context context)
 	  {
 	    this(context, null, 0);
 	  }
@@ -69,19 +67,7 @@ public class MediaSeekBar extends SeekBar {
 	    finish = false;
 	    
 	  }
-	  
-	  public Visualizer getVisualizer(){
-		  
-		  return mVisualizer;
-	  }
-	  
-	  public void releaseVisulizer(){
-		  
-		  mVisualizer.release();
-		  mVisualizer = null;
-	  }
-	  
-	  
+	
 	  public void setFinished(){
 		  finish= true;
 		  
@@ -107,64 +93,12 @@ public class MediaSeekBar extends SeekBar {
 			  
 		  }
 	  }
-	  /*
-	  public View testInit(){
+
+
+	  public void link(MediaRecorder recorder){
+		  mRecorder = recorder;
 		  
-		    View view = RecordActivity.mInflater.inflate(R.layout.sekbarview, null);
-		  return view;
-	  }*/
-
-	  /**
-	   * Links the visualizer to a player
-	   * @param player - MediaPlayer instance to link to
-	   */
-	  public void link(MediaPlayer player) {
-		  
-		  maxProgress = 0;
-		  mProgress =0;
-	    if(player == null)
-	    {
-	      throw new NullPointerException("Cannot link to null MediaPlayer");
-	    }
-	    if(mVisualizer != null){ releaseVisulizer();}
-	    // Create the Visualizer object and attach it to our media player.
-	    
-	    mVisualizer = new Visualizer(player.getAudioSessionId());
-	    mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
-	    mPlayer = player;
-
-	    // Pass through Visualizer data to MediaSeekBar
-	    Visualizer.OnDataCaptureListener captureListener = new Visualizer.OnDataCaptureListener()
-	    {
-	      @Override
-	      public synchronized void onWaveFormDataCapture(Visualizer visualizer, byte[] bytes,
-	          int samplingRate)
-	      {
-	        updateVisualizer(bytes);
-	      }
-
-	      
-	      @Override
-	      public void onFftDataCapture(Visualizer visualizer, byte[] bytes,
-	          int samplingRate)
-	      {
-	       //updateVisualizerFFT(bytes);
-	      //TODO
-	      }
-	    };
-
-	    mVisualizer.setDataCaptureListener(captureListener,
-	        Visualizer.getMaxCaptureRate() / 2, true, true);
-
-	    // Enabled Visualizer and disable when we're done with the stream
-	    mVisualizer.setEnabled(true);
-	    this.setMax(player.getDuration());
-	    
-
-	    
-
-	  }/*link()*/
-
+	  }
 	  
 	  public void addRenderer(Renderer renderer)
 	  {
@@ -179,59 +113,7 @@ public class MediaSeekBar extends SeekBar {
 	    mRenderers.clear();
 	  }
 
-	  /**
-	   * Call to release the resources used by MediaSeekBar. Like with the
-	   * MediaPlayer it is good practice to call this method
-	   */
-	  public void release()
-	  {
-	    mVisualizer.release();
-	  }
-
-	  /**
-	   * Pass data to the visualizer. Typically this will be obtained from the
-	   * Android Visualizer.OnDataCaptureListener call back. See
-	   * {@link Visualizer.OnDataCaptureListener#onWaveFormDataCapture }
-	   * @param bytes
-	   */
-	  public synchronized void updateVisualizer(byte[] bytes) {
-	    mBytes = bytes;
-	    mProgress = mPlayer.getCurrentPosition();
-	    if(maxProgress < mProgress){
-	    	
-	    	maxProgress = mProgress;
-	    }
-	    
-	    setRenderWidth(maxProgress);
-	    this.setProgress(maxProgress);
-	    Log.i(TAG, mProgress+" "+System.currentTimeMillis());
-	    invalidate();
-	  }
-
-	  /**
-	   * Pass FFT data to the visualizer. Typically this will be obtained from the
-	   * Android Visualizer.OnDataCaptureListener call back. See
-	   * {@link Visualizer.OnDataCaptureListener#onFftDataCapture }
-	   * @param bytes
-	   */
-	  public synchronized void updateVisualizerFFT(byte[] bytes) {
-	    mFFTBytes = bytes;
-	   // mProgress = mPlayer.getCurrentPosition();
-	   // setRenderWidth(mProgress);
-	   // this.setProgress(mProgress);
-	    invalidate();
-	  }
-
-	  boolean mFlash = false;
-
-	  /**
-	   * Call this to make the visualizer flash. Useful for flashing at the start
-	   * of a song/loop etc...
-	   */
-	  public void flash() {
-	    mFlash = false;
-	    invalidate();
-	  }
+	
 
 	  Bitmap mCanvasBitmap;
 	  Canvas mCanvas;
@@ -240,14 +122,23 @@ public class MediaSeekBar extends SeekBar {
 	  @Override
 	  protected synchronized void onDraw(Canvas canvas) {
 	    super.onDraw(canvas);
-	    Log.i(MediaSeekBar.class.getSimpleName(), "In on draw "+getWidth());
+	    Log.i(RecorderSeekBar.class.getSimpleName(), "In on draw "+getWidth());
 
 	    int maxProgress = getMax();
 	    
 	    setRenderDuration(maxProgress);
+	    setRenderWidth(getProgress());
 	    
 	    // Create canvas once we're ready to draw
 	    mRect.set(0, 0, getWidth(), getHeight());
+	     
+	    if(mRecorder != null){ 
+	    	int maxAmplitude = mRecorder.getMaxAmplitude();
+	    	Log.i(TAG, maxAmplitude+"");
+	    	
+	    	mBytes = ByteUtils.int2byte(maxAmplitude);
+	    }
+	    
 
 	    if(mCanvasBitmap == null)
 	    {
@@ -259,7 +150,7 @@ public class MediaSeekBar extends SeekBar {
 	      mCanvas = new Canvas(mCanvasBitmap);	      
 	    }
 	   
-	    mCanvas.drawPaint(mFadePaint);
+	   // mCanvas.drawPaint(mFadePaint);
 	    
 	    if (mBytes != null) {
 	      // Render all audio renderers
@@ -287,12 +178,12 @@ public class MediaSeekBar extends SeekBar {
 	  }
 	  
 	  public void reDraw(){
-		    Log.i(MediaSeekBar.class.getSimpleName(), "In redraw ");
+		    Log.i(RecorderSeekBar.class.getSimpleName(), "In redraw ");
 		    Paint clearPaint = new Paint();
 		    clearPaint.setXfermode(new PorterDuffXfermode(Mode.CLEAR));
 		    mCanvas.drawPaint(clearPaint);
-		   drawBackGround(mCanvas);
-		   mCanvas.drawBitmap(mCanvasBitmap, new Matrix(), null);
+		    drawBackGround(mCanvas);
+		    mCanvas.drawBitmap(mCanvasBitmap, new Matrix(), null);
 		  
 	  }
 	  
@@ -332,7 +223,7 @@ public class MediaSeekBar extends SeekBar {
 		    slinePaint.setAlpha(80);
 		    int gap = 5;
 		    for (int i = 0; i< gap;i++){
-		    	float gapWidth = (width/gap)-1;
+		    	float gapWidth = (width/gap) - 1; 
 		    	float startX = gapWidth*(i+1);
 		    	float stopX = startX; 
 		    	float startY = 0;
@@ -349,13 +240,11 @@ public class MediaSeekBar extends SeekBar {
 			    	 float smallstartY = 0;
 			    	 float smallstopY = 8;
 			    	canvas.drawLine(smallstartX, smallstartY, smallstopX, smallstopY, slinePaint);
-		    	}
-		    	
-		    	
-		    }
-		  
-		  
-		  
+		    	}	
+		    }	  
 	  } 
+	  
 
-}
+	
+
+}/*RecordSeekBar*/

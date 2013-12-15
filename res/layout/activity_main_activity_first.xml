@@ -38,7 +38,7 @@
         android:layout_height="0dp"
         android:layout_weight="1.5"
         android:scaleType="centerInside"
-        android:src="@drawable/button_fb_login" />
+        android:background="@drawable/custom_button_fb_login" />
     
     <ImageView
         android:id="@+id/imageview03"
@@ -52,9 +52,12 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:gravity="center_vertical|top"
         android:text="          或 直接開始使用       "
+        android:textSize="25sp"
+        android:gravity="center_vertical|top"
         android:textColor="@color/white"
-        android:textSize="25sp" />
+        
+        
+         />
 
 </LinearLayout>

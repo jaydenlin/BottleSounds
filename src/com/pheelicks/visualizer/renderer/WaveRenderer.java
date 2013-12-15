@@ -24,8 +24,6 @@ public class WaveRenderer extends Renderer{
 		  mPaint = paint;
 		  mFlashPaint = flashPaint;
 		  mCycleColor = cycleColor;
-	
-	
 	  }
 	
 
@@ -33,7 +31,6 @@ public class WaveRenderer extends Renderer{
 	@Override
 	public void onRender(Canvas canvas, AudioData data, Rect rect) {
 	    // Calculate points for line
-		//Log.w(WaveRenderer.this.getClass().toString(),rect.width()+" "+data.bytes.length+" "+ "width"+getWidth()+" duration "+getDuration());
 		
 		float width = (getWidth()/1000);
 		float duration = (getDuration()/1000);
@@ -52,7 +49,6 @@ public class WaveRenderer extends Renderer{
 	      
 	     
 	     
-	      //Log.w(WaveRenderer.this.getClass().toString(), i+" "+mPoints[i*4]+" "+ mPoints[i * 4 + 1]+" "+ mPoints[i * 4 + 2]
 	    //		  +" "+mPoints[i * 4 + 3]+""
 	    //		  );
 	    }
@@ -67,19 +63,7 @@ public class WaveRenderer extends Renderer{
 	    
 	    canvas.drawLines(mPoints, mFlashPaint);
 	    
-	    /*
-	    if(amp > amplitude)
-	    {
-	      // Amplitude is bigger than normal, make a prominent line
-	      amplitude = amp;
-	      canvas.drawLines(mPoints, mFlashPaint);
-	    }
-	    else
-	    {
-	      // Amplitude is nothing special, reduce the amplitude
-	      amplitude *= 0.99;
-	      canvas.drawLines(mPoints, mPaint);
-	    }*/		
+	   
 	}
 
 	@Override
