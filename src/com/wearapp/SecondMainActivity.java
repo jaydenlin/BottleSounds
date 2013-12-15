@@ -34,7 +34,6 @@ public class SecondMainActivity extends Activity {
 
 	ImageButton button_listen;
 	ImageButton button_record;
-	
 
 	// /////////////////////////////////////////
 	// handler
@@ -59,11 +58,10 @@ public class SecondMainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_main);
-		
 
 		initButton();
 		setListener();
-		
+
 	}
 
 	@Override
@@ -128,7 +126,7 @@ public class SecondMainActivity extends Activity {
 	}
 
 	public void startListen() {
-		Intent intent = new Intent(this, CheckPlaceActivity.class);
+		Intent intent = new Intent(this, CheckVoiceActivity.class);
 		startActivity(intent);
 		return;
 	}

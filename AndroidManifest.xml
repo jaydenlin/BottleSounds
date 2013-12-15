@@ -62,7 +62,7 @@
         </activity>
         <activity android:name="com.wearapp.PickFriendsActivity" >
         </activity>
-        <activity android:name="com.wearapp.CheckPlaceActivity" >
+        <activity android:name="com.wearapp.CheckVoiceActivity" >
         </activity>
         <activity android:name="com.wearapp.PickPlaceActivity" >
         </activity>
