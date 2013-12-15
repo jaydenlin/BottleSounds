@@ -58,6 +58,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 	ImageButton imagebutton_record;
 	ImageButton imagebutton_stop;
 	ImageButton imagebutton_play;
+	ImageButton imagebutton_pause;
 	Button button_confirm;
 
 	TextView play_time_text;
@@ -148,22 +149,26 @@ public class RecordActivity extends Activity implements OnClickListener {
 		setMediaState(MediaState.Default);
 		button_confirm.setVisibility(View.INVISIBLE);
 		button_confirm.setClickable(false);
+		
+		/*Start record directly */
+		startRecord();
+		setMediaState(MediaState.isRecordingState);
+		setButton(mediaState);
+		
+		
 	}
 
 	@Override
 	public void onClick(View view) {
 		int id = view.getId();
 		if (id == R.id.imagebutton_record) {
-			try {
-				startRecord();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			startRecord();
 			setMediaState(MediaState.isRecordingState);
 			setButton(mediaState);
 			return;
 		} else if (id == R.id.imagebutton_stop) {
 			if (mPlayer != null && mediaState == MediaState.isPlayingState) {
+				
 				setMediaState(MediaState.isPlayStopState);
 				setButton(mediaState);
 
@@ -294,6 +299,9 @@ public class RecordActivity extends Activity implements OnClickListener {
 		imagebutton_stop.setVisibility(View.INVISIBLE);
 		imagebutton_play = (ImageButton) findViewById(R.id.imagebutton_play);
 		imagebutton_play.setVisibility(View.INVISIBLE);
+		imagebutton_pause = (ImageButton)findViewById(R.id.imagebutton_pause);
+		imagebutton_pause.setVisibility(View.INVISIBLE);
+		
 		button_confirm = (Button) findViewById(R.id.button_confirm);
 		imagebutton_record.bringToFront();
 		
@@ -312,7 +320,8 @@ public class RecordActivity extends Activity implements OnClickListener {
 
 	Long recordtime;
 
-	public void startRecord() throws IOException {
+	
+	public void recordFunction() throws IOException{
 		if (D_METHOD) {
 			Log.w(TAG, "In startRecord");
 		}
@@ -344,11 +353,21 @@ public class RecordActivity extends Activity implements OnClickListener {
 		}
 		mRecorderSeekBar.link(mRecorder);
 		mRecorderSeekBar.setMax(10000);
+		mRecorderSeekBar.setProgress(0);
+		mRecorderSeekBar.setUnFinished();
 		mRecorder.start(); // Recording is now started
 		mediaState = MediaState.isRecordingState;
 		recordtime = System.currentTimeMillis();
 
 		handler.post(updatesb);
+	}/*recordFunction()*/
+	
+	public void startRecord() {
+		try {
+			recordFunction();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}/* startRecord() */
 	
@@ -360,6 +379,9 @@ public class RecordActivity extends Activity implements OnClickListener {
 
 			mRecorder.stop();
 			mRecorder.reset(); // You can reuse the object by going back to
+			
+			mRecorderSeekBar.reDraw();
+			mRecorderSeekBar.setFinished();
 			// setAudioSource() step
 			// mRecorder.release(); // Now the object cannot be reused
 			// mRecorder = null;
@@ -482,6 +504,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 	Runnable updatesb = new Runnable() {
 		@Override
 		public void run() {
+			Log.w(TAG, "In updatesb()");
 			if (mPlayer != null && mPlayer.isPlaying()) {
 
 				// mMediaSeekBar.setProgress(mPlayer.getCurrentPosition());

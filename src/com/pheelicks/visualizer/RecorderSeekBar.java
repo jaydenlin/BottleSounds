@@ -4,6 +4,7 @@ package com.pheelicks.visualizer;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.pheelicks.visualizer.renderer.PointRenderer;
 import com.pheelicks.visualizer.renderer.Renderer;
 import com.wearapp.util.ByteUtils;
 
@@ -70,6 +71,7 @@ public class RecorderSeekBar extends SeekBar {
 	
 	  public void setFinished(){
 		  finish= true;
+		  
 		  
 	  }
 
@@ -174,7 +176,12 @@ public class RecorderSeekBar extends SeekBar {
 	    // Fade out old contents
 	    drawBackGround(mCanvas);
 	    canvas.drawBitmap(mCanvasBitmap, new Matrix(), null);
-	    if(finish){reDraw();}
+	    if(finish){
+	    	setRenderWidth(0);
+	    	
+	    	reDraw();
+	    	
+	    }
 	  }
 	  
 	  public void reDraw(){
@@ -184,6 +191,12 @@ public class RecorderSeekBar extends SeekBar {
 		    mCanvas.drawPaint(clearPaint);
 		    drawBackGround(mCanvas);
 		    mCanvas.drawBitmap(mCanvasBitmap, new Matrix(), null);
+		    
+		    for(Renderer renderer: this.mRenderers){
+	    		Log.w(TAG,renderer.getClass().toString() );
+					 PointRenderer pointrenderer = (PointRenderer)renderer;
+					 pointrenderer.reNewHistoryData(0,0);
+			  }
 		  
 	  }
 	  

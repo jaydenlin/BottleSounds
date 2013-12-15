@@ -143,6 +143,15 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/imagebutton_record"
         android:layout_alignTop="@+id/imagebutton_record"
+        android:background="@drawable/custom_icon_stop" />
+    
+    <ImageButton
+        android:id="@+id/imagebutton_pause"
+        style="?android:borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/imagebutton_record"
+        android:layout_alignTop="@+id/imagebutton_record"
         android:background="@drawable/custom_icon_pause" />
 
     <Button

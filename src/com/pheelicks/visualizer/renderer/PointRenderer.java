@@ -6,6 +6,7 @@ package com.pheelicks.visualizer.renderer;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 
 import com.pheelicks.visualizer.AudioData;
 import com.pheelicks.visualizer.FFTData;
@@ -31,15 +32,16 @@ public class PointRenderer extends Renderer{
 	    // Calculate points for line
 		int amp = ByteUtils.bytes2int(data.bytes);
 		
+
 		
 		mPoints[0] = (int) historyData[0];
 		mPoints[1] = historyData[1];
 		mPoints[2] = rect.width()*(width/duration);
 		mPoints[3] = amp/100+rect.height()/3;
+		 Log.w("onRender", mPoints[0]+" "+mPoints[1]+" "+mPoints[2]+" "+mPoints[3]);
 	    
 	    canvas.drawLines(mPoints, mFlashPaint);
-	    historyData[0] = (int) mPoints[2];
-	    historyData[1] = (int) mPoints[3];
+	    reNewHistoryData(mPoints[2],mPoints[3]);
 	}
 
 	@Override
@@ -47,6 +49,13 @@ public class PointRenderer extends Renderer{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public void reNewHistoryData(float pointX, float pointY){
+		 historyData[0] = (int) pointX;
+		 historyData[1] = (int) pointY;
+		 Log.w("HistoryData", historyData[0]+" "+historyData[1]);
+		
+	}/*reNewHistoryData()*/
 
 	
 
