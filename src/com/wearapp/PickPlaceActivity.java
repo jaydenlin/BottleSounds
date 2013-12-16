@@ -123,8 +123,8 @@ public class PickPlaceActivity extends FragmentActivity {
 	}
 
 	private void onError(Exception error) {
-		String text = getString(0, error.getMessage());
-		Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+		
+		Toast toast = Toast.makeText(this, "Error", Toast.LENGTH_SHORT);
 		toast.show();
 	}
 
