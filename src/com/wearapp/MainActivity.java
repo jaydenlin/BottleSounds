@@ -51,7 +51,8 @@ public class MainActivity extends Activity {
 		public void onClick(View view) {
 			switch (view.getId()) {
 			case R.id.button_facebook:
-				startFacebook();
+				//startFacebook();
+				startHistory();
 				return;
 
 			case R.id.button_direct:
@@ -156,6 +157,12 @@ public class MainActivity extends Activity {
 		Intent intent = new Intent(this, CheckVoiceActivity.class);
 		startActivity(intent);
 		return;
+	}
+	
+	public void startHistory(){
+		Intent intent = new Intent(this, HistoryActivity.class);
+		startActivity(intent);
+		return;	
 	}
 	
 	private boolean ensureOpenFBSession() {

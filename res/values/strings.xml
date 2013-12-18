@@ -17,5 +17,6 @@
     <string name="google_app_id">AIzaSyCYICRjhx4KN3DV8AM_XEPu5wwLnptLhtk</string>
     <string name="fb_app_id">611899052182749</string>
     <string name="title_activity_main_activity_first">MainActivity_first</string>
+    <string name="title_activity_history">HistoryActivity</string>
 
 </resources>

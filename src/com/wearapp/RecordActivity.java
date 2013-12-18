@@ -65,28 +65,6 @@ public class RecordActivity extends Activity implements OnClickListener {
 
 	public static LayoutInflater mInflater;
 
-	// SeekBar
-	private SeekBar.OnSeekBarChangeListener seekBarOnSeekBarChange = new SeekBar.OnSeekBarChangeListener() {
-
-		@Override
-		public void onStopTrackingTouch(SeekBar seekBar) {
-			// TODO Auto-generated method stub
-			// mPlayer.seekTo(seekBar1.getProgress());
-		}
-
-		@Override
-		public void onStartTrackingTouch(SeekBar seekBar) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void onProgressChanged(SeekBar seekBar, int progress,
-				boolean fromUser) {
-			// TODO Auto-generated method stub
-
-		}
-	};
 
 	// /////////////////////////////////////////
 	// handler
@@ -108,10 +86,10 @@ public class RecordActivity extends Activity implements OnClickListener {
 	private MediaSeekBar  mMediaSeekBar;
 	private RecorderSeekBar mRecorderSeekBar;
 
-	private String VOICE_FILE_PATH;
-
 	private MediaState mediaState;
-
+	
+	private String VOICE_FILE_PATH;
+	
 	protected Handler handler = new Handler();
 
 	enum MediaState {
@@ -122,7 +100,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 		this.mediaState = mediastate;
 
 	}
-
+	
 	public void setVoiceFilePath(String filepath) {
 		if (D_METHOD) {
 			Log.w(TAG, "Set Voice File Path" + filepath);
@@ -136,128 +114,12 @@ public class RecordActivity extends Activity implements OnClickListener {
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		setContentView(R.layout.record_activity);
-
-		initView();
-		button_confirm.setOnClickListener(this);
-		imagebutton_record.setOnClickListener(this);
-		imagebutton_stop.setOnClickListener(this);
-		imagebutton_play.setOnClickListener(this);
-		setMediaState(MediaState.Default);
-		button_confirm.setVisibility(View.INVISIBLE);
-		button_confirm.setClickable(false);
-		
-		/*Start record directly */
-		startRecord();
-		setMediaState(MediaState.isRecordingState);
-		setButton(mediaState);
-		
-		
-	}
-
-	@Override
-	public void onClick(View view) {
-		int id = view.getId();
-		if (id == R.id.imagebutton_record) {
-			startRecord();
-			setMediaState(MediaState.isRecordingState);
-			setButton(mediaState);
-			return;
-		} else if (id == R.id.imagebutton_stop) {
-			if (mPlayer != null && mediaState == MediaState.isPlayingState) {
-				
-				setMediaState(MediaState.isPlayStopState);
-				setButton(mediaState);
-
-			}
-			if (mRecorder != null) {
-				stopRecord();
-				setMediaState(MediaState.isRecordedState);
-				setButton(mediaState);
-			}
-			return;
-		} else if (id == R.id.button_confirm) {
-			if (mediaState == MediaState.isRecordedState) {
-				setMediaState(MediaState.isStartPlayState);
-				setButton(mediaState);
-				defaultRecorder();
-				return;
-			}
-			if (mediaState == MediaState.isPlayStopState) {
-				setMediaState(MediaState.Default);
-				defaultMediaPlayer();
-				setButton(mediaState);
-				startCheckPlaceActivity();
-				uploadFile();
-				return;
-			}
-			return;
-		} else if (id == R.id.imagebutton_play) {
-			if (mediaState == MediaState.isStartPlayState
-					|| mediaState == MediaState.isPlayStopState) {
-				setMediaState(MediaState.isPlayingState);
-				if (getVoiceFilePath() == null) {
-					return;
-				}
-
-				if (mPlayer == null) {
-					mPlayer = new MediaPlayer();
-					mPlayer.setOnPreparedListener(preparedListener);
-					try {
-						mPlayer.setDataSource(this.getVoiceFilePath());
-					} catch (IllegalArgumentException e) {
-						e.printStackTrace();
-					} catch (SecurityException e) {
-						e.printStackTrace();
-					} catch (IllegalStateException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				setButton(mediaState);
-				mPlayer.prepareAsync();
-
-			}
-			return;
-		}
-
-		return;
-	}
-
-	private void defaultRecorder() {
-		if (mRecorder != null)
-			mRecorder.release();
-		mRecorder = null;
-
-	}
-
-	private void defaultMediaPlayer() {
-		if (mPlayer != null) {
-			mPlayer.release();
-		}
-		mPlayer = null;
-	}
-
-	@Override
 	protected void onStart() {
 		super.onStart();
 		if (D_METHOD) {
 			Log.w(TAG, "onStart");
 		}
 
-	}
-
-	public void hideImageButton(View view) {
-		int id = view.getId();
-		if (id == R.id.imagebutton_record) {
-			imagebutton_record = (ImageButton) findViewById(R.id.imagebutton_record);
-		}
-
-		return;
 	}
 
 	@Override
@@ -292,8 +154,32 @@ public class RecordActivity extends Activity implements OnClickListener {
 		}
 		super.onDestroy();
 	}
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		setContentView(R.layout.record_activity);
+
+		initView();
+		button_confirm.setOnClickListener(this);
+		imagebutton_record.setOnClickListener(this);
+		imagebutton_stop.setOnClickListener(this);
+		imagebutton_play.setOnClickListener(this);
+		setMediaState(MediaState.Default);
+		button_confirm.setVisibility(View.INVISIBLE);
+		button_confirm.setClickable(false);
+		
+		/*Start record directly */
+		setMediaState(MediaState.isRecordingState);
+		setButton(mediaState);
+		startRecord();
+		
+	}
 
 	public void initView() {
+		
+		// We initial view members and hide unused view.
 		imagebutton_record = (ImageButton) findViewById(R.id.imagebutton_record);
 		imagebutton_stop = (ImageButton) findViewById(R.id.imagebutton_stop);
 		imagebutton_stop.setVisibility(View.INVISIBLE);
@@ -317,10 +203,124 @@ public class RecordActivity extends Activity implements OnClickListener {
 		setTextView();
 		return;
 	}
+	private void setTextView() {
+		int id = -1;
+		TextView textview;
+		for (int i = 0; i < 5; i++) {
+			String identifier = df2.format(i + 1);
+			id = getResources().getIdentifier("text_time_sep_" + identifier,
+					"id", RecordActivity.this.getPackageName());
+			textview = (TextView) findViewById(id);
+			textview.setText("00:" + i + "0");
+		}
 
-	Long recordtime;
-
+	}//setTextView()
 	
+	private void addLineRenderer() {
+		Paint linePaint = initLinePaint();
+		Paint lineFlashPaint = initLineFlashPaint();
+
+		WaveRenderer waveRenderer = new WaveRenderer(linePaint, lineFlashPaint,
+				false);
+		mMediaSeekBar.addRenderer(waveRenderer);
+	}
+
+	private void addPointRenderer() {
+		Paint linePaint = initLinePaint();
+		Paint lineFlashPaint = initLineFlashPaint();
+		PointRenderer pointRenderer = new PointRenderer(linePaint,
+				lineFlashPaint, false);
+		mRecorderSeekBar.addRenderer(pointRenderer);
+	}
+
+	private Paint initLinePaint() {
+		Paint linePaint = new Paint();
+		
+		linePaint.setStrokeWidth(4f);
+		linePaint.setStrokeJoin(Paint.Join.ROUND);
+		linePaint.setStrokeCap(Paint.Cap.ROUND);
+		linePaint.setAntiAlias(true);
+		linePaint.setColor(Color.argb(88, 0, 128, 255));
+
+		return linePaint;
+	}
+
+	private Paint initLineFlashPaint() {
+		Paint lineFlashPaint = new Paint();
+
+		lineFlashPaint.setStrokeWidth(2f);
+		lineFlashPaint.setStrokeJoin(Paint.Join.ROUND);
+		lineFlashPaint.setStrokeCap(Paint.Cap.ROUND);
+		lineFlashPaint.setAntiAlias(true);
+		lineFlashPaint.setColor(Color.argb(255, 255, 255, 255));
+
+		return lineFlashPaint;
+
+	}
+	
+	@Override
+	public void onClick(View view) {
+		int id = view.getId();
+		if (id == R.id.imagebutton_record) {
+			startRecord();
+			setMediaState(MediaState.isRecordingState);
+			setButton(mediaState);
+			return;
+		} else if (id == R.id.imagebutton_stop) {
+			if (mPlayer != null && mediaState == MediaState.isPlayingState) {
+				//stopPlay();
+				setMediaState(MediaState.isPlayStopState);
+				setButton(mediaState);
+			}
+			if (mRecorder != null) {
+				stopRecord();
+				setMediaState(MediaState.isRecordedState);
+				setButton(mediaState);
+			}
+			return;
+		} else if (id == R.id.button_confirm) {
+			if (mediaState == MediaState.isRecordedState) {
+				setMediaState(MediaState.isStartPlayState);
+				setButton(mediaState);
+				defaultRecorder();
+				return;
+			}
+			if (mediaState == MediaState.isPlayStopState) {
+				setMediaState(MediaState.Default);
+				defaultMediaPlayer();
+				setButton(mediaState);
+				startCheckPlaceActivity();
+				uploadFile();
+				return;
+			}
+			return;
+		} else if (id == R.id.imagebutton_play) {
+			if ( mediaState == MediaState.isStartPlayState
+				 || mediaState == MediaState.isPlayStopState) {
+				setMediaState(MediaState.isPlayingState);
+				setMediaPlayer();
+				setButton(mediaState);
+				mPlayer.prepareAsync();
+
+			}
+			return;
+		}
+
+		return;
+	}//onClick()
+	
+	
+	public void startRecord() {
+		try {
+			recordFunction();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}/* startRecord() */
+	
+	
+	Long recordtime;
 	public void recordFunction() throws IOException{
 		if (D_METHOD) {
 			Log.w(TAG, "In startRecord");
@@ -362,15 +362,6 @@ public class RecordActivity extends Activity implements OnClickListener {
 		handler.post(updatesb);
 	}/*recordFunction()*/
 	
-	public void startRecord() {
-		try {
-			recordFunction();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}/* startRecord() */
-	
 	public void stopRecord() {
 		if (mRecorder != null) {
 			if (D_METHOD) {
@@ -388,6 +379,44 @@ public class RecordActivity extends Activity implements OnClickListener {
 		}
 
 	}
+
+	private void defaultRecorder() {
+		if (mRecorder != null)
+			mRecorder.release();
+		mRecorder = null;
+
+	}
+
+	private void defaultMediaPlayer() {
+		if (mPlayer != null) {
+			mPlayer.release();
+		}
+		mPlayer = null;
+	}
+
+
+
+	public void setMediaPlayer() {
+		if (getVoiceFilePath() == null) {
+			return;
+		}
+
+		if (mPlayer == null) {
+			mPlayer = new MediaPlayer();
+			mPlayer.setOnPreparedListener(preparedListener);
+			try {
+				mPlayer.setDataSource(this.getVoiceFilePath());
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				e.printStackTrace();
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}//setMediaPlayer()
 
 	public void playVoice() {
 
@@ -416,85 +445,31 @@ public class RecordActivity extends Activity implements OnClickListener {
 		return strDate;
 	}/* getDate */
 
-	private void uploadFile() {
-		new UploadAsyncTask().execute(recordFile);
-	}
+	private OnPreparedListener preparedListener = new OnPreparedListener() {
 
-	private void startCheckPlaceActivity() {
-		Intent intent = new Intent(this, CheckVoiceActivity.class);
-		startActivity(intent);
-	}
+		@Override
+		public void onPrepared(MediaPlayer player) {
+			Log.i(TAG, "In Prepare  Async");
+			playVoice();
+			player.start();
+			handler.postDelayed(updatesb, 10);
+		}
 
-	
-	  private void addLineRenderer()
-	  {
-	    Paint linePaint = new Paint();
-	    linePaint.setStrokeWidth(4f);
-	    linePaint.setAntiAlias(true);
-	    linePaint.setColor(Color.argb(88, 0, 128, 255));
+	};
 
-	    Paint lineFlashPaint = new Paint();
-	    
-	    lineFlashPaint.setStrokeWidth(2f);
-	    lineFlashPaint.setStrokeJoin(Paint.Join.ROUND);
-	    lineFlashPaint.setStrokeCap(Paint.Cap.ROUND);
-	    lineFlashPaint.setAntiAlias(true);
-	    lineFlashPaint.setColor(Color.argb(255, 255, 255, 255));
-	    
-	    WaveRenderer waveRenderer = new WaveRenderer(linePaint, lineFlashPaint, false);
-	    mMediaSeekBar.addRenderer(waveRenderer);
-	  }
-	  
-	  private void addPointRenderer()
-	  {
-	    Paint linePaint = new Paint();
-	    linePaint.setStrokeWidth(4f);
-	    linePaint.setAntiAlias(true);
-	    linePaint.setColor(Color.argb(88, 0, 128, 255));
+	MediaPlayer.OnCompletionListener completelistener = new MediaPlayer.OnCompletionListener() {
+		@Override
+		public void onCompletion(MediaPlayer mediaPlayer) {
+			Log.i(TAG, "In OnCompletionListener");
+			mMediaSeekBar.reDraw();
+			mMediaSeekBar.setFinished();
+			mMediaSeekBar.getVisualizer().setEnabled(false);
+			mediaPlayer.stop();
+			setMediaState(MediaState.isPlayStopState);
+			handler.postDelayed(updatesb, 10);
+		}
+	};
 
-	    Paint lineFlashPaint = new Paint();
-	    
-	    lineFlashPaint.setStrokeWidth(2f);
-	    lineFlashPaint.setStrokeJoin(Paint.Join.ROUND);
-	    lineFlashPaint.setStrokeCap(Paint.Cap.ROUND);
-	    lineFlashPaint.setAntiAlias(true);
-	    lineFlashPaint.setColor(Color.argb(255, 255, 255, 255));
-	    
-	    PointRenderer pointRenderer = new PointRenderer(linePaint, lineFlashPaint, false);
-	    mRecorderSeekBar.addRenderer(pointRenderer);
-	  }
-	  
-	      
-	  private OnPreparedListener  preparedListener = new OnPreparedListener(){
-
-			@Override
-			public void onPrepared(MediaPlayer player) {
-				Log.i(TAG, "In Prepare  Async");
-				playVoice();
-				player.start();
-				handler.postDelayed(updatesb, 10);
-			}
-									
-		};
-	
-		
-		MediaPlayer.OnCompletionListener completelistener = new MediaPlayer.OnCompletionListener()
-	    {
-	      @Override
-	      public void onCompletion(MediaPlayer mediaPlayer)
-	      {
-	    	  Log.i(TAG, "In OnCompletionListener");
-	    	  mMediaSeekBar.reDraw();
-	    	  mMediaSeekBar.setFinished();
-	    	  mMediaSeekBar.getVisualizer().setEnabled(false);
-	    	  mediaPlayer.stop();
-	          setMediaState(MediaState.isPlayStopState);
-	          handler.postDelayed(updatesb, 10);
-	      }
-	    };
-	  
-		
-		
 		//////////////////////////////////////////////////////////////
 		//			Handler Area									//
 		//														    //
@@ -534,12 +509,22 @@ public class RecordActivity extends Activity implements OnClickListener {
 				play_time_text.setText("" + mintmp + ":" + sectmp+" "+amplitutde);
 				int time_duration = (int) (System.currentTimeMillis() - recordtime);
 				mRecorderSeekBar.setProgress(time_duration);
-				handler.postDelayed(updatesb,100);
+				handler.postDelayed(updatesb,10);
 			}
 
 		}
 	};
 
+	private void uploadFile() {
+		new UploadAsyncTask().execute(recordFile);
+	}
+
+	private void startCheckPlaceActivity() {
+		Intent intent = new Intent(this, CheckVoiceActivity.class);
+		startActivity(intent);
+	}
+	
+	
 	private void setButton(MediaState mediastate) {
 		switch (mediastate) {
 		case isRecordingState:
@@ -653,17 +638,35 @@ public class RecordActivity extends Activity implements OnClickListener {
 
 	}
 
-	private void setTextView() {
-		int id = -1;
-		TextView textview;
-		for (int i = 0; i < 5; i++) {
-			String identifier = df2.format(i + 1);
-			id = getResources().getIdentifier("text_time_sep_" + identifier,
-					"id", RecordActivity.this.getPackageName());
-			textview = (TextView) findViewById(id);
-			textview.setText("00:" + i + "0");
-		}
 
-	}
+	
+	//////////////////////////////////////////////
+	//  		Listener						//
+	//											//
+	//////////////////////////////////////////////
+	
+	
+	// SeekBar
+		private SeekBar.OnSeekBarChangeListener seekBarOnSeekBarChange = new SeekBar.OnSeekBarChangeListener() {
 
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				// mPlayer.seekTo(seekBar1.getProgress());
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+				// TODO Auto-generated method stub
+
+			}
+		};
+	
 }/* RecordActivity */

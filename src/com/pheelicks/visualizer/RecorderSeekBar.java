@@ -147,6 +147,7 @@ public class RecorderSeekBar extends SeekBar {
 	      mCanvasBitmap = Bitmap.createBitmap(this.getWidth(), this.getHeight(), Config.ARGB_8888);
 	      
 	    }
+	    
 	    if(mCanvas == null)
 	    {
 	      mCanvas = new Canvas(mCanvasBitmap);	      
