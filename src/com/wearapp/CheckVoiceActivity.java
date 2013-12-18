@@ -8,11 +8,16 @@ import com.wearapp.util.FacebookOpenSessionDoneDelegate;
 import com.wearapp.util.FacebookUtil;
 import com.wearapp.util.LocateLocationDoneDelegate;
 import com.wearapp.util.LocationUtil;
+
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.widget.Toast;
+import android.location.LocationManager;
 
 public class CheckVoiceActivity extends FragmentActivity {
 
@@ -71,7 +76,7 @@ public class CheckVoiceActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.check_voice_activity);
 		initView();
-
+		
 		FBlifecycleHelper = new UiLifecycleHelper(this, new Session.StatusCallback() {
 			@Override
 			public void call(Session session, SessionState state, Exception exception) {
@@ -82,12 +87,24 @@ public class CheckVoiceActivity extends FragmentActivity {
 		initFBSessionAndLocation();
 		startPickPlaceActivityForResult(lastKnownLocation);
 		
+		/**/
+		
+		
+		
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		initFBSessionAndLocation();
+		
+//		LocationManager status = (LocationManager) (this.getSystemService(Context.LOCATION_SERVICE));
+//		if (status.isProviderEnabled(LocationManager.GPS_PROVIDER) || status.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+//			//如果GPS或網路定位開啟，呼叫locationServiceInitial()更新位置
+//		} else {
+//			Toast.makeText(this, "請開啟定位服務", Toast.LENGTH_LONG).show();
+//			startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));	//開啟設定頁面
+//		}
+//		initFBSessionAndLocation();
 	}
 
 	@Override
@@ -124,11 +141,16 @@ public class CheckVoiceActivity extends FragmentActivity {
 			}
 			break;
 		case ResultCode.PickFriendsActivity:
-			startPickPlaceActivityForResult(lastKnownLocation);
+//			if(data!=null){
+//				initFBSessionAndLocation();
+//				startPickPlaceActivityForResult(lastKnownLocation);
+//			}else{
+				initFBSessionAndLocation();
+				startPickPlaceActivityForResult(lastKnownLocation);
+//			}
 			break;	
 		default:
-			startMainActivityAndFinishSelf();
-			
+//			startMainActivityAndFinishSelf();
 			break;
 		}
 	}
@@ -155,6 +177,9 @@ public class CheckVoiceActivity extends FragmentActivity {
 			isLocationDone = false;
 			lastKnownLocation = null;
 		}
+//		else{
+//			initFBSessionAndLocation();
+//		}
 
 	}
 

@@ -36,6 +36,7 @@ import com.facebook.model.GraphUser;
 import com.facebook.widget.FriendPickerFragment;
 import com.facebook.widget.PickerFragment;
 import com.wearapp.asyncTask.FacebookChatAsyncTask;
+import com.wearapp.resultcode.ResultCode;
 import com.wearapp.util.LocationUtil;
 
 // This class provides an example of an Activity that uses FriendPickerFragment to display a list of
@@ -142,7 +143,7 @@ public class PickFriendsActivity extends FragmentActivity {
     	 							public void onClick(DialogInterface dialog, int which) {
     	 								// TODO Auto-generated method stub													
     	 								sendMessage();
-    	 								finish();
+    	 								finishActivity();
     	 							}
     	             	}
     	             	).setNegativeButton("NO", 
@@ -151,7 +152,7 @@ public class PickFriendsActivity extends FragmentActivity {
     	 					public void onClick(DialogInterface dialog, int which) {
     	 						// TODO Auto-generated method stub
     	 						Toast.makeText(getApplicationContext(), "Message not sent", Toast.LENGTH_LONG).show();
-    	 						finish();
+    	 						finishActivity();
     	 					}
     	 				}
     	             	).show();
@@ -186,4 +187,13 @@ public class PickFriendsActivity extends FragmentActivity {
 		Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
 
 	}
+	
+	private void finishActivity(){
+		Intent intent = new Intent();
+		intent.putExtra("Friend", friendslist_selected.toString());
+		setResult(ResultCode.PickFriendsActivity);
+		finish();
+	}
+	
+	
 }

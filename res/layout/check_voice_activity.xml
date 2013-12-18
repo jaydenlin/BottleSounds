@@ -7,13 +7,4 @@
     android:gravity="center"
     android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/check_place"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:text="@string/string_check_voice" />
-
 </LinearLayout>
