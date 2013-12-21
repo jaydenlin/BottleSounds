@@ -7,107 +7,105 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    
-    tools:context=".SecondMainActivity" 
-    android:weightSum="10" >
+    android:weightSum="11"
+    tools:context=".SecondMainActivity" >
 
-    <ImageView
-        android:id="@+id/ImageView01"
+    <LinearLayout
+        android:id="@+id/linearlayout01"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"   />
-    
-    <ImageView
-        android:id="@+id/image_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1.5"
-        android:scaleType="centerInside"
-        android:src="@drawable/logo_main" />
-    <ImageView
-        android:id="@+id/ImageView03"
+        android:layout_weight="2" >
+
+        <ImageView
+            android:id="@+id/ImageView01_1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearlayout02"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"   />
+        android:layout_weight="2"
+        android:gravity="center" >
 
-   <LinearLayout
-       android:id="@+id/linearlayout01"
-        android:layout_width="match_parent"
-    	android:layout_height="0dp"
-        android:layout_weight="1"
-        android:weightSum="9" 
-       >
-       
-      <ImageView
-        android:id="@+id/ImageView03_1"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"   />
-          	
-      <ImageButton
-        android:id="@+id/button_listen"
-        style="?android:borderlessButtonStyle"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="7"
-        android:scaleType="centerInside"
-        android:background="@drawable/custom_button_message" />
-
-    <ImageView
-        android:id="@+id/ImageView03_2"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"   />
-       
-   </LinearLayout>
-
+        <ImageView
+            android:id="@+id/image_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/logo_main" />
+    </LinearLayout>
     
-
-    <ImageView
-        android:id="@+id/ImageView03"
+        <LinearLayout
+        android:id="@+id/linearlayout06"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.5"   />
-    
-        
-   
-      <LinearLayout
-       android:id="@+id/linearlayout02"
-        android:layout_width="match_parent"
-    	android:layout_height="0dp"
-        android:layout_weight="1"
-        android:weightSum="9" 
-       >
-       
-      <ImageView
-        android:id="@+id/ImageView04_1"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"   />
-      
-      <ImageButton
-        android:id="@+id/button_record_again"
-        style="?android:borderlessButtonStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="7"
-        android:scaleType="centerInside"
-        android:background="@drawable/custom_button_record" />
-      
-      
+        android:layout_weight="0.5" >
 
-    <ImageView
-        android:id="@+id/ImageView04_2"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"   />
-       
-   </LinearLayout>
-    
-    <ImageView
-        android:id="@+id/imageview02"
+        <ImageView
+            android:id="@+id/imageview06_1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearlayout03"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"  />
+        android:paddingTop="15dp"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:layout_weight="1.5" >
+
+        <ImageButton
+            android:id="@+id/button_listen"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_button_message"
+            android:scaleType="centerInside" />
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/linearlayout07"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5" >
+
+        <ImageView
+            android:id="@+id/imageview07_1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearlayout02"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingTop="15dp"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:layout_weight="1.5" >
+
+        <ImageButton
+            android:id="@+id/button_record_again"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_button_record"
+            android:scaleType="centerInside" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearlayout05"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3" >
+
+        <ImageView
+            android:id="@+id/ImageView05_1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
 
 </LinearLayout>
