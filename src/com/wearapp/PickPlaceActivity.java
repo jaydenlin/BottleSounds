@@ -1,12 +1,18 @@
 package com.wearapp;
 
 import android.annotation.SuppressLint;
+import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.facebook.FacebookException;
@@ -33,6 +39,23 @@ public class PickPlaceActivity extends FragmentActivity {
 	private GoogleMap map;
 	private static Location userLocation;
 	PlacePickerFragment placePickerFragment;
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		Log.w(TAG, "IN createing OptionsMenu");
+	    // Inflate the options menu from XML
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.options_menu, menu);
+	    
+	    // Get the SearchView and set the searchable configuration
+	    SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+	    SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+	    // Assumes current activity is the searchable activity
+	    searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName("com.wearapp","com.wearapp.HistoryActivity")));
+	    //searchView.setSearchableInfo(searchManager.getSearchableInfo(this.getComponentName()));
+	    searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+	     
+	    return true;
+	}
 
 	private void setPickPlaceFragment() {
 		FragmentManager fm = getSupportFragmentManager();

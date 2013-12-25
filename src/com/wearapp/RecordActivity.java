@@ -7,14 +7,19 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
+
+
+
 import com.pheelicks.visualizer.MediaSeekBar;
 import com.pheelicks.visualizer.RecorderSeekBar;
 import com.pheelicks.visualizer.renderer.PointRenderer;
 import com.pheelicks.visualizer.renderer.WaveRenderer;
 import com.wearapp.asyncTask.UploadAsyncTask;
+import com.wearapp.util.DB;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.MediaPlayer;
@@ -26,6 +31,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -51,6 +58,9 @@ public class RecordActivity extends Activity implements OnClickListener {
 
 	DecimalFormat df2 = new DecimalFormat("00");
 
+	private DB mDBHelper;
+	private Cursor mCursor;
+	
 	// /////////////////////////////////////////
 	// UI
 	// /////////////////////////////////////////
@@ -78,6 +88,27 @@ public class RecordActivity extends Activity implements OnClickListener {
 		}
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    // Inflate the options menu from XML
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.options_menu, menu);
+	    /*
+	    // Get the SearchView and set the searchable configuration
+	    SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+	    SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+	    // Assumes current activity is the searchable activity
+	    searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+	    Log.w("In create search bar", ""+getComponentName());
+	    searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+	     */
+	    return true;
+	}
+	
+	
+	
+	
+	
 	// //////////////////////////////////////////
 	// Media Controller //
 	// //////////////////////////////////////////
@@ -199,7 +230,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 		addPointRenderer();
 		GlobalAction globalAction = (GlobalAction)this.getApplicationContext();
 
-		globalAction.setActionBar(getActionBar());
+		globalAction.setActionBarBackGround2(getActionBar());
 		setTextView();
 		return;
 	}
@@ -289,8 +320,10 @@ public class RecordActivity extends Activity implements OnClickListener {
 				setMediaState(MediaState.Default);
 				defaultMediaPlayer();
 				setButton(mediaState);
+				insert2DB();
 				startCheckPlaceActivity();
 				uploadFile();
+				
 				return;
 			}
 			return;
@@ -394,7 +427,12 @@ public class RecordActivity extends Activity implements OnClickListener {
 		mPlayer = null;
 	}
 
-
+	public void insert2DB(){
+		mDBHelper = new DB (RecordActivity.this);
+		mDBHelper.open();
+		mDBHelper.create(VOICE_FILE_PATH);//Data path
+		mDBHelper.close();
+	}
 
 	public void setMediaPlayer() {
 		if (getVoiceFilePath() == null) {

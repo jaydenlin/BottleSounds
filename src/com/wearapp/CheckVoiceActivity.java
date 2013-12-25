@@ -9,15 +9,12 @@ import com.wearapp.util.FacebookUtil;
 import com.wearapp.util.LocateLocationDoneDelegate;
 import com.wearapp.util.LocationUtil;
 
-import android.content.Context;
+
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.widget.Toast;
-import android.location.LocationManager;
 
 public class CheckVoiceActivity extends FragmentActivity {
 
@@ -37,6 +34,9 @@ public class CheckVoiceActivity extends FragmentActivity {
 	private Location lastKnownLocation;
 	private boolean isLocationDone = false;
 	private boolean isFBSessionDone = false;
+	
+	
+	
 
 	private void initView() {
 		GlobalAction globalAction = (GlobalAction) this.getApplicationContext();
@@ -70,6 +70,8 @@ public class CheckVoiceActivity extends FragmentActivity {
 	// /////////////////////////////////////////
 	// LifeCycle
 	// /////////////////////////////////////////
+
+	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

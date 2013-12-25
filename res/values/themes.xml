@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
-  
-    
-        <!--
+
+    <!--
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
@@ -13,21 +11,26 @@
             res/values-vXX/styles.xml, while customizations related to
             backward-compatibility can go here.
         -->
-	
-	</style>
 
-    
+    </style>
+
     <style name="AppTheme" parent="AppBaseTheme">
+
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-             <item name="android:windowBackground">@drawable/background</item>
-    		<item name="android:windowTitleBackgroundStyle">@style/windowTitleBackgroundStyle</item>
+        <item name="android:windowBackground">@drawable/background</item>
     </style>
 
     <style name="MainTheme" parent="AppTheme">
+
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-             <item name="android:windowBackground">@drawable/background_insex</item>
-             <item name="android:windowNoTitle">True</item>
-             
+        <item name="android:windowBackground">@drawable/background_insex</item>
+        <item name="android:windowNoTitle">True</item>
     </style>
-    
+
+    <style name="RecordTheme" parent="AppBaseTheme">
+
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="android:windowBackground">@drawable/background_insex</item>
+    </style>
+
 </resources>

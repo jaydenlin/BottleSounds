@@ -8,6 +8,10 @@
     <item name="android:background">@drawable/background_title</item>                
   </style>
   
+      <style name="windowTitleBackgroundStyle2">  
+    <item name="android:background">@drawable/background_title_2</item>                
+  </style>
+  
   <style name="windowTitleStyle">
     <item name="android:textColor">#FFFFFF</item>
     <item name="android:padding">12dip</item>

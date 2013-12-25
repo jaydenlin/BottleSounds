@@ -13,10 +13,15 @@
     <color name="pink">#f29c9f</color>
     <color name="white">#ffffff</color>
     <color name="op_white">#aaffffff</color>
+    <color name="green">#00FF00</color>
 
     <string name="google_app_id">AIzaSyCYICRjhx4KN3DV8AM_XEPu5wwLnptLhtk</string>
     <string name="fb_app_id">611899052182749</string>
     <string name="title_activity_main_activity_first">MainActivity_first</string>
     <string name="title_activity_history">HistoryActivity</string>
+    <string name="app_label">Heare</string>
+    <string name="search_hint">搜尋 朋友或地點</string>
+    <string name="search">搜尋</string>
+    <string name="title_activity_test">TestActivity</string>
 
 </resources>

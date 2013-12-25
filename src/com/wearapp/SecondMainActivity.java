@@ -3,7 +3,6 @@ package com.wearapp;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
@@ -32,8 +31,8 @@ public class SecondMainActivity extends Activity {
 	// UI
 	// /////////////////////////////////////////
 
-	ImageButton button_listen;
-	ImageButton button_record;
+	Button button_listen;
+	Button button_record;
 
 	// /////////////////////////////////////////
 	// handler
@@ -107,8 +106,8 @@ public class SecondMainActivity extends Activity {
 	}
 
 	public void initButton() {
-		button_listen = (ImageButton) findViewById(R.id.button_listen);
-		button_record = (ImageButton) findViewById(R.id.button_record_again);
+		button_listen = (Button) findViewById(R.id.button_message);
+		button_record = (Button) findViewById(R.id.button_record_again);
 	}
 
 	public void setListener() {
@@ -126,15 +125,20 @@ public class SecondMainActivity extends Activity {
 	}
 
 	public void startListen() {
-		Intent intent = new Intent(this, CheckVoiceActivity.class);
+		Intent intent = new Intent(this, HistoryActivity.class);
 		startActivity(intent);
 		return;
 	}
+	
+	
+	
+	
 
 	private ImageButton.OnClickListener mainlistener = new OnClickListener() {
 		public void onClick(View view) {
 			switch (view.getId()) {
-			case R.id.button_listen:
+			case R.id.button_message:
+				//startListen();
 				startListen();
 				return;
 

@@ -36,11 +36,11 @@ public class MainActivity extends Activity {
 	// UI
 	// /////////////////////////////////////////
 
-	ImageButton button_facebook;
+	Button button_facebook;
 	Button button_direct;
 
 	public void initButton() {
-		button_facebook = (ImageButton) findViewById(R.id.button_facebook);
+		button_facebook = (Button) findViewById(R.id.button_facebook);
 		button_direct = (Button) findViewById(R.id.button_direct);
 	}
 
@@ -51,8 +51,8 @@ public class MainActivity extends Activity {
 		public void onClick(View view) {
 			switch (view.getId()) {
 			case R.id.button_facebook:
-				//startFacebook();
-				startHistory();
+				startFacebook();
+				//startHistory();
 				return;
 
 			case R.id.button_direct:
