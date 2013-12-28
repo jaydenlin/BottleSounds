@@ -136,9 +136,13 @@ public class CheckVoiceActivity extends FragmentActivity {
 		
 		switch (requestCode) {
 		case ResultCode.PickPlaceActivity:
+			Log.w(TAG, "PickPlaceActivity");
 			if(data!=null){
+				Log.w(TAG, "startPickFriendsActivityForResult");
 				startPickFriendsActivityForResult();
 			}else{
+				Log.w(TAG, "startMainActivityAndFinishSelf");
+
 				startMainActivityAndFinishSelf();
 			}
 			break;
