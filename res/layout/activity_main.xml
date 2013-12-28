@@ -40,7 +40,7 @@
         android:id="@+id/linearlayout06"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.5" >
+        android:layout_weight="1" >
 
         <ImageView
             android:id="@+id/imageview06_1"
@@ -52,9 +52,9 @@
         android:id="@+id/linearlayout03"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingTop="15dp"
-        android:paddingLeft="40dp"
-        android:paddingRight="40dp"
+        android:paddingTop="30dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
         android:layout_weight="1.5" >
 
         <Button
@@ -80,25 +80,15 @@
         
     </RelativeLayout>
     
-    <LinearLayout
-        android:id="@+id/linearlayout07"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.5" >
-
-        <ImageView
-            android:id="@+id/imageview07_1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp" />
-    </LinearLayout>
+   
 
     <RelativeLayout
         android:id="@+id/linearlayout02"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingTop="15dp"
-        android:paddingLeft="40dp"
-        android:paddingRight="40dp"
+        android:paddingTop="30dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
         android:layout_weight="1.5" >
 
         <Button
