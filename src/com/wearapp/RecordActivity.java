@@ -88,26 +88,6 @@ public class RecordActivity extends Activity implements OnClickListener {
 		public void handleMessage(Message msg) {
 		}
 	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-	    // Inflate the options menu from XML
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.options_menu, menu);
-	    /*
-	    // Get the SearchView and set the searchable configuration
-	    SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-	    SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-	    // Assumes current activity is the searchable activity
-	    searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-	    Log.w("In create search bar", ""+getComponentName());
-	    searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
-	     */
-	    return true;
-	}
-	
-	
-	
 	
 	
 	// //////////////////////////////////////////
@@ -309,18 +289,15 @@ public class RecordActivity extends Activity implements OnClickListener {
 				setMediaState(MediaState.isPlayStopState);	
 			}
 			if (mRecorder != null) {
-				setButton(MediaState.isRecordedState);
+				setButton(MediaState.isStartPlayState);
 				stopRecord();
-				setMediaState(MediaState.isRecordedState);
+				defaultRecorder();
+				setMediaState(MediaState.isStartPlayState);
+				
 			}
 			return;
 		} else if (id == R.id.button_confirm) {
-			
-			if (mediaState == MediaState.isRecordedState) {
-				setButton(MediaState.isStartPlayState);
-				defaultRecorder();
-				setMediaState(MediaState.isStartPlayState);
-			}	
+
 			if (mediaState == MediaState.isPlayStopState) {
 				setButton(MediaState.Default);
 				defaultMediaPlayer();
@@ -607,6 +584,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 	}
 
 	public void setButtonStartRecord() {
+		Log.w(TAG, "setButtonStartRecord");
 		// textview_status.setText(R.string.status_recording);
 		// button_confirm.setText(R.string.string_complete);
 		// button_confirm.setClickable(false);
@@ -620,7 +598,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 	}
 
 	private void setButtonRecorded() {
-
+		Log.w(TAG, "setButtonRecorded");
 		// textview_status.setText(R.string.string_recordtext);
 		imagebutton_stop.setVisibility(View.INVISIBLE);
 		imagebutton_stop.setClickable(false);
@@ -638,19 +616,23 @@ public class RecordActivity extends Activity implements OnClickListener {
 	 * One is stopping during playing, 
 	 * the other is playing at the end.*/
 	public void setButtonStopPlay() {
-		Log.w(TAG, "In stop Play");
+		Log.w(TAG, "setButtonStopPlay");
 
 		imagebutton_stop.setVisibility(View.INVISIBLE);
 		imagebutton_stop.setClickable(false);
+		
 		imagebutton_play.bringToFront();
 		imagebutton_play.setVisibility(View.VISIBLE);
 		imagebutton_play.setClickable(true);
-		button_confirm.setText(R.string.string_confirm);
+		
+		button_confirm.setVisibility(View.VISIBLE);
+		button_confirm.setText(R.string.string_complete);
 		button_confirm.setClickable(true);
 		return;
 	}
 
 	public void resetAll() {
+		Log.w(TAG, "In resetAll");
 		imagebutton_play.setVisibility(View.INVISIBLE);
 		imagebutton_stop.setVisibility(View.INVISIBLE);
 		imagebutton_record.setVisibility(View.VISIBLE);
@@ -663,6 +645,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 	}
 
 	private void setButtonStartPlaying() {
+		Log.w(TAG, "setButtonStartPlaying");
 		mRecorderSeekBar.setVisibility(View.INVISIBLE);
 		mMediaSeekBar.setVisibility(View.VISIBLE);
 		
@@ -681,6 +664,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 	}
 
 	private void setButtonPlaying() {
+		Log.w(TAG, "setButtonPlaying");
 		button_confirm.setText("");
 		button_confirm.setClickable(false);
 		// button_confirm.setText(R.string.string_confirm);

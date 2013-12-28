@@ -119,7 +119,6 @@ public class MediaSeekBar extends SeekBar {
 	   * @param player - MediaPlayer instance to link to
 	   */
 	  public void link(MediaPlayer player) {
-		  
 		  maxProgress = 0;
 		  mProgress =0;
 	    if(player == null)
@@ -288,8 +287,8 @@ public class MediaSeekBar extends SeekBar {
 		    Paint clearPaint = new Paint();
 		    clearPaint.setXfermode(new PorterDuffXfermode(Mode.CLEAR));
 		    mCanvas.drawPaint(clearPaint);
-		   drawBackGround(mCanvas);
-		   mCanvas.drawBitmap(mCanvasBitmap, new Matrix(), null);
+		    drawBackGround(mCanvas);
+		    mCanvas.drawBitmap(mCanvasBitmap, new Matrix(), null);
 		  
 	  }
 	  
