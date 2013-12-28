@@ -8,14 +8,16 @@ import java.util.Date;
 
 
 
-
-
+import com.facebook.Session;
+import com.facebook.SessionState;
 import com.pheelicks.visualizer.MediaSeekBar;
 import com.pheelicks.visualizer.RecorderSeekBar;
 import com.pheelicks.visualizer.renderer.PointRenderer;
 import com.pheelicks.visualizer.renderer.WaveRenderer;
 import com.wearapp.asyncTask.UploadAsyncTask;
 import com.wearapp.util.DB;
+import com.wearapp.util.FacebookOpenSessionDoneDelegate;
+import com.wearapp.util.FacebookUtil;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -561,6 +563,14 @@ public class RecordActivity extends Activity implements OnClickListener {
 	}
 
 	private void startCheckPlaceActivity() {
+		FacebookUtil.ensureThenOpenActiveSession(this, new FacebookOpenSessionDoneDelegate() {
+			
+			@Override
+			public void postExec(Session session, SessionState state, Exception exception) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		Intent intent = new Intent(this, CheckVoiceActivity.class);
 		startActivity(intent);
 	}
