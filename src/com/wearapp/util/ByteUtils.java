@@ -22,14 +22,14 @@ public class ByteUtils {
 		final BigInteger bi = BigInteger.valueOf(integer);
 		final byte[] bytes = bi.toByteArray();
 
-		System.out.println(integer +" int2byte " + Arrays.toString(bytes));
+		//System.out.println(integer +" int2byte " + Arrays.toString(bytes));
 
 		return bytes;
 	}
 
 	public static int bytes2int(byte[] bytes) {
 		final int i = new BigInteger(bytes).intValue();
-		System.out.println("byte2int"+i);
+		//System.out.println("byte2int"+i);
 
 		return i;
 	}

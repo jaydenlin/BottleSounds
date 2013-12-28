@@ -124,7 +124,7 @@ public class RecorderSeekBar extends SeekBar {
 	  @Override
 	  protected synchronized void onDraw(Canvas canvas) {
 	    super.onDraw(canvas);
-	    Log.i(RecorderSeekBar.class.getSimpleName(), "In on draw "+getWidth());
+	   // Log.i(RecorderSeekBar.class.getSimpleName(), "In on draw "+getWidth());
 
 	    int maxProgress = getMax();
 	    
@@ -136,7 +136,7 @@ public class RecorderSeekBar extends SeekBar {
 	     
 	    if(mRecorder != null){ 
 	    	int maxAmplitude = mRecorder.getMaxAmplitude();
-	    	Log.i(TAG, maxAmplitude+"");
+	    	//Log.i(TAG, maxAmplitude+"");
 	    	
 	    	mBytes = ByteUtils.int2byte(maxAmplitude);
 	    }

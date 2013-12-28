@@ -84,7 +84,6 @@ public class RecordActivity extends Activity implements OnClickListener {
 
 	class UIHandler extends Handler {
 		public void handleMessage(Message msg) {
-
 		}
 	}
 
@@ -293,48 +292,50 @@ public class RecordActivity extends Activity implements OnClickListener {
 	public void onClick(View view) {
 		int id = view.getId();
 		if (id == R.id.imagebutton_record) {
+			setButton(MediaState.isRecordingState);
 			startRecord();
 			setMediaState(MediaState.isRecordingState);
-			setButton(mediaState);
+			
 			return;
+			
 		} else if (id == R.id.imagebutton_stop) {
 			if (mPlayer != null && mediaState == MediaState.isPlayingState) {
-				//stopPlay();
-				setMediaState(MediaState.isPlayStopState);
-				setButton(mediaState);
+				setButton(MediaState.isPlayStopState);
+				mPlayer.stop();
+				mMediaSeekBar.getVisualizer().setEnabled(false);
+				mMediaSeekBar.setFinished();
+				setMediaState(MediaState.isPlayStopState);	
 			}
 			if (mRecorder != null) {
+				setButton(MediaState.isRecordedState);
 				stopRecord();
 				setMediaState(MediaState.isRecordedState);
-				setButton(mediaState);
 			}
 			return;
 		} else if (id == R.id.button_confirm) {
+			
 			if (mediaState == MediaState.isRecordedState) {
-				setMediaState(MediaState.isStartPlayState);
-				setButton(mediaState);
+				setButton(MediaState.isStartPlayState);
 				defaultRecorder();
-				return;
-			}
+				setMediaState(MediaState.isStartPlayState);
+			}	
 			if (mediaState == MediaState.isPlayStopState) {
-				setMediaState(MediaState.Default);
+				setButton(MediaState.Default);
 				defaultMediaPlayer();
-				setButton(mediaState);
 				insert2DB();
 				startCheckPlaceActivity();
 				uploadFile();
-				
-				return;
-			}
+				setMediaState(MediaState.Default);		
+			}		
 			return;
+		
 		} else if (id == R.id.imagebutton_play) {
 			if ( mediaState == MediaState.isStartPlayState
 				 || mediaState == MediaState.isPlayStopState) {
-				setMediaState(MediaState.isPlayingState);
+				setButton(MediaState.isPlayingState);
 				setMediaPlayer();
-				setButton(mediaState);
 				mPlayer.prepareAsync();
-
+				setMediaState(MediaState.isPlayingState);
 			}
 			return;
 		}
@@ -374,7 +375,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 		}
 		mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 
-		mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+		mRecorder.setOutputFormat(MediaRecorder.OutputFormat.RAW_AMR);
 		mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 		mRecorder.setOutputFile(recordFile.getAbsolutePath());
 		try {
@@ -384,11 +385,11 @@ public class RecordActivity extends Activity implements OnClickListener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		mRecorder.start(); // Recording is now started
 		mRecorderSeekBar.link(mRecorder);
-		mRecorderSeekBar.setMax(10000);
+		mRecorderSeekBar.setMax(60000);
 		mRecorderSeekBar.setProgress(0);
 		mRecorderSeekBar.setUnFinished();
-		mRecorder.start(); // Recording is now started
 		mediaState = MediaState.isRecordingState;
 		recordtime = System.currentTimeMillis();
 
@@ -403,7 +404,6 @@ public class RecordActivity extends Activity implements OnClickListener {
 
 			mRecorder.stop();
 			mRecorder.reset(); // You can reuse the object by going back to
-			
 			mRecorderSeekBar.reDraw();
 			mRecorderSeekBar.setFinished();
 			// setAudioSource() step
@@ -414,13 +414,17 @@ public class RecordActivity extends Activity implements OnClickListener {
 	}
 
 	private void defaultRecorder() {
-		if (mRecorder != null)
+		
+		if (mRecorder != null){
 			mRecorder.release();
+		}
 		mRecorder = null;
 
 	}
 
 	private void defaultMediaPlayer() {
+		mMediaSeekBar.getVisualizer().setEnabled(false);
+		mMediaSeekBar.setFinished();
 		if (mPlayer != null) {
 			mPlayer.release();
 		}
@@ -463,7 +467,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 			Log.w(TAG, "In playVoice   duration " + mPlayer.getDuration());
 		}
 		// 音乐文件持续时间
-		mMediaSeekBar.setProgress(0);
+		//mMediaSeekBar.setProgress(0);
 		// mMediaSeekBar.setOnSeekBarChangeListener(seekBarOnSeekBarChange);
 
 		// Create the Visualizer object and attach it to our media player.
@@ -500,8 +504,8 @@ public class RecordActivity extends Activity implements OnClickListener {
 		public void onCompletion(MediaPlayer mediaPlayer) {
 			Log.i(TAG, "In OnCompletionListener");
 			mMediaSeekBar.reDraw();
-			mMediaSeekBar.setFinished();
 			mMediaSeekBar.getVisualizer().setEnabled(false);
+			mMediaSeekBar.setFinished();
 			mediaPlayer.stop();
 			setMediaState(MediaState.isPlayStopState);
 			handler.postDelayed(updatesb, 10);
@@ -517,16 +521,15 @@ public class RecordActivity extends Activity implements OnClickListener {
 	Runnable updatesb = new Runnable() {
 		@Override
 		public void run() {
-			Log.w(TAG, "In updatesb()");
+			//Log.w(TAG, "In updatesb()");
 			if (mPlayer != null && mPlayer.isPlaying()) {
 
-				// mMediaSeekBar.setProgress(mPlayer.getCurrentPosition());
 				int time = mPlayer.getCurrentPosition() / 1000;
 				String sec = df2.format(time % 60);
 				String min = df2.format(time / 60);
-				// play_time_text.setText("" + min + ":" + sec);
-				play_time_text.setText(" " + mMediaSeekBar.getProgress()
-						+ " Max:" + maxProgress);
+			    play_time_text.setText("" + min + ":" + sec);
+				//play_time_text.setText(" " + mMediaSeekBar.getProgress()
+				//		+ " Max:" + maxProgress);
 				if (mMediaSeekBar.getProgress() > maxProgress) {
 					maxProgress = mMediaSeekBar.getProgress();
 				}
@@ -534,17 +537,17 @@ public class RecordActivity extends Activity implements OnClickListener {
 				handler.postDelayed(updatesb, 10);
 
 			}
-
+			
 			if (mediaState == MediaState.isPlayStopState) {
-				stopPlay();
+				setButtonStopPlay();
 			}
 
 			if (mRecorder != null && mediaState == MediaState.isRecordingState) {
 				Long timetmp = (System.currentTimeMillis() - recordtime) / 1000;
 				String sectmp = df2.format(timetmp % 60);
 				String mintmp = df2.format(timetmp / 60);
-				String amplitutde = df2.format(mRecorder.getMaxAmplitude());
-				play_time_text.setText("" + mintmp + ":" + sectmp+" "+amplitutde);
+				//String amplitutde = df2.format(mRecorder.getMaxAmplitude());
+				play_time_text.setText("" + mintmp + ":" + sectmp);
 				int time_duration = (int) (System.currentTimeMillis() - recordtime);
 				mRecorderSeekBar.setProgress(time_duration);
 				handler.postDelayed(updatesb,10);
@@ -566,7 +569,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 	private void setButton(MediaState mediastate) {
 		switch (mediastate) {
 		case isRecordingState:
-			buttonStartRecord();
+			setButtonStartRecord();
 			break;
 
 		case isPlayingState:
@@ -578,7 +581,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 			break;
 
 		case isPlayStopState:
-			stopPlay();
+			setButtonStopPlay();
 			break;
 
 		case Default:
@@ -588,10 +591,12 @@ public class RecordActivity extends Activity implements OnClickListener {
 		case isStartPlayState:
 			setButtonStartPlaying();
 			break;
+		default:
+			break;
 		}
 	}
 
-	public void buttonStartRecord() {
+	public void setButtonStartRecord() {
 		// textview_status.setText(R.string.status_recording);
 		// button_confirm.setText(R.string.string_complete);
 		// button_confirm.setClickable(false);
@@ -619,7 +624,10 @@ public class RecordActivity extends Activity implements OnClickListener {
 
 	}
 
-	public void stopPlay() {
+	/*This function will be called twice. 
+	 * One is stopping during playing, 
+	 * the other is playing at the end.*/
+	public void setButtonStopPlay() {
 		Log.w(TAG, "In stop Play");
 
 		imagebutton_stop.setVisibility(View.INVISIBLE);

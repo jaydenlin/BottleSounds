@@ -159,9 +159,6 @@ public class MediaSeekBar extends SeekBar {
 	    // Enabled Visualizer and disable when we're done with the stream
 	    mVisualizer.setEnabled(true);
 	    this.setMax(player.getDuration());
-	    
-
-	    
 
 	  }/*link()*/
 
