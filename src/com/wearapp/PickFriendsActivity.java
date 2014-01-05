@@ -37,6 +37,7 @@ import com.facebook.model.GraphUser;
 import com.facebook.widget.FriendPickerFragment;
 import com.facebook.widget.PickerFragment;
 import com.wearapp.asyncTask.FacebookChatAsyncTask;
+import com.wearapp.exception.MySQLUtil.UploadFileNotAssign;
 import com.wearapp.resultcode.ResultCode;
 import com.wearapp.util.LocationUtil;
 import com.wearapp.util.MySQLUtil;
@@ -205,7 +206,12 @@ public class PickFriendsActivity extends FragmentActivity {
 	}
 	
 	private void insertVoiceToMySQL(String message,String tag,GraphPlace location){
-		MySQLUtil.insertVoice(message, tag, location);
+		try {
+			MySQLUtil.insertVoice(message, tag, location);
+		} catch (UploadFileNotAssign e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	

@@ -11,6 +11,7 @@ import java.util.Date;
 import android.os.AsyncTask;
 import android.util.Log;
 import com.facebook.model.GraphPlace;
+import com.wearapp.exception.MySQLUtil.UploadFileNotAssign;
 
 public class MySQLUtil {
 
@@ -21,7 +22,12 @@ public class MySQLUtil {
 	private static final String dbPassword = "hearerock";
 	private static String uploadFileName;
 
-	public static void insertVoice(String message, String tag, GraphPlace location) {
+	public static void insertVoice(String message, String tag, GraphPlace location) throws UploadFileNotAssign {
+	
+		if(uploadFileName==null){
+			throw new UploadFileNotAssign("You have to call prepareInsertVoiceQuery() in advance to assign upload file");
+		}
+		
 		new InsertVoiceAsyncTask(message, tag, location).execute();
 	}
 
