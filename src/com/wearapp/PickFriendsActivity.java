@@ -32,12 +32,15 @@ import android.widget.Toast;
 import com.facebook.FacebookException;
 import com.facebook.Session;
 import com.facebook.Session.NewPermissionsRequest;
+import com.facebook.model.GraphPlace;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.FriendPickerFragment;
 import com.facebook.widget.PickerFragment;
 import com.wearapp.asyncTask.FacebookChatAsyncTask;
 import com.wearapp.resultcode.ResultCode;
 import com.wearapp.util.LocationUtil;
+import com.wearapp.util.MySQLUtil;
+import com.wearapp.util.UploadUtil;
 
 // This class provides an example of an Activity that uses FriendPickerFragment to display a list of
 // the user's friends. It takes a programmatic approach to creating the FriendPickerFragment with the
@@ -75,8 +78,10 @@ public class PickFriendsActivity extends FragmentActivity {
     	for (GraphUser selectedUser : selectedUsers){            		            	    	
 			targetFacebookId = selectedUser.getId();;	 	   
 	        new FacebookChatAsyncTask().execute(targetFacebookId,title,message);	             
-	    }	   
-    	    	    	     	
+	    }
+    	
+    	insertVoiceToMySQL(message, "test", LocationUtil.selectedlocation);
+    	
     	Toast.makeText(getApplicationContext(), "Message just sent to "+friendslist_selected.toString(), Toast.LENGTH_LONG).show();
     	friendslist_selected.delete(0, friendslist_selected.length());
 	}
@@ -195,7 +200,12 @@ public class PickFriendsActivity extends FragmentActivity {
 		Intent intent = new Intent();
 		intent.putExtra("Friend", friendslist_selected.toString());
 		setResult(ResultCode.PickFriendsActivity);
+		
 		finish();
+	}
+	
+	private void insertVoiceToMySQL(String message,String tag,GraphPlace location){
+		MySQLUtil.insertVoice(message, tag, location);
 	}
 	
 	
