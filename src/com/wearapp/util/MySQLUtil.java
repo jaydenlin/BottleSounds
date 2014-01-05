@@ -54,7 +54,7 @@ public class MySQLUtil {
 			// TODO Auto-generated method stub
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
-				Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + dbName, dbUser, dbPassword);
+				Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + dbName+"?useUnicode=true&characterEncoding=utf-8", dbUser, dbPassword);
 
 				Statement stmt = conn.createStatement();
 				stmt.executeUpdate("insert into voice(fb_uid_recorder,latitude,longitude,path,datetime,place_name,tag,message) values (" + "1,"
