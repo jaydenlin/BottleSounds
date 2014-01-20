@@ -3,12 +3,113 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-
     tools:context=".HistoryActivity" >
+
+    <FrameLayout
+        android:id="@+id/framelayout1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <LinearLayout
+            android:id="@+id/linearlayout_vertical_1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:weightSum="3" >
+
+            <LinearLayout
+                android:id="@+id/linearlayout_hor1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/linearlayout_hor2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                                >
+
+                <TextView
+                    android:id="@+id/text_distance_sep_01"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="120dp"
+                    android:text="500m"
+                    android:textColor="@color/op_white"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/text_distance_sep_02"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                     android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="200dp"
+                    android:text="1000m"
+                    android:textColor="@color/op_white"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/text_distance_sep_03"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="270dp"
+                    android:text="2000m"
+                    android:textColor="@color/op_white"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/text_distance_sep_04"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="340dp"
+                    android:text="3000m"
+                    android:textColor="@color/op_white"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/text_distance_sep_05"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                     android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="410dp"
+                    android:text="4000m"
+                    android:textColor="@color/op_white"
+                    android:textSize="20sp" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/linearlayout_hor3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearlayout_hor1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" >
+            </LinearLayout>
+        </LinearLayout>
+
+        <com.pheelicks.visualizer.HistoryView
+            android:id="@+id/historyview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
 
     <ListView
         android:id="@android:id/list"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_width="0dp"
+        android:layout_height="0dp" />
 
 </LinearLayout>

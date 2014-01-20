@@ -17,20 +17,16 @@
     <style name="AppTheme" parent="AppBaseTheme">
 
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-        <item name="android:windowBackground">@drawable/background_index</item>
+        <item name="android:windowBackground">@drawable/background_record</item>
     </style>
 
-    <style name="MainTheme" parent="AppTheme">
+    <style name="MainTheme" parent="AppBaseTheme">
 
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
         <item name="android:windowBackground">@drawable/background_index</item>
         <item name="android:windowNoTitle">True</item>
     </style>
 
-    <style name="RecordTheme" parent="AppBaseTheme">
-
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-        <item name="android:windowBackground">@drawable/background_record</item>
-    </style>
+   
 
 </resources>

@@ -48,7 +48,7 @@
         <activity
             android:name="com.wearapp.RecordActivity"
             android:label="@string/record_title"
-            android:theme="@style/RecordTheme" >
+            android:theme="@style/AppTheme" >
         </activity>
         <activity
             android:name="com.wearapp.ListenActivity"

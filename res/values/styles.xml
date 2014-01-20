@@ -9,7 +9,7 @@
   </style>
   
       <style name="windowTitleBackgroundStyle2">  
-    <item name="android:background">@drawable/background_title_2</item>                
+    <item name="android:background">@drawable/background_title</item>                
   </style>
   
   <style name="windowTitleStyle">

@@ -143,6 +143,7 @@ public class PickPlaceActivity extends FragmentActivity {
 		intent.putExtra("Place", placePickerFragment.getSelection().getName());
 		setResult(ResultCode.PickPlaceActivity, intent);
 		finish();
+		
 	}
 
 	private void onError(Exception error) {

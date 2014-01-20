@@ -16,10 +16,5 @@ public class GlobalAction extends Application{
 		
 	}
 	
-	public void setActionBarBackGround2(ActionBar actionBar){
-		 
-		actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.background_title_2));
-		actionBar.setDisplayShowHomeEnabled(false);
-		
-	}
+
 }

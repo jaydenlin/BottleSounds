@@ -1,5 +1,6 @@
 package com.wearapp;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.pheelicks.visualizer.HistoryView;
 import com.wearapp.util.DB;
 import com.wearapp.util.JSONParser;
 
@@ -20,12 +22,19 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+
 import android.util.Log;
-import android.app.Activity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Toast;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.widget.ListAdapter;
@@ -34,10 +43,15 @@ import android.widget.SearchView;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+
+
 public class HistoryActivity extends ListActivity {
 	
 	private DB mDBHelper;
 	private Cursor mCursor;
+	HistoryView background;
+	
+	DecimalFormat df2 = new DecimalFormat("00");
 	
 	
 
@@ -73,8 +87,10 @@ public class HistoryActivity extends ListActivity {
 		
 	    
 	    //setAdapter();
+	    //setView();
 	    
 	    getItemListFromWeb();
+	    
 	}
 
 	@SuppressWarnings("deprecation")
@@ -92,6 +108,28 @@ public class HistoryActivity extends ListActivity {
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_2,
 											mCursor, from_column, to_layout, 0	);
 		setListAdapter(adapter);
+
+	}
+	
+	private void setView(){
+		background = (HistoryView)findViewById(R.id.historyview);
+		float width = background.getWidth();
+		float height = background.getHeight();
+		float centerX = width / 2;
+		float centerY = 9 * (height / 10);
+		int gap = 6;
+		int band = 110;
+		int id = 0;
+		TextView textView;
+		for (int i = 1; i < gap; i++) {
+
+			String identifier = df2.format(i);
+			id = getResources().getIdentifier(
+					"text_distance_sep_" + identifier, "id",
+					HistoryActivity.this.getPackageName());
+			textView = (TextView) findViewById(id);
+			textView.setBottom(band*i);
+		}
 
 	}
 
@@ -280,6 +318,27 @@ public class HistoryActivity extends ListActivity {
  
     }//LoadAllProducts()
 
-	
+    public Bitmap getCroppedBitmap(Bitmap bitmap) {
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+        canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
+                bitmap.getWidth() / 2, paint);
+        paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+        //Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
+        //return _bmp;
+        return output;
+    }
+    
 
 }

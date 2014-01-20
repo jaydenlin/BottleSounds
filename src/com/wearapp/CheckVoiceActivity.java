@@ -9,12 +9,12 @@ import com.wearapp.util.FacebookUtil;
 import com.wearapp.util.LocateLocationDoneDelegate;
 import com.wearapp.util.LocationUtil;
 
-
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 public class CheckVoiceActivity extends FragmentActivity {
 
@@ -51,16 +51,17 @@ public class CheckVoiceActivity extends FragmentActivity {
 			@Override
 			public void postExec(Session session, SessionState state, Exception exception) {
 				// TODO Auto-generated method stub
-				Log.w(this.getClass().getSimpleName(), "facebook session postExec");
+				Log.w(TAG, "facebook session postExec");
 				isFBSessionDone = true;
 			}
 		});
+		
 
 		LocationUtil.locateCurrentLocation(this, new LocateLocationDoneDelegate() {
 			@Override
 			public void postExec(Location location) {
 				// TODO Auto-generated method stub
-				Log.w(this.getClass().getSimpleName(), "location session postExec");
+				Log.w(TAG, "location session postExec");
 				isLocationDone = true;
 				lastKnownLocation = location;
 			}
@@ -173,7 +174,15 @@ public class CheckVoiceActivity extends FragmentActivity {
 
 	private void startPickPlaceActivityForResult(Location location) {
 
-		Log.w(TAG, "OnstartPickPlaceActivity");
+		Log.w(TAG, "startPickPlaceActivityForResult"+"isFBSessionDone="+String.valueOf(isFBSessionDone)+"|isLocationDone="+String.valueOf(isLocationDone));
+		if(!isLocationDone){
+			Toast.makeText(this, "地點取得失敗", 5);	
+		}
+
+		if(!isFBSessionDone){
+			Toast.makeText(this, "Facebook登入失敗", 5);	
+		}
+		
 		if (isFBSessionDone && isLocationDone) {
 			Intent intent = new Intent(this, PickPlaceActivity.class);
 			PickPlaceActivity.populateParameters(intent, location, null);

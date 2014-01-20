@@ -185,7 +185,8 @@ public class RecordActivity extends Activity implements OnClickListener {
 		/*Start record directly */
 		setMediaState(MediaState.isRecordingState);
 		setButton(mediaState);
-		startRecord();
+		
+		handler.post(recordVoiceAsync);
 		
 	}
 
@@ -211,7 +212,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 		addPointRenderer();
 		GlobalAction globalAction = (GlobalAction)this.getApplicationContext();
 
-		globalAction.setActionBarBackGround2(getActionBar());
+		globalAction.setActionBar(getActionBar());
 		setTextView();
 		return;
 	}
@@ -534,6 +535,15 @@ public class RecordActivity extends Activity implements OnClickListener {
 
 		}
 	};
+	
+	Runnable recordVoiceAsync = new Runnable() {
+		@Override
+		public void run() {
+			Log.w(TAG, "In recordAsync()");		
+			startRecord();
+		}
+	};
+
 
 	private void uploadFile() {
 		new UploadAsyncTask().execute(recordFile);
@@ -678,6 +688,8 @@ public class RecordActivity extends Activity implements OnClickListener {
 
 	}
 
+	
+	
 
 	
 	//////////////////////////////////////////////

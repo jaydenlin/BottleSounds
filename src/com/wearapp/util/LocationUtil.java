@@ -62,7 +62,7 @@ public class LocationUtil {
 			locationListener.onLocationChanged(lastKnownLocation);
 		} else {
 			lastKnownLocation = DEFULT_LOCATION;
-			Log.w(TAG, "lastKnownLocation is null");
+			Log.w(TAG, "lastKnownLocation is null, set to default");
 		}
 	}
 
