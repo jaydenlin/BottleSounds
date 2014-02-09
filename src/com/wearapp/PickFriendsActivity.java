@@ -16,26 +16,43 @@
 
 package com.wearapp;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import android.app.AlertDialog;
+import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.InputType;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.widget.EditText;
+import android.widget.SearchView;
 import android.widget.Toast;
 import com.facebook.FacebookException;
+import com.facebook.Request;
+import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.Session.NewPermissionsRequest;
 import com.facebook.model.GraphPlace;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.FriendPickerFragment;
 import com.facebook.widget.PickerFragment;
+import com.facebook.widget.PickerFragment.GraphObjectFilter;
+import com.facebook.widget.PickerFragment.OnSelectionChangedListener;
 import com.wearapp.asyncTask.FacebookChatAsyncTask;
 import com.wearapp.exception.MySQLUtil.UploadFileNotAssign;
 import com.wearapp.resultcode.ResultCode;
@@ -52,10 +69,12 @@ public class PickFriendsActivity extends FragmentActivity {
 	FriendPickerFragment friendPickerFragment;
 	NewPermissionsRequest newPermissionsRequest;
 	EditText editDialog;
-    StringBuffer friendslist_selected;
+    StringBuffer friendslist_selected = new StringBuffer();
+	
+	String searchterm;
+    List<GraphUser> selectedUsers = new ArrayList<GraphUser> ();
+    List<GraphUser> selectedUsers_temp1 = new ArrayList<GraphUser> ();
     
-    
-   
 	// A helper to simplify life for callers who want to populate a Bundle with
 	// the necessary
 	// parameters. A more sophisticated Activity might define its own set of
@@ -69,24 +88,95 @@ public class PickFriendsActivity extends FragmentActivity {
 		intent.putExtra(FriendPickerFragment.SHOW_TITLE_BAR_BUNDLE_KEY, showTitleBar);
 	}
 
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		//Log.w(TAG, "IN createing Search friends OptionsMenu");
+	    // Inflate the options menu from XML
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.options_menu, menu);	    
+	    // Get the SearchView and set the searchable configuration
+	    SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+	    SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+	    
+	    // Assumes current activity is the searchable activity
+	    searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName("com.wearapp","com.wearapp.HistoryActivity")));
+	    //searchView.setSearchableInfo(searchManager.getSearchableInfo(this.getComponentName()));
+	    searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+	    
+	    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+			
+			@Override
+			public boolean onQueryTextSubmit(String query) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean onQueryTextChange(String keyword) {
+				// TODO Auto-generated method stub			
+				
+				selectedUsers.addAll(selectedUsers_temp1);				
+				friendPickerFragment.setSelection(selectedUsers);				
+				searchterm = keyword;								
+				friendPickerFragment.setFilter(new GraphObjectFilter<GraphUser>() {
+			        @Override
+			        public boolean includeItem(GraphUser graphObject) {
+			            // TODO Auto-generated method stub			        
+			            if(graphObject.getName().contains(searchterm)) {						            	
+			                return true;
+			            }
+			            return false;
+			        }
+			    });										
+								
+				friendPickerFragment.loadData(true);
+				
+				return false;
+			}			
+			
+		});
+	    
+	    return true;
+	}
+	
+	
+	
 	private void sendMessage() {
-		// TODO Auto-generated method stub
-		List<GraphUser> selectedUsers = friendPickerFragment.getSelection();
+		// TODO Auto-generated method stub	
 		String targetFacebookId;
 		String title = "Heare";	    
 		String message = "\n---------------------------\n"+editDialog.getText().toString() + "\n---------------------------\n"+"\n Sent by Heare in "+ LocationUtil.selectedlocation.getName() + "\n"+"https://maps.google.com/maps?q="+LocationUtil.selectedlocation.getLocation().getLatitude()+","+LocationUtil.selectedlocation.getLocation().getLongitude() +"\n---------------------------\n"; 
+		
+		//targetFacebookId="1746264605";
 		
     	for (GraphUser selectedUser : selectedUsers){            		            	    	
 			targetFacebookId = selectedUser.getId();;	 	   
 	        new FacebookChatAsyncTask().execute(targetFacebookId,title,message);	             
 	    }
     	
+    	/*Location loc1 = new Location("loc1");
+		loc1.setLatitude(POS.latitude);
+		loc1.setLongitude(POS.longitude);
+		
+		MarkerOptions markerTest = new MarkerOptions().position(
+				new LatLng(position_list.get(i).getLatitude(),
+						position_list.get(i).getLongitude())).title(
+				"Jayden");
+		
+		map.addMarker(markerTest);*/
+    	
     	insertVoiceToMySQL(message, "test", LocationUtil.selectedlocation);
     	
+    	//new FacebookChatAsyncTask().execute(targetFacebookId,title,message);
     	Toast.makeText(getApplicationContext(), "Message just sent to "+friendslist_selected.toString(), Toast.LENGTH_LONG).show();
     	friendslist_selected.delete(0, friendslist_selected.length());
+    	
+    	
 	}
 
+	
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -116,6 +206,56 @@ public class PickFriendsActivity extends FragmentActivity {
 			}
 		});
 
+		friendPickerFragment.setOnSelectionChangedListener(new OnSelectionChangedListener() {
+			@Override
+			public void onSelectionChanged(PickerFragment<?> fragment) {
+				// TODO Auto-generated method stub
+				
+					selectedUsers_temp1 = friendPickerFragment.getSelection();
+				
+					/*tempselectedUsers = friendPickerFragment.getSelection();
+					
+					if (selectedUsers.size()==0)
+					{
+						selectedUsers = tempselectedUsers;
+					}
+					
+					
+					for (GraphUser u :tempselectedUsers)
+					{										
+						if (!selectedUsers.contains(u))
+						{
+							selectedUsers.add(u);
+							System.out.println("XX-add"+u.getName());
+						}
+						
+					}
+			
+					
+					Iterator<GraphUser> it = selectedUsers.iterator();
+					   while(it.hasNext()) {
+						   
+						   GraphUser u = it.next();
+						   if (!tempselectedUsers.contains(u))
+						   {						   						 
+							   it.remove();
+							   selectedUsers.remove(u);
+							   System.out.println("XX-remove"+u.getName());
+						   }
+					   }
+					
+					
+					System.out.println("XX===="+selectedUsers.size()+"====");
+					for (GraphUser u :selectedUsers)
+					{
+						System.out.println("XX"+u.getName());
+					}
+					System.out.println("XX========");*/
+				
+			}
+		});
+		
+		 
 		friendPickerFragment.setOnDoneButtonClickedListener(new PickerFragment.OnDoneButtonClickedListener() {
 			@Override
 			public void onDoneButtonClicked(PickerFragment<?> fragment) {
@@ -123,10 +263,32 @@ public class PickFriendsActivity extends FragmentActivity {
 				// activities to look at.
 				// FriendPickerApplication application =
 				// (FriendPickerApplication) getApplication();
-				List<GraphUser> selectedUsers = friendPickerFragment.getSelection();
+				
+				
+				// if No friends selected , show the dialog
+				if((selectedUsers.size()==0) && (selectedUsers_temp1.size()==0))
+				{
+					Toast.makeText(getApplicationContext(), "No selected users, Message not sent", Toast.LENGTH_LONG).show();
+					
+				}
+				else if((selectedUsers.size()==0) && (selectedUsers_temp1.size()!=0)) // if the friend list not been filtered by keywords, initiate the selectedUsers list
+				{
+					selectedUsers = selectedUsers_temp1;
+				}
+				
+		
+				//remove duplicated friends in the selected friend list
+				for (int i = 0; i < selectedUsers.size() - 1; i++) 
+				{
+					for (int j = selectedUsers.size() - 1; j > i; j--) 
+					{
+						if (selectedUsers.get(j).getId().equals(selectedUsers.get(i).getId()))
+							selectedUsers.remove(j);
+					}
+				}
+				 
+			
 				Session session = Session.getActiveSession();
-				friendslist_selected = new StringBuffer();
-				friendslist_selected.delete(0, friendslist_selected.length());
 				
 				editDialog = new EditText(PickFriendsActivity.this);
 				editDialog.setRawInputType(Configuration.KEYBOARD_QWERTY);
@@ -142,6 +304,7 @@ public class PickFriendsActivity extends FragmentActivity {
 							friendslist_selected.append(selectedUser.getName());
 					}
 
+					
 				
     	    	 new AlertDialog.Builder(PickFriendsActivity.this
     	    			).setMessage("Please edit the messages to send to "+friendslist_selected+" in "+LocationUtil.selectedlocation.getName()+" ?" 
@@ -164,11 +327,8 @@ public class PickFriendsActivity extends FragmentActivity {
     	 						finishActivity();
     	 					}
     	 				}
-    	             	).show();
-	    	    	 
-
+    	             	).show();	    	    	 
 				}
-
 			}
 		});
 	}
