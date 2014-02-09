@@ -9,6 +9,11 @@
         android:id="@+id/framelayout1"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
+        
+        <com.pheelicks.visualizer.HistoryView
+            android:id="@+id/historyview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <LinearLayout
             android:id="@+id/linearlayout_vertical_1"
@@ -101,15 +106,8 @@
             </LinearLayout>
         </LinearLayout>
 
-        <com.pheelicks.visualizer.HistoryView
-            android:id="@+id/historyview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        
     </FrameLayout>
 
-    <ListView
-        android:id="@android:id/list"
-        android:layout_width="0dp"
-        android:layout_height="0dp" />
 
 </LinearLayout>

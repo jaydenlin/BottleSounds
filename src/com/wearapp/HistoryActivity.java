@@ -16,27 +16,28 @@ import com.wearapp.util.JSONParser;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.app.Activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.SurfaceHolder;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -45,7 +46,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 
-public class HistoryActivity extends ListActivity {
+public class HistoryActivity extends Activity {
 	
 	private DB mDBHelper;
 	private Cursor mCursor;
@@ -75,8 +76,13 @@ public class HistoryActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_history);
+		//setContentView(R.layout.activity_history);
+		//background = (HistoryView)findViewById(R.id.historyview);
+		//background.setZOrderOnTop(true);
+		//SurfaceHolder sfhTrackHolder = background.getHolder();
+		//sfhTrackHolder.setFormat(PixelFormat.TRANSPARENT);
 		
+		setContentView(new HistoryView(this));
 		
 		// Get the intent, verify the action and get the query
 	    Intent intent = getIntent();
@@ -107,7 +113,7 @@ public class HistoryActivity extends ListActivity {
 		
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_2,
 											mCursor, from_column, to_layout, 0	);
-		setListAdapter(adapter);
+		//setListAdapter(adapter);
 
 	}
 	
@@ -168,6 +174,7 @@ public class HistoryActivity extends ListActivity {
         // Loading products in Background Thread
         new LoadAllProducts().execute();
  
+        /*
         // Get listview
         ListView lv = getListView();
  
@@ -194,9 +201,10 @@ public class HistoryActivity extends ListActivity {
                 startActivityForResult(in, 100);
                 
                 */
+        /*
             }
         });
- 
+        */
     	
     }
     
@@ -310,7 +318,7 @@ public class HistoryActivity extends ListActivity {
                                     TAG_NAME},
                             new int[] { R.id.pid, R.id.name });
                     // updating listview
-                    setListAdapter(adapter);
+                   // setListAdapter(adapter);
                 }
             });
  
@@ -318,27 +326,7 @@ public class HistoryActivity extends ListActivity {
  
     }//LoadAllProducts()
 
-    public Bitmap getCroppedBitmap(Bitmap bitmap) {
-        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-                bitmap.getHeight(), Config.ARGB_8888);
-        Canvas canvas = new Canvas(output);
 
-        final int color = 0xff424242;
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-
-        paint.setAntiAlias(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(color);
-        // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
-        canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-                bitmap.getWidth() / 2, paint);
-        paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, rect, rect, paint);
-        //Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
-        //return _bmp;
-        return output;
-    }
     
 
 }
