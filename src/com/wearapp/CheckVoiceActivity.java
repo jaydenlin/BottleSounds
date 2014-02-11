@@ -1,8 +1,16 @@
 package com.wearapp;
 
+import java.util.HashMap;
+
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.parse.FunctionCallback;
+import com.parse.Parse;
+import com.parse.ParseCloud;
+import com.parse.ParseException;
+import com.wearapp.exception.FacebookUtil.FacebookSessionNotActive;
+import com.wearapp.parseAPI.ParseAPI;
 import com.wearapp.resultcode.ResultCode;
 import com.wearapp.util.FacebookOpenSessionDoneDelegate;
 import com.wearapp.util.FacebookUtil;
@@ -32,6 +40,7 @@ public class CheckVoiceActivity extends FragmentActivity {
 	// /////////////////////////////////////////
 	private UiLifecycleHelper FBlifecycleHelper;
 	private Location lastKnownLocation;
+	private String accessToken;
 	private boolean isLocationDone = false;
 	private boolean isFBSessionDone = false;
 	
@@ -50,9 +59,9 @@ public class CheckVoiceActivity extends FragmentActivity {
 		FacebookUtil.ensureThenOpenActiveSession(this, new FacebookOpenSessionDoneDelegate() {
 			@Override
 			public void postExec(Session session, SessionState state, Exception exception) {
-				// TODO Auto-generated method stub
 				Log.w(TAG, "facebook session postExec");
 				isFBSessionDone = true;
+				accessToken = session.getAccessToken();
 			}
 		});
 		
@@ -60,7 +69,6 @@ public class CheckVoiceActivity extends FragmentActivity {
 		LocationUtil.locateCurrentLocation(this, new LocateLocationDoneDelegate() {
 			@Override
 			public void postExec(Location location) {
-				// TODO Auto-generated method stub
 				Log.w(TAG, "location session postExec");
 				isLocationDone = true;
 				lastKnownLocation = location;
@@ -187,6 +195,16 @@ public class CheckVoiceActivity extends FragmentActivity {
 			Intent intent = new Intent(this, PickPlaceActivity.class);
 			PickPlaceActivity.populateParameters(intent, location, null);
 			startActivityForResult(intent, ResultCode.PickPlaceActivity);
+			
+			try {
+				accessToken=FacebookUtil.getAccessToken();
+				ParseAPI.start(this, accessToken);
+			} catch (FacebookSessionNotActive e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
 			// reset
 			isFBSessionDone = false;
 			isLocationDone = false;
