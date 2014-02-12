@@ -61,7 +61,6 @@ public class CheckVoiceActivity extends FragmentActivity {
 			public void postExec(Session session, SessionState state, Exception exception) {
 				Log.w(TAG, "facebook session postExec");
 				isFBSessionDone = true;
-				accessToken = session.getAccessToken();
 			}
 		});
 		
@@ -210,9 +209,7 @@ public class CheckVoiceActivity extends FragmentActivity {
 			isLocationDone = false;
 			lastKnownLocation = null;
 		}
-//		else{
-//			initFBSessionAndLocation();
-//		}
+
 
 	}
 

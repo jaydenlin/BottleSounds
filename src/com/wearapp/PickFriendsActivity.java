@@ -54,8 +54,11 @@ import com.facebook.widget.PickerFragment;
 import com.facebook.widget.PickerFragment.GraphObjectFilter;
 import com.facebook.widget.PickerFragment.OnSelectionChangedListener;
 import com.wearapp.asyncTask.FacebookChatAsyncTask;
+import com.wearapp.exception.FacebookUtil.FacebookSessionNotActive;
 import com.wearapp.exception.MySQLUtil.UploadFileNotAssign;
+import com.wearapp.parseAPI.ParseAPI;
 import com.wearapp.resultcode.ResultCode;
+import com.wearapp.util.FacebookUtil;
 import com.wearapp.util.LocationUtil;
 import com.wearapp.util.MySQLUtil;
 import com.wearapp.util.UploadUtil;
@@ -144,6 +147,7 @@ public class PickFriendsActivity extends FragmentActivity {
 	
 	private void sendMessage() {
 		// TODO Auto-generated method stub	
+		List<String> toFriends = new ArrayList<String>();
 		String targetFacebookId;
 		String title = "Heare";	    
 		String message = "\n---------------------------\n"+editDialog.getText().toString() + "\n---------------------------\n"+"\n Sent by Heare in "+ LocationUtil.selectedlocation.getName() + "\n"+"https://maps.google.com/maps?q="+LocationUtil.selectedlocation.getLocation().getLatitude()+","+LocationUtil.selectedlocation.getLocation().getLongitude() +"\n---------------------------\n"; 
@@ -151,7 +155,8 @@ public class PickFriendsActivity extends FragmentActivity {
 		//targetFacebookId="1746264605";
 		
     	for (GraphUser selectedUser : selectedUsers){            		            	    	
-			targetFacebookId = selectedUser.getId();;	 	   
+			targetFacebookId = selectedUser.getId();
+			toFriends.add(targetFacebookId);
 	        new FacebookChatAsyncTask().execute(targetFacebookId,title,message);	             
 	    }
     	
@@ -165,8 +170,13 @@ public class PickFriendsActivity extends FragmentActivity {
 				"Jayden");
 		
 		map.addMarker(markerTest);*/
-    	
-    	insertVoiceToMySQL(message, "test", LocationUtil.selectedlocation);
+    	try {
+			ParseAPI.checkYourVoice(this, FacebookUtil.getAccessToken(), LocationUtil.selectedlocation, message, toFriends);
+		} catch (FacebookSessionNotActive e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	//insertVoiceToMySQL(message, "test", LocationUtil.selectedlocation);
     	
     	//new FacebookChatAsyncTask().execute(targetFacebookId,title,message);
     	Toast.makeText(getApplicationContext(), "Message just sent to "+friendslist_selected.toString(), Toast.LENGTH_LONG).show();
