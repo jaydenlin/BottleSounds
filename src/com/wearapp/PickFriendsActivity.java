@@ -22,6 +22,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.app.AlertDialog;
 import android.app.SearchManager;
@@ -125,10 +127,12 @@ public class PickFriendsActivity extends FragmentActivity {
 				friendPickerFragment.setFilter(new GraphObjectFilter<GraphUser>() {
 			        @Override
 			        public boolean includeItem(GraphUser graphObject) {
-			            // TODO Auto-generated method stub			        
-			            if(graphObject.getName().contains(searchterm)) {						            	
+			            // TODO Auto-generated method stub			  			        	
+			        	Pattern p = Pattern.compile(searchterm,Pattern.CASE_INSENSITIVE);
+			            Matcher m = p.matcher(graphObject.getName());			            						            	
+			            if(m.find()) {
 			                return true;
-			            }
+			            }			           
 			            return false;
 			        }
 			    });										
