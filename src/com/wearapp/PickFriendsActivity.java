@@ -57,7 +57,7 @@ import com.facebook.widget.PickerFragment.GraphObjectFilter;
 import com.facebook.widget.PickerFragment.OnSelectionChangedListener;
 import com.wearapp.asyncTask.FacebookChatAsyncTask;
 import com.wearapp.exception.FacebookUtil.FacebookSessionNotActive;
-import com.wearapp.exception.MySQLUtil.UploadFileNotAssign;
+import com.wearapp.exception.UploadUtil.UploadFileNotAssign;
 import com.wearapp.parseAPI.ParseAPI;
 import com.wearapp.resultcode.ResultCode;
 import com.wearapp.util.FacebookUtil;
