@@ -58,35 +58,6 @@ public class ParseAPI {
 		});
 	}
 
-	public static void uploadYourVoice(Activity activity, String FBAccessToken, File voiceFile) {
-		Parse.initialize(activity, applicationId, clientKey);
-		HashMap<String, Object> params = new HashMap<String, Object>();
-		FileInputStream fileInputStream = null;
-		byte[] byteFile = new byte[(int) voiceFile.length()];
-
-		try {
-			// convert file into array of bytes
-			fileInputStream = new FileInputStream(voiceFile);
-			fileInputStream.read(byteFile);
-			fileInputStream.close();
-			params.put("access_token", FBAccessToken);
-			params.put("byteFile", byteFile);
-			ParseCloud.callFunctionInBackground("uploadYourVoice", params, new FunctionCallback<String>() {
-				@Override
-				public void done(String arg0, ParseException arg1) {
-					// TODO Auto-generated method stub
-					if(ParseUser.getCurrentUser()!=null){
-						
-					}
-
-				}
-			});
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		
-	}
+	
 
 }
