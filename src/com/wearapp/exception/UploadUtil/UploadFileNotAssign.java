@@ -1,4 +1,4 @@
-package com.wearapp.exception.MySQLUtil;
+package com.wearapp.exception.UploadUtil;
 
 import com.wearapp.exception.HeareException;
 

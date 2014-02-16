@@ -11,7 +11,7 @@ import java.util.Date;
 import android.os.AsyncTask;
 import android.util.Log;
 import com.facebook.model.GraphPlace;
-import com.wearapp.exception.MySQLUtil.UploadFileNotAssign;
+import com.wearapp.exception.UploadUtil.UploadFileNotAssign;
 
 public class MySQLUtil {
 

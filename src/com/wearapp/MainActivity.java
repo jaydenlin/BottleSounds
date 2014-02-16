@@ -1,8 +1,16 @@
 package com.wearapp;
 
+import java.util.HashMap;
+
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.parse.FunctionCallback;
+import com.parse.Parse;
+import com.parse.ParseAnalytics;
+import com.parse.ParseCloud;
+import com.parse.ParseException;
+import com.parse.ParseObject;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -14,6 +22,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -26,13 +35,12 @@ public class MainActivity extends Activity {
 	public static final boolean D_METHOD = D && true;
 	public static final boolean D_SHOW_TAG = D && true;
 	public float startTime;
-	
+
 	// /////////////////////////////////////////
 	// Members
 	// /////////////////////////////////////////
 	private UiLifecycleHelper FBlifecycleHelper;
-	
-	
+
 	// /////////////////////////////////////////
 	// UI
 	// /////////////////////////////////////////
@@ -53,7 +61,7 @@ public class MainActivity extends Activity {
 			switch (view.getId()) {
 			case R.id.button_facebook:
 				startFacebook();
-				//startHistory();
+				// startHistory();
 				return;
 
 			case R.id.button_direct:
@@ -77,17 +85,28 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_activity_first);
-		
-		FBlifecycleHelper = new UiLifecycleHelper(this,
-				new Session.StatusCallback() {
-					@Override
-					public void call(Session session, SessionState state,
-							Exception exception) {
-						// onSessionStateChanged(session, state, exception);
-					}
-				});
+
+		//Parse API Test
+//		Parse.initialize(this, "Uez6r3nTiUAZ6EY5MHpCS39ePDPOxxgSatDEfPx1", "19SwAHhTNkF9ufEnEco9xmy7U7xw4a0GAcCAvNsR");
+//		HashMap<String, Object> params = new HashMap<String, Object>();
+//		params.put("access_token", "60239");
+//		ParseCloud.callFunctionInBackground("hello", params, new FunctionCallback<String>() {
+//
+//			@Override
+//			public void done(String arg0, ParseException arg1) {
+//				// TODO Auto-generated method stub
+//				
+//
+//			}
+//		});
+		FBlifecycleHelper = new UiLifecycleHelper(this, new Session.StatusCallback() {
+			@Override
+			public void call(Session session, SessionState state, Exception exception) {
+				// onSessionStateChanged(session, state, exception);
+			}
+		});
 		FBlifecycleHelper.onCreate(savedInstanceState);
-		
+
 		initButton();
 		setListener();
 		/*Make the screen horizon*/
@@ -161,22 +180,21 @@ public class MainActivity extends Activity {
 		startActivity(intent);
 		return;
 	}
-	
-	public void startHistory(){
+
+	public void startHistory() {
 		Intent intent = new Intent(this, HistoryActivity.class);
 		startActivity(intent);
-		return;	
+		return;
 	}
-	
+
 	private boolean ensureOpenFBSession() {
-		if (Session.getActiveSession() == null
-				|| !Session.getActiveSession().isOpened()) {
+		if (Session.getActiveSession() == null || !Session.getActiveSession().isOpened()) {
 			Session.openActiveSession(this, true, new Session.StatusCallback() {
 				@Override
-				public void call(Session session, SessionState state,
-						Exception exception) {
-//					Intent intent = new Intent(MainActivity.this, SecondMainActivity.class);
-//					MainActivity.this.startActivity(intent);
+				public void call(Session session, SessionState state, Exception exception) {
+					// Intent intent = new Intent(MainActivity.this,
+					// SecondMainActivity.class);
+					// MainActivity.this.startActivity(intent);
 				}
 			});
 			return false;

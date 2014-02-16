@@ -11,14 +11,17 @@ import java.util.Date;
 
 import com.facebook.Session;
 import com.facebook.SessionState;
+import com.parse.ParseFile;
 import com.pheelicks.visualizer.MediaSeekBar;
 import com.pheelicks.visualizer.RecorderSeekBar;
 import com.pheelicks.visualizer.renderer.PointRenderer;
 import com.pheelicks.visualizer.renderer.WaveRenderer;
-import com.wearapp.asyncTask.UploadAsyncTask;
+import com.wearapp.exception.FacebookUtil.FacebookSessionNotActive;
+import com.wearapp.parseAPI.ParseAPI;
 import com.wearapp.util.DB;
 import com.wearapp.util.FacebookOpenSessionDoneDelegate;
 import com.wearapp.util.FacebookUtil;
+import com.wearapp.util.UploadUtil;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -308,7 +311,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 				defaultMediaPlayer();
 				insert2DB();
 				startCheckPlaceActivity();
-				uploadFile();
+				prepareUploadFile();
 				setMediaState(MediaState.Default);		
 			}		
 			return;
@@ -549,8 +552,11 @@ public class RecordActivity extends Activity implements OnClickListener {
 	};
 
 
-	private void uploadFile() {
-		new UploadAsyncTask().execute(recordFile);
+	private void prepareUploadFile() {
+		
+		UploadUtil.setUploadFile(recordFile);
+	
+		//new UploadAsyncTask().execute(recordFile);
 	}
 
 	private void startCheckPlaceActivity() {
