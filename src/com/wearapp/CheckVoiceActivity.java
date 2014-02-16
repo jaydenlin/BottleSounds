@@ -10,6 +10,7 @@ import com.wearapp.util.LocateLocationDoneDelegate;
 import com.wearapp.util.LocationUtil;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -79,7 +80,7 @@ public class CheckVoiceActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.check_voice_activity);
 		initView();
-		
+		 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		FBlifecycleHelper = new UiLifecycleHelper(this, new Session.StatusCallback() {
 			@Override
 			public void call(Session session, SessionState state, Exception exception) {

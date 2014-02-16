@@ -2,6 +2,7 @@ package com.pheelicks.visualizer;
 
 import java.util.ArrayList;
 
+import com.facebook.widget.ProfilePictureView;
 import com.wearapp.R;
 
 import android.content.Context;
@@ -40,6 +41,7 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 	float mCenterY; 
 	float mWidth;
 	float mHeight;
+	private ArrayList<Integer> mUserIdList = new ArrayList<Integer>(); 
 
 	public HistoryView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs);
@@ -54,7 +56,7 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 		super(context);
 		setWillNotDraw(false);
 		Log.w(TAG, "On Create HistoryView");
-		// TODO Auto-generated constructor stub
+
 		getHolder().addCallback(this);
 		holder = getHolder();
 
@@ -70,7 +72,7 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 	}
 
 	// ==== 初始設定 ====
-	private void InitialSet() {
+	public void InitialSet() {
 		Log.w(TAG, "In InitialSet");
 		// 建立 AndroidUnit 物件陣列實體
 		iconList = new ArrayList<CircleIcon>();
@@ -79,6 +81,7 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 		// 建立 AndroidUnit 物件 10 隻
 		for (int i = 0; i < 10; i++) {
 			// 產生 AndroidUnit 實體 au
+			
 			CircleIcon au = new CircleIcon(bmp);
 			// 陸續將 au 放入 Au 物件陣列中
 			iconList.add(au);
@@ -178,15 +181,22 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 
 	}
 
+	
+	public void setUserIdList(ArrayList<Integer> list){
+		mUserIdList = list;
+		
+	}
 
 
 	public class CircleIcon implements Runnable {
 		private Bitmap unit_bmp;
+		//TODO private ProfilePictureView profilePic = new ProfilePictureView(Context context);
 
 		public CircleIcon(Bitmap icon_pic) {
 			// 指定圖片來源
 			this.unit_bmp = icon_pic;
-
+			//profilePic.setProfileId("1082621562");
+			
 			// 此物件參數的初始設定
 			UnitInitial();
 
@@ -218,6 +228,7 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 			float circleX =  mCenterX - unit_bmp.getWidth()/2;
 			float circleY = mCenterY - unit_bmp.getHeight()/2;
 			canvas.drawBitmap(getCroppedBitmap(unit_bmp),circleX , circleY , null);
+			//TODO profilePic.buildLayer();
 		}
 
 	}
@@ -265,7 +276,6 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 			try {
 				Thread.sleep(60000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -299,14 +309,12 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
-		// TODO Auto-generated method stub
 		Log.w(TAG, "In surfaceChanged()");
 		
 	}
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		// TODO Auto-generated method stub
 		Log.w(TAG, "In surfaceCreated()");
 		db_thread.start();
 	}

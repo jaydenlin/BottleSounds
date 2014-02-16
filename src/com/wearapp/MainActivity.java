@@ -7,6 +7,7 @@ import com.facebook.UiLifecycleHelper;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -76,7 +77,7 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_activity_first);
-
+		
 		FBlifecycleHelper = new UiLifecycleHelper(this,
 				new Session.StatusCallback() {
 					@Override
@@ -89,6 +90,8 @@ public class MainActivity extends Activity {
 		
 		initButton();
 		setListener();
+		/*Make the screen horizon*/
+		 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);	
 	}
 
 	public boolean onCreateOptionMenu(Menu menu) {

@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.SearchManager;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.pm.ActivityInfo;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -93,6 +94,7 @@ public class ListenActivity extends Activity implements OnClickListener,
 	        setContentView(R.layout.listen_activity);
 	        GlobalAction globalAction = (GlobalAction)this.getApplicationContext();
 			globalAction.setActionBar(getActionBar());
+			 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 			
 			// 取得系統定位服務
 			LocationManager status = (LocationManager) (this

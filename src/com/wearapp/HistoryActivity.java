@@ -75,16 +75,13 @@ public class HistoryActivity extends Activity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		//setContentView(R.layout.activity_history);
-		//background = (HistoryView)findViewById(R.id.historyview);
-		//background.setZOrderOnTop(true);
-		//SurfaceHolder sfhTrackHolder = background.getHolder();
-		//sfhTrackHolder.setFormat(PixelFormat.TRANSPARENT);
-		
-		setContentView(new HistoryView(this));
-		
+		super.onCreate(savedInstanceState);	
+
+		setContentView( background = new HistoryView(this));
+		//background.setUserIdList(list);
+		background.InitialSet();
 		// Get the intent, verify the action and get the query
+		
 	    Intent intent = getIntent();
 	    if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 	      String query = intent.getStringExtra(SearchManager.QUERY);
@@ -93,8 +90,7 @@ public class HistoryActivity extends Activity {
 		
 	    
 	    //setAdapter();
-	    //setView();
-	    
+ 	    
 	    getItemListFromWeb();
 	    
 	}
@@ -113,31 +109,9 @@ public class HistoryActivity extends Activity {
 		
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_2,
 											mCursor, from_column, to_layout, 0	);
-		//setListAdapter(adapter);
 
 	}
 	
-	private void setView(){
-		background = (HistoryView)findViewById(R.id.historyview);
-		float width = background.getWidth();
-		float height = background.getHeight();
-		float centerX = width / 2;
-		float centerY = 9 * (height / 10);
-		int gap = 6;
-		int band = 110;
-		int id = 0;
-		TextView textView;
-		for (int i = 1; i < gap; i++) {
-
-			String identifier = df2.format(i);
-			id = getResources().getIdentifier(
-					"text_distance_sep_" + identifier, "id",
-					HistoryActivity.this.getPackageName());
-			textView = (TextView) findViewById(id);
-			textView.setBottom(band*i);
-		}
-
-	}
 
 	public void doMySearch(String query){}
 	
@@ -326,7 +300,7 @@ public class HistoryActivity extends Activity {
  
     }//LoadAllProducts()
 
-
+    
     
 
 }

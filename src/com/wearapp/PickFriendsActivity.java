@@ -117,7 +117,9 @@ public class PickFriendsActivity extends FragmentActivity {
 				// TODO Auto-generated method stub			
 				
 				selectedUsers.addAll(selectedUsers_temp1);				
-				friendPickerFragment.setSelection(selectedUsers);				
+				//TODO need update FacebookSDK to 2.6 version 
+				friendPickerFragment.setSelection(selectedUsers);		
+						
 				searchterm = keyword;								
 				friendPickerFragment.setFilter(new GraphObjectFilter<GraphUser>() {
 			        @Override
