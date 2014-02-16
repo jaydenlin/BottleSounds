@@ -8,6 +8,7 @@ import java.util.Date;
 
 
 
+
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.parse.ParseFile;
@@ -24,6 +25,7 @@ import com.wearapp.util.UploadUtil;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -189,6 +191,8 @@ public class RecordActivity extends Activity implements OnClickListener {
 		setMediaState(MediaState.isRecordingState);
 		setButton(mediaState);
 		
+		/*Make the screen horizon*/
+	    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		handler.post(recordVoiceAsync);
 		
 	}

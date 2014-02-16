@@ -15,6 +15,7 @@ import com.parse.ParseObject;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -84,6 +85,7 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_activity_first);
+
 		//Parse API Test
 //		Parse.initialize(this, "Uez6r3nTiUAZ6EY5MHpCS39ePDPOxxgSatDEfPx1", "19SwAHhTNkF9ufEnEco9xmy7U7xw4a0GAcCAvNsR");
 //		HashMap<String, Object> params = new HashMap<String, Object>();
@@ -107,6 +109,8 @@ public class MainActivity extends Activity {
 
 		initButton();
 		setListener();
+		/*Make the screen horizon*/
+		 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);	
 	}
 
 	public boolean onCreateOptionMenu(Menu menu) {
