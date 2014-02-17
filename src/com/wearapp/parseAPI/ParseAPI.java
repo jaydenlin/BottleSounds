@@ -40,11 +40,11 @@ public class ParseAPI {
 		});
 	}
 
-	public static void checkYourVoice(Activity activity, String FBAccessToken, GraphPlace selectedLocation, String message, List<String> toFriends) {
+	public static void checkYourVoice(Activity activity, String FBAccessToken, byte[] bytesOfUploadFile, GraphPlace selectedLocation, String message, List<String> toFriends) {
 		Parse.initialize(activity, applicationId, clientKey);
 		HashMap<String, Object> params = new HashMap<String, Object>();
 		params.put("access_token", FBAccessToken);
-		params.put("byteFile", UploadUtil.getBytesofUploadFile());
+		params.put("byteFile", bytesOfUploadFile);
 		params.put("latitude", selectedLocation.getLocation().getLatitude());
 		params.put("longitude", selectedLocation.getLocation().getLongitude());
 		params.put("message", message);
@@ -59,6 +59,7 @@ public class ParseAPI {
 
 			}
 		});
+		
 		
 		
 		

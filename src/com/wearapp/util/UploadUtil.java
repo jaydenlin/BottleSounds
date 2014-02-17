@@ -19,7 +19,7 @@ public class UploadUtil {
 		return UploadUtil.uploadFile;
 	}
 	
-	public static byte[] getBytesofUploadFile() {
+	public static byte[] getBytesOfUploadFile() {
 		
 		try {
 			return ByteUtils.FileToByte(getUploadFile());

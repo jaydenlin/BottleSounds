@@ -177,7 +177,7 @@ public class PickFriendsActivity extends FragmentActivity {
 		
 		map.addMarker(markerTest);*/
     	try {
-			ParseAPI.checkYourVoice(this, FacebookUtil.getAccessToken(), LocationUtil.selectedlocation, message, toFriends);
+			ParseAPI.checkYourVoice(this, FacebookUtil.getAccessToken(), UploadUtil.getBytesOfUploadFile(), LocationUtil.selectedlocation, message, toFriends);
 		} catch (FacebookSessionNotActive e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
