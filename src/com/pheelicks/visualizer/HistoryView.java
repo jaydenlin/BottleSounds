@@ -1,11 +1,21 @@
 package com.pheelicks.visualizer;
 
-import java.util.ArrayList;
 
-import com.facebook.widget.ProfilePictureView;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import com.wearapp.HistoryActivity.UserData;
 import com.wearapp.R;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,6 +31,7 @@ import android.graphics.Bitmap.Config;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -41,7 +52,12 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 	float mCenterY; 
 	float mWidth;
 	float mHeight;
-	private ArrayList<Integer> mUserIdList = new ArrayList<Integer>(); 
+	private Context mContext;
+	
+
+	private HashMap<Integer,UserData> mUserIdMap ;
+
+	private Builder mAlertDialogBuilder; 
 
 	public HistoryView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs);
@@ -52,18 +68,20 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 		this(context, attrs, 0);
 	}
 
-	public HistoryView(Context context) {
+	public HistoryView(Context context,Activity activity) {
 		super(context);
 		setWillNotDraw(false);
 		Log.w(TAG, "On Create HistoryView");
-
 		getHolder().addCallback(this);
 		holder = getHolder();
+		mAlertDialogBuilder = new AlertDialog.Builder(context);
+		mAlertDialogBuilder.setCancelable(false);
+
 
 		// 指定圖片來源
 		res = getResources();
 		bmp = BitmapFactory.decodeResource(res, R.drawable.head_icon);
-	   
+		mContext = context;
 		// 初始設定
 		InitialSet();
 		
@@ -77,15 +95,6 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 		// 建立 AndroidUnit 物件陣列實體
 		iconList = new ArrayList<CircleIcon>();
 		iconList.clear(); // 先清除 Au 物件陣列
-
-		// 建立 AndroidUnit 物件 10 隻
-		for (int i = 0; i < 10; i++) {
-			// 產生 AndroidUnit 實體 au
-			
-			CircleIcon au = new CircleIcon(bmp);
-			// 陸續將 au 放入 Au 物件陣列中
-			iconList.add(au);
-		}
 	}
 
 	private void init() {
@@ -95,19 +104,18 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 	@Override
 	public void onDraw(Canvas canvas) {
 		Log.w(TAG, "in onDraw()");
-		// drawBackground(canvas);
 
 	}
 
 	private void drawBackground(Canvas canvas) {
-		Log.w(TAG, "in drawBackground()");
+		//Log.w(TAG, "in drawBackground()");
 		// Create canvas once we're ready to draw
 		mRect.set(0, 0, getWidth(), getHeight() * 2);
 		 mWidth = getWidth();
 			mHeight = getHeight();
 			mCenterX = mWidth / 2;
 			mCenterY = 9 * (mHeight / 10);
-			Log.w(TAG, mWidth +" "+ mHeight +" "+ mCenterX + " "+mCenterY);
+			//Log.w(TAG, mWidth +" "+ mHeight +" "+ mCenterX + " "+mCenterY);
 
 		/*
 		 * if (mCanvasBitmap == null) { mCanvasBitmap =
@@ -150,9 +158,36 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 			canvas.drawCircle(mCenterX, mCenterY, band * i, slinePaint);
 
 		}
+		
+		CircleIcon au = new CircleIcon(bmp,mCenterX ,mCenterY ,null);
+		// 陸續將 au 放入 Au 物件陣列中
+		iconList.add(au);
 
 	}
+	
+	 //==== 加入觸碰事件方法 ====
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        // TODO Auto-generated method stub
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            int x = (int)event.getX();
+            int y = (int)event.getY();
+           
+            //巡覽 Au 物件陣列一遍，逐一比對是否碰觸到物件圖片
+            for (CircleIcon a: iconList) {
+                a.IsTouch(x, y);
+            }
+        }
+        return true;
+    }
 
+    public HashMap<Integer, UserData> getmUserIdMap() {
+		return mUserIdMap;
+	}
+
+	public void setmUserIdMap(HashMap<Integer, UserData> mUserIdMap) {
+		this.mUserIdMap = mUserIdMap;
+	}
 	public Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth) {
 
 		int width = bm.getWidth();
@@ -181,22 +216,38 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 
 	}
 
+
 	
-	public void setUserIdList(ArrayList<Integer> list){
-		mUserIdList = list;
-		
-	}
 
 
 	public class CircleIcon implements Runnable {
 		private Bitmap unit_bmp;
-		//TODO private ProfilePictureView profilePic = new ProfilePictureView(Context context);
+		Rect unit_rect = new Rect(); 
+	    private AlertDialog mAlertDialog;
+	    private float x ;
+	    private float y ;
+	    private UserData userData ;
+	    
+	    private void setUserData(UserData usd){
+	    	
+	    	userData = usd;
+	    }
+ 
+		public void setX(float _x) {
+			x = _x;
+		}
 
-		public CircleIcon(Bitmap icon_pic) {
-			// 指定圖片來源
-			this.unit_bmp = icon_pic;
-			//profilePic.setProfileId("1082621562");
+		public void setY(float _y) {
+			y = _y;
+		}
+	    
+		public CircleIcon(Bitmap icon_pic , float _x, float _y, UserData userdata) {
+			Log.w(TAG,"In CircleIcon");
 			
+			this.unit_bmp = icon_pic;
+			x= _x;
+			y = _y;
+			userData = userdata;
 			// 此物件參數的初始設定
 			UnitInitial();
 
@@ -225,26 +276,63 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 		// ==== 將圖 PO 到 canvas(畫布)上 ====
 		protected void PostUnit(Canvas canvas) {
 			// 在 canvas 上繪出物件本體
-			float circleX =  mCenterX - unit_bmp.getWidth()/2;
-			float circleY = mCenterY - unit_bmp.getHeight()/2;
+			int unit_Width = unit_bmp.getWidth();
+			int unit_Height = unit_bmp.getHeight();
+			float circleX =    x- unit_bmp.getWidth()/2;
+			float circleY = y - unit_bmp.getHeight()/2;
 			canvas.drawBitmap(getCroppedBitmap(unit_bmp),circleX , circleY , null);
-			//TODO profilePic.buildLayer();
+			 unit_rect.set((int)x ,(int)y , (int)x + unit_Width,(int)y+ unit_Height) ;
+				
 		}
+		
+		//==== 檢查是否被碰觸到 ====
+	    protected void IsTouch(int touch_x, int touch_y) {
+
+	        //將觸碰點的座標 touch_x 與 touch_y 傳入到
+	        //矩形框類別變數 unit_rect 的 contains(x, y) 方法中去判別
+	        //如果觸碰點的座標位於矩形框範圍內則contains(x, y)方法會傳回 true
+	        //否則傳回 false
+        	 if(userData == null){
+        		 
+        		 return;
+        	 }
+
+	        if (unit_rect.contains(touch_x, touch_y)) {
+	        	Log.w("CirecleIcon", "Is touched"+touch_x+" "+touch_y+" "+unit_rect.bottom+" "+unit_rect.left+" "+unit_rect.right+" "+unit_rect.top);
+	            
+	            //進行血條損傷計算
+	            //進一步檢查血量值是否歸零
+	        	//canvas.drawColor(R.color.com_facebook_blue);
+	        	mAlertDialogBuilder.setTitle("我在"+userData.getPlaceName()+"留言給你");
+	        	mAlertDialogBuilder.setMessage(userData.getMessage()+"");
+	    		mAlertDialogBuilder.setPositiveButton("確定",
+	    				new DialogInterface.OnClickListener() {
+	    					public void onClick(DialogInterface dialog, int id) {
+
+	    					}
+	    				});
+	    		mAlertDialogBuilder.setNegativeButton(null, null);
+	        	mAlertDialog = mAlertDialogBuilder.create();
+	        	 
+	    		mAlertDialog.show();        	
+	        }
+	    }
 
 	}
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		Log.w(TAG, "In HistoryView run");
 		while (flag) {
 			// 當 Au 物件陣列沒有任何物件存在時，結束執行緒運作
-			if (iconList.isEmpty()) {
+			
+			/*
+			if (iconList.isEmpty() ) {
 				Log.w(TAG, "iconList is empty! Stop trhead ");
 				flag = false; // 停止執行緒
 				System.exit(0); // 直接結束程式
-			}
-
+			}*/
+			
 			// 將物件顯示到螢幕上
 			try {
 
@@ -263,6 +351,10 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 					icon.PostUnit(canvas);
 				}
 
+
+
+				refresh();
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
@@ -274,7 +366,7 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 
 			// 暫停 0.05 秒(每隔 0.05 秒更新畫面一次)
 			try {
-				Thread.sleep(60000);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -282,6 +374,36 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 		} // while
 
 	}
+	
+	private boolean refresh = true;
+	private void refresh() {
+		if(!refresh){
+			return;
+		}
+		
+		
+		if(mUserIdMap != null){
+			traverseMap(mUserIdMap);
+			refresh = false; 
+		}		
+	}
+
+	public  void traverseMap(HashMap<Integer,UserData> mp) {
+		
+	    Iterator it = mp.entrySet().iterator();
+	    float width  = getWidth();
+	    float height = getHeight();
+	    while (it.hasNext()) {
+	    	HashMap.Entry pairs = (HashMap.Entry)it.next();
+	    	UserData userdata = (UserData)pairs.getValue();
+	    	float x = (float) (Math.random() * (width - userdata.getUserPic().getWidth()));
+	        float y = (float) (Math.random() * ( height -  userdata.getUserPic().getHeight() - 5) + 5);
+	    	
+	    	iconList.add(new CircleIcon(userdata.getUserPic() , x, y, userdata));
+	    	
+	    }
+	}
+
 
     public Bitmap getCroppedBitmap(Bitmap bitmap) {
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
@@ -295,13 +417,11 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
         paint.setAntiAlias(true);
         canvas.drawARGB(0, 0, 0, 0);
         paint.setColor(color);
-        // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
         canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
                 bitmap.getWidth() / 2, paint);
         paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint);
-        //Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
-        //return _bmp;
+
         return output;
     }
 	
@@ -323,5 +443,7 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		Log.w(TAG, "In surfaceDestroyed()");
 	}
+	
+
 
 }
