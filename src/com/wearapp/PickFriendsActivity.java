@@ -330,7 +330,7 @@ public class PickFriendsActivity extends FragmentActivity {
     	 							@Override
     	 							public void onClick(DialogInterface dialog, int which) {
     	 								// TODO Auto-generated method stub													
-    	 								sendMessage();
+    	 								sendMessage();     	 								
     	 								finishActivity();
     	 							}
     	             	}
@@ -367,17 +367,16 @@ public class PickFriendsActivity extends FragmentActivity {
 	}
 
 	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {		
 		super.onActivityResult(requestCode, resultCode, data);
 		Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
 
 	}
 	
 	private void finishActivity(){
-		Intent intent = new Intent();
-		intent.putExtra("Friend", friendslist_selected.toString());
-		setResult(ResultCode.PickFriendsActivity);
-		
+		Intent intent = new Intent();		
+		intent.putExtra("Friend", friendslist_selected.toString());		
+		setResult(ResultCode.PickFriendsActivity , intent);						
 		finish();
 	}
 	

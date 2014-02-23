@@ -151,18 +151,18 @@ public class CheckVoiceActivity extends FragmentActivity {
 				startPickFriendsActivityForResult();
 			}else{
 				Log.w(TAG, "startMainActivityAndFinishSelf");
-
 				startMainActivityAndFinishSelf();
 			}
 			break;
 		case ResultCode.PickFriendsActivity:
-//			if(data!=null){
-//				initFBSessionAndLocation();
-//				startPickPlaceActivityForResult(lastKnownLocation);
-//			}else{
+			Log.w(TAG, "PickFriendsActivity");
+			if(data!=null){
+				Log.w(TAG, "startSecondMainActivityAndFinishSelf");
+				startSecondMainActivityAndFinishSelf();
+			}else{
 				initFBSessionAndLocation();
 				startPickPlaceActivityForResult(lastKnownLocation);
-//			}
+			}					
 			break;	
 		default:
 //			startMainActivityAndFinishSelf();
@@ -241,4 +241,10 @@ public class CheckVoiceActivity extends FragmentActivity {
 		finish();
 	}
 
+	private void startSecondMainActivityAndFinishSelf() {
+		Intent intent = new Intent(this, SecondMainActivity.class);
+		startActivity(intent);
+		finish();
+	}
+	
 }
