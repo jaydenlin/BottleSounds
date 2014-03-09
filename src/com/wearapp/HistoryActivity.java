@@ -165,8 +165,14 @@ public class HistoryActivity extends Activity {
         	    @Override
         	    public void afterGetListDone(ArrayList<ParseObject> parseObjectList) {
         	           // 在這裡讀取物件
-        	           // String placeName = (String) parseObjectList.get(0).get('placeName');
+        	    	ArrayList<String> toWhomList = (ArrayList<String>)  parseObjectList.get(0).get(TAG_TO_FRIENDS);
         	    	UserData userdata;
+        	    	String userId = toWhomList.get(0);
+        	    	userdata = new UserData(Integer.parseInt(userId),null,null);
+        	    	userdata.setisOwner(true);
+        	    	userDataList.add(userdata);
+        	    	userMap.put(userdata.getUID(), userdata);
+        	    	new DownloadPictureTask().execute(userdata);
         	    	for(ParseObject parseObject : parseObjectList){
         	    		userdata = new UserData((Integer)parseObject.get(TAG_OWNER),(String)parseObject.getString(TAG_PLACENAME), null);
         	    		userdata.setLatitude((Double)parseObject.get(TAG_LATITUDE));
@@ -256,7 +262,7 @@ public class HistoryActivity extends Activity {
         }
     
         private Bitmap getFacebookProfilePic(Integer userid){
-        	Log.w("HistoryActivity", "getFacebookProfilePic");
+        	Log.w("HistoryActivity", "getFacebookProfilePic "+ userid);
 
         	 URL img_value = null;
         	 Bitmap mIcon = null;
@@ -284,6 +290,7 @@ public class HistoryActivity extends Activity {
 
 	
     public class UserData  {
+    	private boolean isOwner = false;
     	private Integer UID;
 		private String placeName;
 		private double longitude;
@@ -296,6 +303,15 @@ public class HistoryActivity extends Activity {
     		UID = uid;
     		placeName = placename;
     		userPic = bitmap;
+    	}
+    	
+    	public boolean isOwner(){
+    		return isOwner;
+    	}
+    	
+    	public void setisOwner(boolean isowner){
+    		isOwner = isowner;
+    		
     	}
     	
     	public void setLongitude(double l ){
@@ -353,6 +369,7 @@ public class HistoryActivity extends Activity {
 		}
 
     }
+    
     
     
 }
