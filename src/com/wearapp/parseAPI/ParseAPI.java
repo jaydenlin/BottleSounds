@@ -59,30 +59,43 @@ public class ParseAPI {
 
 			}
 		});
-		
-		
-		
-		
+
 	}
-	
-	public static void readVoiceListForYou(Activity activity, String FBAccessToken, ParseGetDataDoneCallback parseGetDataDoneCallback){
-		
+
+	public static void readVoiceListForYou(Activity activity, String FBAccessToken, ParseGetDataDoneCallback parseGetDataDoneCallback) {
+
 		parseGetDataDoneCallbackForInternal = parseGetDataDoneCallback;
 		Parse.initialize(activity, applicationId, clientKey);
 		HashMap<String, Object> params = new HashMap<String, Object>();
-		params.put("access_token", FBAccessToken);		
+		params.put("access_token", FBAccessToken);
 		ParseCloud.callFunctionInBackground("readVoiceListForYou", params, new FunctionCallback<ArrayList<ParseObject>>() {
-			
+
 			@Override
 			public void done(ArrayList<ParseObject> parseObjectList, ParseException e) {
 				// TODO Auto-generated method stub
 				parseGetDataDoneCallbackForInternal.afterGetListDone(parseObjectList);
-				
+
 			}
 		});
-		
+
 	}
 
-	
+	public static void getUserPhoto(Activity activity, String FBAccessToken, ParseGetDataDoneCallback parseGetDataDoneCallback) {
+
+		parseGetDataDoneCallbackForInternal = parseGetDataDoneCallback;
+		Parse.initialize(activity, applicationId, clientKey);
+		HashMap<String, Object> params = new HashMap<String, Object>();
+		params.put("access_token", FBAccessToken);
+		ParseCloud.callFunctionInBackground("getUserPhoto", params, new FunctionCallback<ParseObject>() {
+
+			@Override
+			public void done(ParseObject parseObject, ParseException e) {
+				// TODO Auto-generated method stub
+				parseGetDataDoneCallbackForInternal.afterGetObjectDone(parseObject);
+
+			}
+		});
+
+	}
 
 }
