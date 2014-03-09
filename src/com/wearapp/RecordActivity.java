@@ -307,11 +307,11 @@ public class RecordActivity extends Activity implements OnClickListener {
 		} else if (id == R.id.button_confirm) {
 
 			if (mediaState == MediaState.isPlayStopState) {
-				setButton(MediaState.Default);
-				defaultMediaPlayer();
 				insert2DB();
 				startCheckPlaceActivity();
 				prepareUploadFile();
+				setButton(MediaState.Default);
+				defaultMediaPlayer();
 				setMediaState(MediaState.Default);		
 			}		
 			return;
