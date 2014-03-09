@@ -260,7 +260,7 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 
 			// 暫停 0.05 秒(每隔 0.05 秒更新畫面一次)
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(50);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
