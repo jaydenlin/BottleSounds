@@ -110,7 +110,7 @@ public class RecordActivity extends Activity implements OnClickListener {
 	protected Handler handler = new Handler();
 
 	enum MediaState {
-		Default, isStartPlayState, isPlayingState, isPlayStopState, isRecordingState, isRecordedState
+		Default, isStartPlayState, isPlayingState, isPlayStopState, isRecordingState, isRecordedState,isUploadingState
 	}
 
 	public void setMediaState(MediaState mediastate) {
@@ -307,12 +307,12 @@ public class RecordActivity extends Activity implements OnClickListener {
 		} else if (id == R.id.button_confirm) {
 
 			if (mediaState == MediaState.isPlayStopState) {
+				setButton(MediaState.isUploadingState);
 				insert2DB();
 				startCheckPlaceActivity();
 				prepareUploadFile();
-				setButton(MediaState.Default);
 				defaultMediaPlayer();
-				setMediaState(MediaState.Default);		
+				setMediaState(MediaState.isUploadingState);		
 			}		
 			return;
 		
@@ -598,9 +598,24 @@ public class RecordActivity extends Activity implements OnClickListener {
 		case isStartPlayState:
 			setButtonStartPlaying();
 			break;
+		case isUploadingState:
+			setButtonFinishPlay();
 		default:
 			break;
 		}
+	}
+
+	private void setButtonFinishPlay() {
+		Log.w(TAG, "In setButtonFinishPlay");
+		//imagebutton_play.setVisibility(View.INVISIBLE);
+		//imagebutton_stop.setVisibility(View.INVISIBLE);
+		//imagebutton_record.setVisibility(View.INVISIBLE);
+		//button_confirm.setText(R.string.string_start);
+		//imagebutton_record.bringToFront();
+
+		imagebutton_play.setClickable(false);
+		button_confirm.setClickable(false);
+		
 	}
 
 	public void setButtonStartRecord() {

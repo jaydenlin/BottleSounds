@@ -116,16 +116,15 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 			mCenterY = 9 * (mHeight / 10);
 			//Log.w(TAG, mWidth +" "+ mHeight +" "+ mCenterX + " "+mCenterY);
 
-		/*
-		 * if (mCanvasBitmap == null) { mCanvasBitmap =
-		 * Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(),
-		 * Config.ARGB_8888);
-		 * 
-		 * 
-		 * } if (canvas == null) { canvas = new Canvas(mCanvasBitmap);
-		 * 
-		 * }
-		 */
+		 if (canvas == null) { 
+			 
+			    Log.w(TAG, "drawBackground canvas is null! Stop trhead ");
+				flag = false; // 停止執行緒
+				return;
+		 }
+		  
+		 
+		 
 		Paint slinePaint = new Paint();
 		Paint textPaint = new Paint();
 		
@@ -219,14 +218,6 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 		
 		while (flag) {
 			Log.w(TAG, "In HistoryView run + iconList size = "+iconList.size());
-			
-			// 當 Au 物件陣列沒有任何物件存在時，結束執行緒運作
-			/*
-			if (iconList.isEmpty() ) {
-				Log.w(TAG, "iconList is empty! Stop trhead ");
-				flag = false; // 停止執行緒
-				System.exit(0); // 直接結束程式
-			}*/
 			
 			// 將物件顯示到螢幕上
 			try {

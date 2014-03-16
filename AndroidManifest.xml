@@ -70,15 +70,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ListActivity" />
         </activity>
-        <activity
-            android:name="com.wearapp.ListenLocationActivity"
-            android:theme="@style/AppTheme" >
-        </activity>
-        <activity
-            android:name="com.wearapp.PickLocationActivity"
-            android:theme="@style/AppTheme" >
-        </activity>
-        <activity
+         <activity
             android:name="com.wearapp.PickFriendsActivity"
             android:theme="@style/AppTheme" >
         </activity>
@@ -111,5 +103,12 @@
             android:theme="@style/AppTheme" >
         </activity>
     </application>
+    
+    
+    <supports-screens
+ android:largeScreens="true"
+ android:normalScreens="true"
+ android:xlargeScreens="true"
+ android:anyDensity = "true"/>
 
 </manifest>

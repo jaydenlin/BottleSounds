@@ -25,6 +25,7 @@ import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -41,6 +42,7 @@ public class HistoryActivity extends Activity {
 	
 	DecimalFormat df2 = new DecimalFormat("00");
 	
+
 	
 	@Override
 	protected void onStop(){
@@ -69,7 +71,8 @@ public class HistoryActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);	
-
+		/*Make the screen horizon*/
+	    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setContentView( background = new HistoryView(this, HistoryActivity.this));
 		// Get the intent, verify the action and get the query
 		
