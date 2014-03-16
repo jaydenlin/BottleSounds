@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.content.Context;
@@ -34,14 +35,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wearapp.HistoryActivity;
+import com.wearapp.ListenActivity;
 import com.wearapp.HistoryActivity.UserData;
 import com.wearapp.R;
 
 public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 		Runnable {
 
-	private static final String TAG = "HistoryView";
+	// /////////////////////////////////////////
+	// debug
+	// /////////////////////////////////////////
 
+	public static final String TAG = HistoryView.class.getSimpleName();
+
+	public static final boolean D = true;
+	public static final boolean D_METHOD = D && true;
+
+	public static final boolean D_SHOW_TAG = D && true;
+	
 	private RectF mRect = new RectF();
 	private Resources res;
 	private Bitmap userBmp;
@@ -56,15 +67,18 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 	float mHeight;
 	private Context mContext;
 	private HistoryActivity mActivity;
-	
-
 	private HashMap<Integer,UserData> mUserIdMap ;
-
 	private Builder mAlertDialogBuilder; 
+    private ProgressDialog progressDialog;
+ 
+  
+	Paint slinePaint;
+	Paint textPaint;
+	Paint iconPaint;
+	
 
 	public HistoryView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs);
-		init();
 	}
 
 	public HistoryView(Context context, AttributeSet attrs) {
@@ -73,69 +87,39 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 
 	public HistoryView(Context context,HistoryActivity activity) {
 		super(context);
+		if(D_METHOD){
+			Log.w(TAG, "On Create HistoryView");
+		}
+		mActivity = activity;
+		mContext = context;
+		res = getResources();
 		setWillNotDraw(false);
-		Log.w(TAG, "On Create HistoryView");
 		getHolder().addCallback(this);
 		holder = getHolder();
-		res = getResources();
-		mContext = context;
-		// 初始設定
-		InitialSet();
-		
-		// 建立執行緒
-		db_thread = new Thread(this);
-		mActivity = activity;
-	}
-
-	// ==== 初始設定 ====
-	public void InitialSet() {
-		Log.w(TAG, "In InitialSet");
-		// 建立 AndroidUnit 物件陣列實體
+			
 		iconList = new ArrayList<CircleIcon>();
-		iconList.clear(); // 先清除 Au 物件陣列
-	}
-
-	private void init() {
-
-	}
-
-	@Override
-	public void onDraw(Canvas canvas) {
-		Log.w(TAG, "in onDraw()");
-
-	}
-
-	private void drawBackground(Canvas canvas) {
-		//Log.w(TAG, "in drawBackground()");
-		// Create canvas once we're ready to draw
-		Log.w(TAG, getWidth()+" "+getHeight());
-		mRect.set(0, 0, getWidth(), getHeight() * 2);
-		 mWidth = getWidth();
-			mHeight = getHeight();
-			mCenterX = mWidth / 2;
-			mCenterY = 9 * (mHeight / 10);
-			//Log.w(TAG, mWidth +" "+ mHeight +" "+ mCenterX + " "+mCenterY);
-
-		 if (canvas == null) { 
-			 
-			    Log.w(TAG, "drawBackground canvas is null! Stop trhead ");
-				flag = false; // 停止執行緒
-				return;
-		 }
-		  
-		 
-		 
-		Paint slinePaint = new Paint();
-		Paint textPaint = new Paint();
+		slinePaint = new Paint();
+		textPaint = new Paint();
+		iconPaint = new Paint();
 		
+		InitialSetting();
+		
+		db_thread = new Thread(this);
+		
+	}
 
-		Bitmap resizedBitmap = getResizedBitmap(
-				BitmapFactory.decodeResource(res, R.drawable.background_record),
-				getHeight(), getWidth());
+	public void InitialSetting() {
+		if(D_METHOD){
+			Log.w(TAG, "In InitialSet");
+		}
+		iconList.clear(); 
 
-		canvas.drawBitmap(resizedBitmap, 0, 0, null);
-
-		/* draw vertical line in the background */
+		progressDialog = new ProgressDialog(mActivity);
+		progressDialog.setMessage("Loading message. Please wait...");
+		progressDialog.setIndeterminate(false);
+		progressDialog.setCancelable(false);
+		progressDialog.show();
+	/* draw vertical line in the background */
 		slinePaint.setStrokeWidth(3f);
 		slinePaint.setColor(Color.WHITE);
 		slinePaint.setAlpha(80);
@@ -147,130 +131,122 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 		textPaint.setColor(Color.WHITE);
 		textPaint.setAlpha(80);
 		textPaint.setStyle(Paint.Style.STROKE);
-
-		int gap = 6;
-		int band = 100;
-
-		for (int i = 1; i < gap; i++) {
-			
-			canvas.drawCircle(mCenterX, mCenterY, band * (i+1), slinePaint);
-
-		}
-
+		
+		iconPaint.setStrokeWidth(4f);
+		iconPaint.setColor(Color.WHITE);
+		//iconPaint.setAlpha(200);
+		iconPaint.setStyle(Paint.Style.STROKE);
+		iconPaint.setStrokeCap(Cap.ROUND);
+		iconPaint.setAntiAlias(true);
 	}
 	
-	 //==== 加入觸碰事件方法 ====
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        // TODO Auto-generated method stub
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            int x = (int)event.getX();
-            int y = (int)event.getY();
-            
-            //巡覽 Au 物件陣列一遍，逐一比對是否碰觸到物件圖片
-            for (CircleIcon a: iconList) {
-            	
-                a.IsTouch(x, y);
-            }
-        }
-        return true;
-    }
-
-    public HashMap<Integer, UserData> getmUserIdMap() {
-		return mUserIdMap;
-	}
-
-	public void setmUserIdMap(HashMap<Integer, UserData> mUserIdMap) {
-		Log.w(TAG, "in setmUserIdMap");
-		this.mUserIdMap = mUserIdMap;
-	}
-	public Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth) {
-
-		int width = bm.getWidth();
-
-		int height = bm.getHeight();
-
-		float scaleWidth = ((float) newWidth) / width;
-
-		float scaleHeight = ((float) newHeight) / height;
-
-		// CREATE A MATRIX FOR THE MANIPULATION
-
-		Matrix matrix = new Matrix();
-
-		// RESIZE THE BIT MAP
-
-		matrix.postScale(scaleWidth, scaleHeight);
-
-		// RECREATE THE NEW BITMAP
-
-		Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height,
-				matrix, false);
-
-		bm.recycle();
-		return resizedBitmap;
-
-	}
-
 	@Override
 	public void run() {
-	
-		
 		while (flag) {
-			Log.w(TAG, "In HistoryView run + iconList size = "+iconList.size());
-			
-			// 將物件顯示到螢幕上
-			try {
-
-				// 取得並鎖住畫布(canvas)
-				canvas = holder.lockCanvas();
-
-				// 以黑色當背景 (清除畫面)
-				// canvas.drawColor(Color.BLACK);
-				drawBackground(canvas);
-
-				// 巡覽 Au 物件陣列中的所有物件
-
-				
-				for (CircleIcon icon : iconList) {
-					// 若該物件還活著，則呼叫 AndroidUnit 物件的 PostUnit() 方法
-					// 將物件圖片繪至 canvas 上
-			
-					icon.PostUnit(canvas);
-				}
-				refresh();
-				
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				if (canvas != null) {
-					// 解鎖畫布(canvas)並顯示到螢幕上
-					holder.unlockCanvasAndPost(canvas);
-				}
-			}
-
-			// 暫停 0.05 秒(每隔 0.05 秒更新畫面一次)
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
+			if(D_SHOW_TAG){
+				Log.w(TAG, "In HistoryView run + iconList size = "+iconList.size());
+			}			
+			lockCanvasAndDrawHistoryView();
+			sleepThread();
 		} // while
 
 	}
 	
-	private boolean refresh = true;
-	private void refresh() {
-		Log.w(TAG, "in refresh");
-		if(!refresh){
+	private void lockCanvasAndDrawHistoryView(){
+		try {
+			canvas = holder.lockCanvas();
+			drawBackground(canvas);
+
+			drawIcons();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (canvas != null) {
+				// 解鎖畫布(canvas)並顯示到螢幕上
+				holder.unlockCanvasAndPost(canvas);
+			}
+		}
+	}
+
+	private void drawBackground(Canvas canvas) {
+		if(D_METHOD){
+			Log.w(TAG, "in drawBackground()");
+			Log.w(TAG, getWidth() + " " + getHeight());
+		}
+		
+		mRect.set(0, 0, getWidth(), getHeight() * 2);
+		mWidth = getWidth();
+		mHeight = getHeight();
+		mCenterX = mWidth / 2;
+		mCenterY = 9 * (mHeight / 10);
+		// Log.w(TAG, mWidth +" "+ mHeight +" "+ mCenterX + " "+mCenterY);
+
+		if (canvas == null) {
+			if(D_SHOW_TAG){
+				Log.w(TAG, "drawBackground canvas is null! Stop trhead ");
+			}
+			flag = false; // 停止執行緒
+			return;
+		}
+
+		Bitmap resizedBitmap = getResizedBitmap(
+				BitmapFactory.decodeResource(res, R.drawable.background_record),
+				getHeight(), getWidth());
+
+		canvas.drawBitmap(resizedBitmap, 0, 0, null);
+
+		int gap = 4;
+		int band = 180;
+		
+		for (int i = 0; i < gap; i++) {
+			canvas.drawCircle(mCenterX, mCenterY, band * (i + 1), slinePaint);
+		}
+
+	}//drawBackground()
+	
+	public Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth) {
+
+		int width = bm.getWidth();
+		int height = bm.getHeight();
+		float scaleWidth = ((float) newWidth) / width;
+		float scaleHeight = ((float) newHeight) / height;
+
+		// CREATE A MATRIX FOR THE MANIPULATION
+		Matrix matrix = new Matrix();
+
+		// RESIZE THE BIT MAP
+		matrix.postScale(scaleWidth, scaleHeight);
+
+		// RECREATE THE NEW BITMAP
+		Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height,
+				matrix, false);
+		bm.recycle();
+		return resizedBitmap;
+
+	}
+	
+
+	public void drawIcons() {
+		for (CircleIcon icon : iconList) {
+			icon.PostUnit(canvas);
+		}
+		refetchUserMap();
+	}	
+	
+	private boolean refetchingUserMap = true;
+	private void refetchUserMap() {
+		if(D_METHOD){
+			Log.w(TAG, "in refresh");
+		}
+		if(!refetchingUserMap){
 			return;
 		}
 		
-		
 		if(mUserIdMap != null){
 			traverseMap(mUserIdMap);
-			refresh = false; 
+			refetchingUserMap = false; 
+            progressDialog.dismiss();
 		}		
 	}
 
@@ -290,36 +266,40 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 	    	
 	    	float x = (float) (Math.random() * (width - userdata.getUserPic().getWidth()*2))+userdata.getUserPic().getWidth();
 	        float y = (float) (Math.random() * ( height -  userdata.getUserPic().getHeight()*2 ) + userdata.getUserPic().getHeight());
-	    	Log.w(TAG, "random x, y "+x+ " "+ y);
+	    	if(D_SHOW_TAG){
+	    		Log.w(TAG, "random x, y "+x+ " "+ y);
+	    	}
 	    	iconList.add(new CircleIcon(userdata.getUserPic() , x, y, userdata));
 	    	
 	    }
 	}
-
-
-    public Bitmap getCroppedBitmap(Bitmap bitmap) {
-    	
-    	
-        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-                bitmap.getHeight(), Config.ARGB_8888);
-        Canvas canvas = new Canvas(output);
-
-        final int color = 0xff424242;
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-
-        paint.setAntiAlias(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(color);
-        int diameter  = (bitmap.getWidth() > bitmap.getHeight())? bitmap.getHeight() : bitmap.getWidth();
-        canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-        		diameter / 2, paint);
-        paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, rect, rect, paint);
-
-        return output;
-    }
 	
+	private void sleepThread(){
+		try {
+			Thread.sleep(50);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void onDraw(Canvas canvas) {
+		Log.w(TAG, "in onDraw()");
+
+	}
+	
+	@Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            int x = (int)event.getX();
+            int y = (int)event.getY();
+            for (CircleIcon a: iconList) {
+                a.IsTouch(x, y);
+            }
+        }
+        return true;
+    }
+
 	
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
@@ -340,12 +320,25 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 	}
 	
 
+
+	public HashMap<Integer, UserData> getmUserIdMap() {
+		return mUserIdMap;
+	}
+
+
+	public void setmUserIdMap(HashMap<Integer, UserData> mUserIdMap) {
+		Log.w(TAG, "in setmUserIdMap");
+		this.mUserIdMap = mUserIdMap;
+	}
+	
+
+
 	public class CircleIcon implements Runnable {
 		private Bitmap unit_bmp;
 		Rect unit_rect = new Rect(); 
 	    private AlertDialog mAlertDialog;
-	    private float x ;
-	    private float y ;
+	    private float circleX ;
+	    private float circleY ;
 	    private UserData userData ;
 	    private int index;
 		int unit_Width ;
@@ -358,11 +351,11 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 	    }
  
 		public void setX(float _x) {
-			x = _x;
+			circleX = _x;
 		}
 
 		public void setY(float _y) {
-			y = _y;
+			circleY = _y;
 		}
 		
 		public void setindex(int i){
@@ -374,19 +367,15 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 		}
 	    
 		public CircleIcon(Bitmap icon_pic , float _x, float _y, UserData userdata) {
-			Log.w(TAG,"In CircleIcon");
-			
+			if(D_METHOD){
+				Log.w(TAG,"In CircleIcon");
+			}
 			this.unit_bmp = icon_pic;
 			unit_Width = unit_bmp.getWidth();
 			unit_Height = unit_bmp.getHeight();
-
-
-			x= _x;
-			y = _y;
+			circleX= _x;
+			circleY = _y;
 			userData = userdata;
-			// 此物件參數的初始設定
-			UnitInitial();
-
 			// CircleIcon 類別實作了 Runnable 介面
 			// 仍需以 Thread 類別來建立執行緒，如下 :
 			new Thread(this).start();
@@ -398,28 +387,49 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 
 		}
 
-		private void UnitInitial() {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-
-		}
+		@Override 
+		public void run() {}
 
 		// ==== 將圖 PO 到 canvas(畫布)上 ====
 		protected void PostUnit(Canvas canvas) {
 			// 在 canvas 上繪出物件本體
-			float circleX =    x- unit_Width/2;
-			float circleY = y - unit_Height/2;
+			float X =    circleX- unit_Width/2;
+			float Y = circleY - unit_Height/2;
+			float raidus = getRadius(unit_Width/2,unit_Height/2);
 			Bitmap newBitmap = getCroppedBitmap(unit_bmp);
-			canvas.drawBitmap(newBitmap,circleX , circleY , null);
-			unit_rect.set((int)x ,(int)y , (int)x + unit_Width,(int)y+ unit_Height) ;
-			//Log.w(TAG, unit_Width+" "+unit_Height);
+			canvas.drawBitmap(newBitmap,X, Y , null);
+			
+			canvas.drawCircle(circleX, circleY, raidus, iconPaint);
+			unit_rect.set((int)X ,(int)Y , (int)X + unit_Width,(int)Y+ unit_Width) ;
 			
 		}
+		
+		public float getRadius(float width, float height){
+			return (width > height)? height:width;		
+		}
+		
+		 public Bitmap getCroppedBitmap(Bitmap bitmap) {
+		    	
+		    	
+		        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+		                bitmap.getHeight(), Config.ARGB_8888);
+		        Canvas canvas = new Canvas(output);
+
+		        final int color = 0xff424242;
+		        final Paint paint = new Paint();
+		        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+		        paint.setAntiAlias(true);
+		        canvas.drawARGB(0, 0, 0, 0);
+		        paint.setColor(color);
+		        int diameter  = (bitmap.getWidth() > bitmap.getHeight())? bitmap.getHeight() : bitmap.getWidth();
+		        canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
+		        		diameter / 2, paint);
+		        paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+		        canvas.drawBitmap(bitmap, rect, rect, paint);
+
+		        return output;
+		    }
 		
 		//==== 檢查是否被碰觸到 ====
 	    protected void IsTouch(int touch_x, int touch_y) {
@@ -434,32 +444,37 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
         	 }
 
 	        if (unit_rect.contains(touch_x, touch_y)) {
-	        	Log.w("CirecleIcon", "Is touched"+touch_x+" "+touch_y+" "+unit_rect.bottom+" "+unit_rect.left+" "+unit_rect.right+" "+unit_rect.top);
+	        	if(D_SHOW_TAG){
+	        		Log.w("CirecleIcon", "Is touched"+touch_x+" "+touch_y+" "+unit_rect.bottom+" "+unit_rect.left+" "+unit_rect.right+" "+unit_rect.top);
+	        	}
 
-	        	//canvas.drawColor(R.color.com_facebook_blue);
-	        	final Dialog dialog = new Dialog(mActivity,android.R.style.Theme_Translucent);
-	        	dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-	        	dialog.setCancelable(true);
-	        	dialog.setContentView(R.layout.dialog);
-	        	Button btnComplete = (Button) dialog.findViewById(R.id.button_complete);
-	        	TextView text_placename = (TextView) dialog.findViewById(R.id.text_place_name);
-	        	text_placename.setText(userData.getPlaceName());
-	        	//TextView text_name = (TextView) dialog.findViewById(R.id.text_name);
-	        	ImageView image_icon = (ImageView) dialog.findViewById(R.id.image_icon);
-	        	image_icon.setImageBitmap(userData.getUserPic());
-	        	btnComplete.setOnClickListener(new OnClickListener(){
-
-					@Override
-					public void onClick(View view) {
-						dialog.dismiss();
-					}
-	        		
-	        	});
-	        	dialog.show();
+	        	showCustomizedDialog();
 
 	        }
 	    }
+	    
+	    private void showCustomizedDialog(){
+        	final Dialog dialog = new Dialog(mActivity,android.R.style.Theme_Translucent);
+        	dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        	dialog.setCancelable(true);
+        	dialog.setContentView(R.layout.dialog);
+        	Button btnComplete = (Button) dialog.findViewById(R.id.button_complete);
+        	TextView text_placename = (TextView) dialog.findViewById(R.id.text_place_name);
+        	text_placename.setText(userData.getPlaceName());
+        	//TextView text_name = (TextView) dialog.findViewById(R.id.text_name);
+        	ImageView image_icon = (ImageView) dialog.findViewById(R.id.image_icon);
+        	image_icon.setImageBitmap(userData.getUserPic());
+        	btnComplete.setOnClickListener(new OnClickListener(){
 
-	}
+				@Override
+				public void onClick(View view) {
+					dialog.dismiss();
+				}
+        		
+        	});
+        	dialog.show();
+	    }
 
-}
+	}//CircleIcon()
+
+}//HistoryView

@@ -102,10 +102,7 @@ public class HistoryActivity extends Activity {
 	//											//
 	//////////////////////////////////////////////
 	
-	// Progress Dialog
-    private ProgressDialog pDialog;
- 
-    // Creating JSON Parser object
+  // Creating JSON Parser object
     JSONParser jParser = new JSONParser();
  
     ArrayList<UserData> userDataList;
@@ -149,11 +146,6 @@ public class HistoryActivity extends Activity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog = new ProgressDialog(HistoryActivity.this);
-            pDialog.setMessage("Loading message. Please wait...");
-            pDialog.setIndeterminate(false);
-            pDialog.setCancelable(false);
-            pDialog.show();
         }
  
         
@@ -163,6 +155,7 @@ public class HistoryActivity extends Activity {
         protected String doInBackground(String... args) {
         	
         	try {
+        		
         	    ParseAPI.readVoiceListForYou(HistoryActivity.this,FacebookUtil.getAccessToken(), new ParseGetDataDoneCallback() {       
 
         	    @Override
@@ -209,6 +202,7 @@ public class HistoryActivity extends Activity {
         	      //目前這裡還用不到            
         	    }
         	   });
+        	    
         	} catch (FacebookSessionNotActive e) {
         	    e.printStackTrace();
         	}
@@ -221,7 +215,6 @@ public class HistoryActivity extends Activity {
          * **/
         protected void onPostExecute(String file_url) {
             // dismiss the dialog after getting all products
-            pDialog.dismiss();
             // updating UI from Background Thread
             runOnUiThread(new Runnable() {
                 public void run() {
