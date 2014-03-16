@@ -20,7 +20,9 @@
     <string name="title_activity_main_activity_first">MainActivity_first</string>
     <string name="title_activity_history">HistoryActivity</string>
     <string name="app_label">Heare</string>
-    <string name="search_hint">搜尋 朋友或地點</string>
+    <string name="search_friend_hint">搜尋 朋友</string>
+    <string name="search_place_hint">搜尋 地點</string>
+    
     <string name="search">搜尋</string>
     <string name="title_activity_test">TestActivity</string>
 

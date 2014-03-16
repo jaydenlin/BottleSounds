@@ -103,12 +103,11 @@ public class PickFriendsActivity extends FragmentActivity {
 	    // Get the SearchView and set the searchable configuration
 	    SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 	    SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-	    
 	    // Assumes current activity is the searchable activity
 	    searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName("com.wearapp","com.wearapp.HistoryActivity")));
 	    //searchView.setSearchableInfo(searchManager.getSearchableInfo(this.getComponentName()));
 	    searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
-	    
+	    searchView.setQueryHint(getResources().getString(R.string.search_friend_hint));
 	    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 			
 			@Override

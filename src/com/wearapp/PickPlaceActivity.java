@@ -50,6 +50,7 @@ public class PickPlaceActivity extends FragmentActivity {
 	    // Get the SearchView and set the searchable configuration
 	    SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 	    SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+	    searchView.setQueryHint(getResources().getString(R.string.search_place_hint));
 	    // Assumes current activity is the searchable activity
 	    searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName("com.wearapp","com.wearapp.HistoryActivity")));
 	    //searchView.setSearchableInfo(searchManager.getSearchableInfo(this.getComponentName()));
