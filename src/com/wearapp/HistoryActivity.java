@@ -106,7 +106,7 @@ public class HistoryActivity extends Activity {
     JSONParser jParser = new JSONParser();
  
     ArrayList<UserData> userDataList;
-    HashMap<Integer, UserData> userMap;
+    HashMap<Long, UserData> userMap;
  
     
     
@@ -125,7 +125,7 @@ public class HistoryActivity extends Activity {
     private void getItemListFromWeb(){
         // Hashmap for ListView
     	userDataList = new ArrayList<UserData>();
-         userMap = new HashMap<Integer, UserData>();
+         userMap = new HashMap<Long, UserData>();
  
         // Loading userIdList in Background Thread
         new LoadAllMessage().execute();
@@ -164,13 +164,13 @@ public class HistoryActivity extends Activity {
         	    	ArrayList<String> toWhomList = (ArrayList<String>)  parseObjectList.get(0).get(TAG_TO_FRIENDS);
         	    	UserData userdata;
         	    	String userId = toWhomList.get(0);
-        	    	userdata = new UserData(Integer.parseInt(userId),null,null);
+        	    	userdata = new UserData(Long.parseLong(userId),null,null);
         	    	userdata.setisOwner(true);
         	    	userDataList.add(userdata);
         	    	userMap.put(userdata.getUID(), userdata);
         	    	new DownloadPictureTask().execute(userdata);
         	    	for(ParseObject parseObject : parseObjectList){
-        	    		userdata = new UserData((Integer)parseObject.get(TAG_OWNER),(String)parseObject.getString(TAG_PLACENAME), null);
+        	    		userdata = new UserData((Long)parseObject.get(TAG_OWNER),(String)parseObject.getString(TAG_PLACENAME), null);
         	    		userdata.setLatitude((Double)parseObject.get(TAG_LATITUDE));
         	    		userdata.setLongitude((Double)parseObject.get(TAG_LONGITUDE));
         	    		userdata.setMessage((String)parseObject.get(TAG_MESSAGE));
@@ -257,13 +257,13 @@ public class HistoryActivity extends Activity {
 
         }
     
-        private Bitmap getFacebookProfilePic(Integer userid){
-        	Log.w("HistoryActivity", "getFacebookProfilePic "+ userid);
+        private Bitmap getFacebookProfilePic(Long long1){
+        	Log.w("HistoryActivity", "getFacebookProfilePic "+ long1);
 
         	 URL img_value = null;
         	 Bitmap mIcon = null;
         	 try {
-    			img_value = new URL("http://graph.facebook.com/"+String.valueOf(userid)+"/picture?type=large");
+    			img_value = new URL("http://graph.facebook.com/"+String.valueOf(long1)+"/picture?type=large");
     			mIcon = BitmapFactory.decodeStream(img_value.openConnection().getInputStream());
     			
     			
@@ -287,7 +287,7 @@ public class HistoryActivity extends Activity {
 	
     public class UserData  {
     	private boolean isOwner = false;
-    	private Integer UID;
+    	private Long UID;
 		private String placeName;
 		private double longitude;
 		private double latitude;
@@ -295,7 +295,7 @@ public class HistoryActivity extends Activity {
 		
 		private Bitmap userPic;
 		
-    	public UserData(Integer uid , String placename, Bitmap bitmap){
+    	public UserData(Long uid , String placename, Bitmap bitmap){
     		UID = uid;
     		placeName = placename;
     		userPic = bitmap;
@@ -340,11 +340,11 @@ public class HistoryActivity extends Activity {
     		
     	}
     	
-    	public Integer getUID() {
+    	public Long getUID() {
 			return UID;
 		}
 
-		public void setUID(Integer uID) {
+		public void setUID(Long uID) {
 			UID = uID;
 		}
 

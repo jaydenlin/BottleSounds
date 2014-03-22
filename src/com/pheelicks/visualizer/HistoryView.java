@@ -67,7 +67,7 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 	float mHeight;
 	private Context mContext;
 	private HistoryActivity mActivity;
-	private HashMap<Integer,UserData> mUserIdMap ;
+	private HashMap<Long,UserData> mUserIdMap ;
 	private Builder mAlertDialogBuilder; 
     private ProgressDialog progressDialog;
  
@@ -250,7 +250,7 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 		}		
 	}
 
-	public  void traverseMap(HashMap<Integer,UserData> mp) {
+	public  void traverseMap(HashMap<Long,UserData> mp) {
 		Log.w(TAG, "in Traverse Map");
 	    Iterator it = mp.entrySet().iterator();
 	    float width  = getWidth();
@@ -321,12 +321,12 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 	
 
 
-	public HashMap<Integer, UserData> getmUserIdMap() {
+	public HashMap<Long, UserData> getmUserIdMap() {
 		return mUserIdMap;
 	}
 
 
-	public void setmUserIdMap(HashMap<Integer, UserData> mUserIdMap) {
+	public void setmUserIdMap(HashMap<Long, UserData> mUserIdMap) {
 		Log.w(TAG, "in setmUserIdMap");
 		this.mUserIdMap = mUserIdMap;
 	}
