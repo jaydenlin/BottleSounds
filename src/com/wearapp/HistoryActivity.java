@@ -21,7 +21,6 @@ import com.wearapp.util.JSONParser;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -57,6 +56,7 @@ public class HistoryActivity extends Activity {
 	    MenuInflater inflater = getMenuInflater();
 	    inflater.inflate(R.menu.options_menu, menu);
 	    
+	    /*
 	    // Get the SearchView and set the searchable configuration
 	    SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 	    SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
@@ -64,7 +64,7 @@ public class HistoryActivity extends Activity {
 	    searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 	    Log.w("In create search bar", ""+getComponentName());
 	    searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
-	     
+	     */
 	    return true;
 	}
 	
