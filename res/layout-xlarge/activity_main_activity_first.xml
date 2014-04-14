@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/custom_button_fb_login"
             android:scaleType="centerInside" 
-            android:text="        使用Facebook登入"
+            android:text="        使用Facebook登入xlarge"
             android:textSize="25sp"
             android:textColor="@color/white"
             />
@@ -77,7 +77,7 @@
             android:layout_centerVertical="true"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="15dp"
             android:scaleType="centerInside"
             android:src="@drawable/button_fb_login_icon" />
 
