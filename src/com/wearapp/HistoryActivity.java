@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 import org.json.JSONArray;
 
+import com.facebook.internal.Logger;
 import com.parse.ParseObject;
 import com.pheelicks.visualizer.HistoryView;
 import com.wearapp.exception.FacebookUtil.FacebookSessionNotActive;
@@ -28,6 +29,7 @@ import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.v4.util.LongSparseArray;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -170,7 +172,8 @@ public class HistoryActivity extends Activity {
         	    	userMap.put(userdata.getUID(), userdata);
         	    	new DownloadPictureTask().execute(userdata);
         	    	for(ParseObject parseObject : parseObjectList){
-        	    		userdata = new UserData((Long)parseObject.get(TAG_OWNER),(String)parseObject.getString(TAG_PLACENAME), null);
+        	    		Log.w("ParseObject", "UserData((Long)parseObject.get(TAG_OWNER) = "+ (String)parseObject.get(TAG_OWNER));
+        	    		userdata = new UserData(Long.parseLong((String)parseObject.get(TAG_OWNER)),(String)parseObject.getString(TAG_PLACENAME), null);
         	    		userdata.setLatitude((Double)parseObject.get(TAG_LATITUDE));
         	    		userdata.setLongitude((Double)parseObject.get(TAG_LONGITUDE));
         	    		userdata.setMessage((String)parseObject.get(TAG_MESSAGE));
@@ -178,7 +181,7 @@ public class HistoryActivity extends Activity {
         	    		userMap.put(userdata.getUID(), userdata);
         	    		new DownloadPictureTask().execute(userdata);
         	    		
-        	    		Log.w("InBackGround",(Integer)parseObject.get(TAG_OWNER)+" "+(String) parseObject.getString(TAG_PLACENAME) );
+        	    		Log.w("InBackGround",(String)parseObject.get(TAG_OWNER)+" "+(String) parseObject.getString(TAG_PLACENAME) );
         	    	}
         	    	Log.w("HistoryActivity", "userdatalist size = "+userDataList.size());
         	    	while(true){
