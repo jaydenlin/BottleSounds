@@ -276,7 +276,7 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 	
 	private void sleepThread(){
 		try {
-			Thread.sleep(50);
+			Thread.sleep(3000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

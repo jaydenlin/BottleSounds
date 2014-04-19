@@ -172,7 +172,7 @@ public class HistoryActivity extends Activity {
         	    	userMap.put(userdata.getUID(), userdata);
         	    	new DownloadPictureTask().execute(userdata);
         	    	for(ParseObject parseObject : parseObjectList){
-        	    		Log.w("ParseObject", "UserData((Long)parseObject.get(TAG_OWNER) = "+ (String)parseObject.get(TAG_OWNER));
+        	    		//Log.w("ParseObject", "UserData((Long)parseObject.get(TAG_OWNER) = "+ (String)parseObject.get(TAG_OWNER));
         	    		userdata = new UserData(Long.parseLong((String)parseObject.get(TAG_OWNER)),(String)parseObject.getString(TAG_PLACENAME), null);
         	    		userdata.setLatitude((Double)parseObject.get(TAG_LATITUDE));
         	    		userdata.setLongitude((Double)parseObject.get(TAG_LONGITUDE));
@@ -181,7 +181,7 @@ public class HistoryActivity extends Activity {
         	    		userMap.put(userdata.getUID(), userdata);
         	    		new DownloadPictureTask().execute(userdata);
         	    		
-        	    		Log.w("InBackGround",(String)parseObject.get(TAG_OWNER)+" "+(String) parseObject.getString(TAG_PLACENAME) );
+        	    		//Log.w("HistoryActivity","In LoadAllMessage doInBackGround" +(String)parseObject.get(TAG_OWNER)+" "+(String) parseObject.getString(TAG_PLACENAME) );
         	    	}
         	    	Log.w("HistoryActivity", "userdatalist size = "+userDataList.size());
         	    	while(true){
@@ -261,13 +261,17 @@ public class HistoryActivity extends Activity {
         }
     
         private Bitmap getFacebookProfilePic(Long long1){
-        	Log.w("HistoryActivity", "getFacebookProfilePic "+ long1);
+        	Log.w("HistoryActivity", "start getFacebookProfilePic "+ long1);
 
         	 URL img_value = null;
         	 Bitmap mIcon = null;
         	 try {
-    			img_value = new URL("http://graph.facebook.com/"+String.valueOf(long1)+"/picture?type=large");
+    			img_value = new URL("https://graph.facebook.com/"+String.valueOf(long1)+"/picture?type=large");
+    			Log.w("HistoryActivity", img_value.toString());
     			mIcon = BitmapFactory.decodeStream(img_value.openConnection().getInputStream());
+    			if(mIcon == null ) {
+    				Log.e("HistoryActivity", "get null picutre");
+    			}
     			
     			
     		} catch (MalformedURLException e) {
@@ -277,7 +281,7 @@ public class HistoryActivity extends Activity {
     			// TODO Auto-generated catch block
     			e.printStackTrace();
     		}
-        	 
+        	Log.w("HistoryActivity", " finish getFacebookProfilePic "+ long1 );
         	return mIcon;
         }
         
