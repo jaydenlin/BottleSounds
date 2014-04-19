@@ -14,7 +14,7 @@
         android:id="@+id/linearlayout01"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3" >
+        android:layout_weight="2.75" >
 
         <ImageView
             android:id="@+id/imageview01_1"
@@ -26,7 +26,7 @@
         android:id="@+id/linearlayout02"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="1.75"
         android:gravity="center" >
 
         <ImageView
@@ -40,7 +40,7 @@
         android:id="@+id/linearlayout03"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3" >
+        android:layout_weight="1.25" >
 
         <ImageView
             android:id="@+id/imageview03_1"
@@ -77,7 +77,7 @@
             android:layout_centerVertical="true"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="25dp"
             android:scaleType="centerInside"
             android:src="@drawable/button_fb_login_icon" />
 
@@ -107,7 +107,7 @@
             style="?android:borderlessButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="或 直接開始使用"
+            android:text="或 直接開始使用large"
             android:textColor="@color/white"
             android:textSize="25sp" />
     </LinearLayout>
@@ -116,7 +116,7 @@
         android:id="@+id/linearlayout07"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.5" >
+        android:layout_weight="3.25" >
 
         <ImageView
             android:id="@+id/ImageView07_1"

@@ -14,7 +14,7 @@
         android:id="@+id/linearlayout01"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2" >
+        android:layout_weight="2.75" >
 
         <ImageView
             android:id="@+id/imageview01_1"
@@ -26,7 +26,7 @@
         android:id="@+id/linearlayout02"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="1.75"
         android:gravity="center" >
 
         <ImageView
@@ -40,7 +40,7 @@
         android:id="@+id/linearlayout03"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2" >
+        android:layout_weight="0.75" >
 
         <ImageView
             android:id="@+id/imageview03_1"
@@ -66,6 +66,7 @@
             android:background="@drawable/custom_button_fb_login"
             android:scaleType="centerInside" 
             android:text="        使用Facebook登入"
+            
             android:textColor="@color/white"
             />
 
@@ -105,16 +106,16 @@
             style="?android:borderlessButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="或 直接開始使用"
+            android:text="或 直接開始使用normal"
             android:textColor="@color/white"
-            android:textSize="25sp" />
+            android:textSize="20sp" />
     </LinearLayout>
     
     <LinearLayout
         android:id="@+id/linearlayout07"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2" >
+        android:layout_weight="3.75" >
 
         <ImageView
             android:id="@+id/ImageView07_1"
