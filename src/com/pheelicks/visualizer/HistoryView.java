@@ -1,9 +1,7 @@
 package com.pheelicks.visualizer;
 
 
-import java.util.HashMap;
-import java.util.Iterator;
-
+import java.util.ArrayList;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.res.Resources;
@@ -20,7 +18,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-
 
 import com.wearapp.HistoryActivity;
 import com.wearapp.HistoryActivity.UserData;
@@ -46,7 +43,6 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 	private boolean flag = true;
 	private Canvas canvas = null;
 	private SurfaceHolder holder;
-	 HashMap<Long, UserData> userMap;	
 	private Thread db_thread;
 	float mCenterX; 
 	float mCenterY; 
@@ -54,7 +50,7 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 	float mHeight;
 	private Context mContext;
 	private HistoryActivity mActivity;
-	private HashMap<Long,UserData> mUserIdMap ;
+	private ArrayList<HistoryActivity.UserData> userList ;
 	private Builder mAlertDialogBuilder; 
  
   
@@ -75,7 +71,7 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 		if(D_METHOD){
 			Log.w(TAG, "On Create HistoryView");
 		}
-		this.userMap = new HashMap<Long, HistoryActivity.UserData>();
+		userList = new ArrayList<HistoryActivity.UserData>();
 		mActivity = activity;
 		mContext = context;
 		res = getResources();
@@ -198,15 +194,15 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 
 	}
 	
-	public HashMap<Long, HistoryActivity.UserData> getUserMap(){
+	public ArrayList<HistoryActivity.UserData> getUserList(){
 
 		
-		return this.userMap;
+		return this.userList;
 	}
 
 	public void drawIcons() {
 		Log.w(TAG, "In drawIcons()");
-		for (UserData user : userMap.values()){
+		for (UserData user : userList){
 			if(user.getUserPic()!= null){
 				user.PostUnit(canvas);
 			}
@@ -219,42 +215,42 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 		if(D_METHOD){
 			Log.w(TAG, "in refresh");
 		}
-//		if(!refetchingUserMap){
-//			return;
-//		}
-//		
-		if(mUserIdMap != null){
-			traverseMap(mUserIdMap);
+		if(userList != null){
+			traverseList(userList);
 			refetchingUserMap = false; 
 		}		
 	}
 
-	public  void traverseMap(HashMap<Long,UserData> mp) {
+	public  void traverseList(ArrayList<HistoryActivity.UserData> list) {
 		Log.w(TAG, "in Traverse Map");
-	    Iterator it = mp.entrySet().iterator();
-	    float width  = getWidth();
-	    float height = getHeight();
-	    while (it.hasNext()) {
-	    	HashMap.Entry pairs = (HashMap.Entry)it.next();
-	    	UserData userdata = (UserData)pairs.getValue();
-	    	if(userdata.isOwner()){
-	    		//TODO not a good way, need to modify
-	    		userdata.setsCircleIcon(  this.mCenterX, this.mCenterY);
+		 float width  = getWidth();
+		    float height = getHeight();
+		for(UserData userData : list){
+			
+			if(userData.getUserPic() == null ){
+	    		Log.w(TAG, userData.getUID()+" still not get profile picture");
 	    		continue;
 	    	}
-	    	if(userdata.getUserPic() == null ){
-	    		Log.w(TAG, userdata.getUID()+" still not get profile picture");
+	    	if(userData.isOwner()){
+	    		userData.setsCircleIcon(  this.mCenterX, this.mCenterY);
 	    		continue;
 	    	}
 	    	
-	    	float x = (float) (Math.random() * (width - userdata.getUserPic().getWidth()*2))+userdata.getUserPic().getWidth();
-	        float y = (float) (Math.random() * ( height -  userdata.getUserPic().getHeight()*2 ) + userdata.getUserPic().getHeight());
-	    	if(D_SHOW_TAG){
+	    	
+	    	float x = (float) (Math.random() * (width - userData.getUserPic().getWidth()*2))+userData.getUserPic().getWidth();
+	        float y = (float) (Math.random() * ( height -  userData.getUserPic().getHeight()*2 ) + userData.getUserPic().getHeight());
 	    		Log.w(TAG, "random x, y "+x+ " "+ y);
-	    	}
-	    	userdata.setsCircleIcon(x, y);	    	
 	    	
-	    }
+	    		userData.setsCircleIcon(x, y);	    
+			
+			
+		}
+	  
+	   
+	    
+	    	
+	    	
+	    
 	   
 	}
 	
@@ -277,7 +273,7 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             int x = (int)event.getX();
             int y = (int)event.getY();
-            for (UserData a: userMap.values()) {
+            for (UserData a: userList) {
                 a.IsTouch(x, y);
             }
         }
@@ -304,16 +300,5 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 	}
 	
 
-
-	public HashMap<Long, UserData> getmUserIdMap() {
-		return mUserIdMap;
-	}
-
-
-	public void setmUserIdMap(HashMap<Long, UserData> mUserIdMap) {
-		Log.w(TAG, "in setmUserIdMap");
-		this.mUserIdMap = mUserIdMap;
-	}
-	
 
 }//HistoryView

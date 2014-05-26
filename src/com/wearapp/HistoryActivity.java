@@ -9,7 +9,6 @@ import java.util.HashMap;
 
 import org.json.JSONArray;
 
-import com.facebook.internal.Logger;
 import com.parse.ParseObject;
 import com.pheelicks.visualizer.HistoryView;
 import com.wearapp.exception.FacebookUtil.FacebookSessionNotActive;
@@ -25,7 +24,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
@@ -39,7 +37,6 @@ import android.graphics.Rect;
 import android.graphics.Bitmap.Config;
 import android.graphics.Paint.Cap;
 import android.graphics.PorterDuff.Mode;
-import android.support.v4.util.LongSparseArray;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -115,7 +112,7 @@ public class HistoryActivity extends Activity {
   // Creating JSON Parser object
     JSONParser jParser = new JSONParser();
  
-    HashMap<Long, UserData> userMap;
+    ArrayList<UserData> userList;
  
     // JSON Node names
     private static final String TAG_SUCCESS = "success";
@@ -131,9 +128,11 @@ public class HistoryActivity extends Activity {
     // products JSONArray
     JSONArray products = null;
     private void getItemListFromWeb(){
-         userMap = background.getmUserIdMap();
+         userList = background.getUserList();
         // Loading userIdList in Background Thread
         new LoadAllMessage().execute();
+        
+        
     	
     }
 
@@ -168,8 +167,7 @@ public class HistoryActivity extends Activity {
         	    	String userId = toWhomList.get(0);
         	    	userdata = new UserData(Long.parseLong(userId),null,null);
         	    	userdata.setisOwner(true);
-        	    	userMap.put(userdata.getUID(), userdata);
-        	    	new DownloadPictureTask().execute(userdata);
+        	    	userList.add( userdata);
         	    	for(ParseObject parseObject : parseObjectList){
         	    		Log.w("ParseObject", "UserData((Long)parseObject.get(TAG_OWNER) = "+ (String)parseObject.get(TAG_OWNER));
         	    		userdata = new UserData(Long.parseLong((String)parseObject.get(TAG_OWNER)),(String)parseObject.getString(TAG_PLACENAME), null);
@@ -177,12 +175,10 @@ public class HistoryActivity extends Activity {
         	    		userdata.setLongitude((Double)parseObject.get(TAG_LONGITUDE));
         	    		userdata.setMessage((String)parseObject.get(TAG_MESSAGE));
         	    		userdata.setUserLink((String)parseObject.get(TAG_LINK));
-        	    		userMap.put(userdata.getUID(), userdata);
-        	    		new DownloadPictureTask().execute(userdata);
-        	    		
+        	    		userList.add( userdata);
+
         	    		Log.w("HistoryActivity","In LoadAllMessage doInBackGround" +(String)parseObject.get(TAG_OWNER)+" "+(String) parseObject.getString(TAG_PLACENAME) );
         	    	}
-        	    	background.setmUserIdMap( userMap);
         	    	
         	    }//afterGetListDone()
 
@@ -446,25 +442,30 @@ public class HistoryActivity extends Activity {
     }//UserData
     
 
-    private class DownloadPictureTask extends AsyncTask<UserData, Integer, Integer> {
-        	
-    	protected Integer doInBackground(UserData... urls) {
-            int count = urls.length;
-            for (int i = 0; i < count; i++) {
+    public class DownloadPictureTask extends AsyncTask<UserData, Integer, Integer> {
+
+		@Override
+		protected Integer doInBackground(UserData... params) {
+			int count = params.length;
+			Log.w("HistoryActivity", "in DownloadPictureTask count = "+count);
+
+			for (int i = 0; i < count; i++) {
                
-            	Bitmap bitmap = getFacebookProfilePic(userMap.get(urls[i].getUID()), urls[i].getUID());
-            	 userMap.get(urls[i].getUID()).setUserPic(bitmap);
+            	Bitmap bitmap = getFacebookProfilePic(params[i], params[i].getUID());
+            	params[i].setUserPic(bitmap);
             	
                 if (isCancelled()) break;
             }
-            return  userMap.size();
-        }
-
+            return  userList.size();
+		}
+		
+		
+	  
         protected void onProgressUpdate(Integer... progress) {
         }
 
-        protected void onPostExecute(Integer result) {
-        	Log.w("Finished Dowload Picture Task",  userMap.size()+"");
+        public void onPostExecute(Integer result) {
+        	Log.w("Finished Dowload Picture Task",  userList.size()+"");
 
         }
     
@@ -494,6 +495,7 @@ public class HistoryActivity extends Activity {
         	Log.w("HistoryActivity", " finish getFacebookProfilePic "+ long1 );
         	return mIcon;
         }
+     
 
     }//DownloadPictureTask
 
