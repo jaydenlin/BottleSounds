@@ -226,7 +226,7 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 		 float width  = getWidth();
 		    float height = getHeight();
 		for(UserData userData : list){
-			
+			Log.w(TAG,  "UserId = "+ userData.getUID());
 			if(userData.getUserPic() == null ){
 	    		Log.w(TAG, userData.getUID()+" still not get profile picture");
 	    		continue;
@@ -245,18 +245,13 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 			
 			
 		}
-	  
-	   
-	    
-	    	
-	    	
-	    
+    
 	   
 	}
 	
 	private void sleepThread(){
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(3000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

@@ -1,6 +1,7 @@
 package com.wearapp;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -9,6 +10,9 @@ import java.util.HashMap;
 
 import org.json.JSONArray;
 
+import com.parse.GetDataCallback;
+import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.pheelicks.visualizer.HistoryView;
 import com.wearapp.exception.FacebookUtil.FacebookSessionNotActive;
@@ -37,6 +41,7 @@ import android.graphics.Rect;
 import android.graphics.Bitmap.Config;
 import android.graphics.Paint.Cap;
 import android.graphics.PorterDuff.Mode;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -55,6 +60,7 @@ public class HistoryActivity extends Activity {
 	HistoryView background;
     private ProgressDialog progressDialog;
 	Paint iconPaint;
+	AsyncTask<UserData, Integer, Integer> getPicture;
 
 	DecimalFormat df2 = new DecimalFormat("00");
 	
@@ -122,7 +128,7 @@ public class HistoryActivity extends Activity {
     private static final String TAG_MESSAGE = "message";
     private static final String TAG_PLACENAME = "placeName";
     private static final String TAG_TO_FRIENDS = "toFriends";
-    private static final String TAG_LINK = "ownerPic";
+    private static final String TAG_PIC = "ownerPic";
     
  
     // products JSONArray
@@ -143,7 +149,9 @@ public class HistoryActivity extends Activity {
         /**
          * Before starting background thread Show Progress Dialog
          * */
-        @Override
+        private ArrayList<Bitmap> bitMapList;
+        int bitMapCount = 1;
+    	@Override
         protected void onPreExecute() {
             super.onPreExecute();
     		progressDialog.show();
@@ -158,7 +166,7 @@ public class HistoryActivity extends Activity {
         	try {
         		
         	    ParseAPI.readVoiceListForYou(HistoryActivity.this,FacebookUtil.getAccessToken(), new ParseGetDataDoneCallback() {       
-
+        	    	
         	    @Override
         	    public void afterGetListDone(ArrayList<ParseObject> parseObjectList) {
         	           // 在這裡讀取物件
@@ -168,13 +176,31 @@ public class HistoryActivity extends Activity {
         	    	userdata = new UserData(Long.parseLong(userId),null,null);
         	    	userdata.setisOwner(true);
         	    	userList.add( userdata);
+        	    	getPicture = new DownloadPictureTask();
+        	    	getPicture.execute(userdata);
         	    	for(ParseObject parseObject : parseObjectList){
         	    		Log.w("ParseObject", "UserData((Long)parseObject.get(TAG_OWNER) = "+ (String)parseObject.get(TAG_OWNER));
         	    		userdata = new UserData(Long.parseLong((String)parseObject.get(TAG_OWNER)),(String)parseObject.getString(TAG_PLACENAME), null);
         	    		userdata.setLatitude((Double)parseObject.get(TAG_LATITUDE));
         	    		userdata.setLongitude((Double)parseObject.get(TAG_LONGITUDE));
         	    		userdata.setMessage((String)parseObject.get(TAG_MESSAGE));
-        	    		userdata.setUserLink((String)parseObject.get(TAG_LINK));
+        	    		ParseFile imageFile = (ParseFile)parseObject.get(TAG_PIC);
+        	    		if(imageFile == null) {
+        	    			continue;
+        	    			
+        	    		}
+        	    		imageFile.getDataInBackground(new GetDataCallback() {
+        	    		  public void done(byte[] data, ParseException e) {
+        	    		    if (e == null) {
+        	    		    	Log.w("LoadAllMessage getDataInBackground", "get image successfully");
+                	    		Bitmap bitmap = BitmapFactory.decodeByteArray(data , 0, data.length);
+                	    		userList.get(bitMapCount++).setUserPic(bitmap);
+        	    		    } else {
+        	    		    	Log.e("LoadAllMessage afterGetListDone", "Cannot get parseFile image ");
+        	    		    }
+        	    		  }
+        	    		});
+
         	    		userList.add( userdata);
 
         	    		Log.w("HistoryActivity","In LoadAllMessage doInBackGround" +(String)parseObject.get(TAG_OWNER)+" "+(String) parseObject.getString(TAG_PLACENAME) );
@@ -220,6 +246,7 @@ public class HistoryActivity extends Activity {
 
 	
     public class UserData implements Runnable {
+    	private Long ownerUID;
     	private boolean isOwner = false;
     	private Long UID;
 		private String placeName;
@@ -249,7 +276,14 @@ public class HistoryActivity extends Activity {
     	}
     	
     	public boolean isOwner(){
+//    		if(ownerUID == UID){
+//    			isOwner = true;
+//    		}
     		return isOwner;
+    	}
+    	
+    	public void setOwenrUID(long uid ){
+    		ownerUID = uid;
     	}
     	
     	public void setisOwner(boolean isowner){
