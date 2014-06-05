@@ -246,7 +246,6 @@ public class HistoryActivity extends Activity {
 
 	
     public class UserData implements Runnable {
-    	private Long ownerUID;
     	private boolean isOwner = false;
     	private Long UID;
 		private String placeName;
@@ -276,15 +275,10 @@ public class HistoryActivity extends Activity {
     	}
     	
     	public boolean isOwner(){
-//    		if(ownerUID == UID){
-//    			isOwner = true;
-//    		}
     		return isOwner;
     	}
     	
-    	public void setOwenrUID(long uid ){
-    		ownerUID = uid;
-    	}
+    
     	
     	public void setisOwner(boolean isowner){
     		isOwner = isowner;

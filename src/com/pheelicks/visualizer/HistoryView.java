@@ -207,7 +207,7 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 				user.PostUnit(canvas);
 			}
 		}
-		if(refetchingUserMap){
+		if(!refetchingUserMap){
 			refetchUserMap();
 		}
 	}	
@@ -218,12 +218,12 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 			Log.w(TAG, "in refresh");
 		}
 		if(userList != null){
-			traverseList(userList);
-			refetchingUserMap = false; 
+			refetchingUserMap = traverseList(userList);
 		}		
 	}
 
-	public  void traverseList(ArrayList<HistoryActivity.UserData> list) {
+	public  boolean  traverseList(ArrayList<HistoryActivity.UserData> list) {
+		int count = 0 ;
 		Log.w(TAG, "in Traverse Map");
 		 float width  = getWidth();
 		    float height = getHeight();
@@ -233,6 +233,7 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 	    		Log.w(TAG, userData.getUID()+" still not get profile picture");
 	    		continue;
 	    	}
+			count ++;
 	    	if(userData.isOwner()){
 	    		userData.setsCircleIcon(  this.mCenterX, this.mCenterY);
 	    		continue;
@@ -247,6 +248,8 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 			
 			
 		}
+		
+		return ( list.size() == count );
     
 	   
 	}
