@@ -176,8 +176,8 @@ public class HistoryActivity extends Activity {
         	    	userdata = new UserData(Long.parseLong(userId),null,null);
         	    	userdata.setisOwner(true);
         	    	userList.add( userdata);
-        	    	getPicture = new DownloadPictureTask();
-        	    	getPicture.execute(userdata);
+        	    	//getPicture = new DownloadPictureTask();
+        	    	//getPicture.execute(userdata);
         	    	for(ParseObject parseObject : parseObjectList){
         	    		Log.w("ParseObject", "UserData((Long)parseObject.get(TAG_OWNER) = "+ (String)parseObject.get(TAG_OWNER));
         	    		userdata = new UserData(Long.parseLong((String)parseObject.get(TAG_OWNER)),(String)parseObject.getString(TAG_PLACENAME), null);

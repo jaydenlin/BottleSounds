@@ -202,13 +202,16 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 
 	public void drawIcons() {
 		Log.w(TAG, "In drawIcons()");
+		
+		if(refetchingUserMap){
+			refetchUserMap();
+			
+		}
+		
 		for (UserData user : userList){
 			if(user.getUserPic()!= null){
 				user.PostUnit(canvas);
 			}
-		}
-		if(!refetchingUserMap){
-			refetchUserMap();
 		}
 	}	
 	
@@ -222,36 +225,36 @@ public class HistoryView extends SurfaceView implements SurfaceHolder.Callback,
 		}		
 	}
 
-	public  boolean  traverseList(ArrayList<HistoryActivity.UserData> list) {
-		int count = 0 ;
+	public boolean traverseList(ArrayList<HistoryActivity.UserData> list) {
+		int count = 0;
 		Log.w(TAG, "in Traverse Map");
-		 float width  = getWidth();
-		    float height = getHeight();
-		for(UserData userData : list){
-			Log.w(TAG,  "UserId = "+ userData.getUID());
-			if(userData.getUserPic() == null ){
-	    		Log.w(TAG, userData.getUID()+" still not get profile picture");
-	    		continue;
-	    	}
-			count ++;
-	    	if(userData.isOwner()){
-	    		userData.setsCircleIcon(  this.mCenterX, this.mCenterY);
-	    		continue;
-	    	}
-	    	
-	    	
-	    	float x = (float) (Math.random() * (width - userData.getUserPic().getWidth()*2))+userData.getUserPic().getWidth();
-	        float y = (float) (Math.random() * ( height -  userData.getUserPic().getHeight()*2 ) + userData.getUserPic().getHeight());
-	    		Log.w(TAG, "random x, y "+x+ " "+ y);
-	    	
-	    		userData.setsCircleIcon(x, y);	    
-			
-			
+		float width = getWidth();
+		float height = getHeight();
+		for (UserData userData : list) {
+			Log.w(TAG, "UserId = " + userData.getUID());
+			if (userData.getUserPic() == null) {
+				Log.w(TAG, userData.getUID() + " still not get profile picture");
+				continue;
+			}
+			count++;
+			if (userData.isOwner()) {
+				userData.setsCircleIcon(this.mCenterX, this.mCenterY);
+				continue;
+			}
+
+			float x = (float) (Math.random() * (width - userData.getUserPic()
+					.getWidth() * 2)) + userData.getUserPic().getWidth();
+			float y = (float) (Math.random()
+					* (height - userData.getUserPic().getHeight() * 2) + userData
+					.getUserPic().getHeight());
+			Log.w(TAG, "random x, y " + x + " " + y);
+
+			userData.setsCircleIcon(x, y);
+
 		}
-		
-		return ( list.size() == count );
-    
-	   
+
+		return (list.size() == count);
+
 	}
 	
 	private void sleepThread(){
